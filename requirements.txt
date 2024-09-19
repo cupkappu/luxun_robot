@@ -3,4 +3,4 @@ langchain_openai
 dict2xml
 quart
 websockets
-dotenv
+python-dotenv
