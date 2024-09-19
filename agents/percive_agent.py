@@ -77,20 +77,23 @@ class State():
         }
 
 class percive_agent:
-    def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, ):
+    def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, **kwargs):
         self.prompt = percive_module.reaction_prompt
         self.tools = tools
         self.tools["stop_marker"] =  stop_marker
+        self.looptime = kwargs.get('looptime',15)
         self.state = state
         self.llm = llm
         self.state.replace(llm=llm)
-        self.perceives = {}
+        self.perceives = []
         self.agent = self.prompt | self.llm.bind_tools(tools.values())
 
-    def invoke(self,query):
+    def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
         print("Perceive: "+self.state.perceive)
-        msg = self.agent.invoke(self.state.to_dict())
+        all_dict = self.state.to_dict()
+        all_dict['looptimes'] = str(looptimes)
+        msg = self.agent.invoke(all_dict)
         self.last_msg = msg
         tool_exec_result = self.tool_exec(msg)
         if 'stop_marker' in tool_exec_result['Content'].keys():
@@ -112,23 +115,20 @@ class percive_agent:
     def workflow(self,query):
         self.stop_mark = False
         pmt = query
+        looptimes = 1
         while True:
             if self.stop_mark == True:
                 break
-            pmt = self.invoke(pmt)
+            pmt = self.invoke(pmt,looptimes)
+            looptimes += 1
         return self
 
-    async def loop_invoke(self):
+    async def loop(self):
+        print('start loop')
         while True:
-            await asyncio.sleep(15)
+            await asyncio.sleep(self.looptime)
             print('check perceives.')
-            if self.perceives:
+            if self.perceives != []:
                 print('start workflow.')
                 self.workflow(self.perceives)
-                self.perceives = {}
-
-    async def loop(self):
-        loop_p = asyncio.get_event_loop()
-        loop_p.create_task(self.loop_invoke())
-        print('loop start')
-        return loop_p
+                self.perceives = []

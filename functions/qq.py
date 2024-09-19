@@ -1,24 +1,63 @@
 import requests
-import websocket
+import websockets
 import os
+from agents.percive_agent import percive_agent
+from langchain.tools import tool
+from typing import Annotated
+import json
 
-async def send_message(reply,id,type='group'):
+g_agent:percive_agent = None
+
+def give_callback(agent: percive_agent):
+    global g_agent
+    g_agent = agent
+
+id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
+
+@tool
+def send_qq_msg(msg: Annotated[str, 'Message you want to send'], 
+          no: Annotated[str, 'Group or QQ Number you want to send to'], 
+          to_type: Annotated[str, 'group or private you need to select']):
+    """Send messages to QQ"""
     params={}
-    if (type=='group'):
+    if (to_type=='group'):
         idtype='group_id'
-    if (type=='private'):
+    if (to_type=='private'):
         idtype='user_id'
     params={
-        'message_type': type,
-        idtype: id,
-        'message': reply
+        'message_type': to_type,
+        idtype: no,
+        'message': msg
     }
-    url = f"{os.getenv('QQ_ONEBOT_HTTP_URL')}/send_msg" #这里要加上http://，不然会报错
-    return requests.get(url,params=params)
+    url = f"{os.environ['QQ_ONEBOT_HTTP_URL']}/send_msg"
+    requests.get(url,params=params)
+    return "Message Send."
 
-async def get_notice(on_message):
-    ws = websocket.WebSocketApp("ws://10.66.35.155:27636",
-                            on_message=on_message,)
-    ws.on_open = lambda ws:ws.send("Hello, WebSocket!")
-    ws.run_forever()
+async def start_callback():
+    url = os.environ['QQ_ONEBOT_WS_URL']
+    print('start connect to', url)
+    async with websockets.connect(url) as websocket:
+        await websocket.send("Hello, WebSocket!")
+        while True:
+            message = await websocket.recv()
+            try:
+                msg = json.loads(message)
+                if msg['post_type'] == 'message':
+                    await on_message(msg)
+            except json.JSONDecodeError:
+                print("Received message is not a valid JSON")
+            except KeyError as e:
+                print(f"Key {e} not found in message")
 
+async def on_message(msg:dict):
+    print(msg)
+    if isinstance(msg,dict):
+        if msg['post_type'] == 'message':
+            if msg['message_type'] == 'group':
+                if str(msg['group_id']) in id_list:
+                    perceive = {f"QQ群組{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
+                    print(perceive)
+                    global g_agent
+                    g_agent.perceives.append(perceive)
+
+tools = {"send_qq_msg":send_qq_msg}
