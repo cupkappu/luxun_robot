@@ -31,6 +31,7 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     {relate_memory}
     </RELATED_MEMORY>
     <Perceive>{perceive}</Perceive>
+    <LoopTimes>{looptimes}</LoopTimes>
     """),
     ])
 
