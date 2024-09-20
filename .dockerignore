@@ -3,3 +3,4 @@
 **/.venv
 tools_config
 __pycache__
+docker-compose.yaml

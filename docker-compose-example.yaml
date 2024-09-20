@@ -1,0 +1,43 @@
+version: '3'
+services:
+  luxun-robot:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - napcat
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    env_file:
+      - .env
+    volumes:
+      - ./tools_config/searx:/etc/searxng
+    restart: always
+    ports:
+      - 8080:8080
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+        - ./tools_config/ollama/ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: always
+  napcat:
+    volumes: 
+      - ./tools_config/napcat/QQ:/app/.config/QQ
+      - ./tools_config/napcat/config:/app/napcat/config
+    environment:
+      - ACCOUNT=2840347661
+      - WS_ENABLE=true
+      - HTTP_ENABLE=true
+      - NAPCAT_UID=${NAPCAT_UID}
+      - NAPCAT_GID=${NAPCAT_GID}
+    container_name: napcat
+    hostname: napcat
+    restart: always
+    image: mlikiowa/napcat-docker:latest

@@ -46,9 +46,9 @@ class State():
             cache=self.current_memory[-(memory_length-memory_cache_length)]
             invoker = self.zip_memory_prompt|self.llm
             zip_memory = invoker.invoke(
-                {
+                
                     self.write_current_memory(cache).to_dict(),
-                }).content
+                ).content
             self.current_memory_list = [zip_memory]+self.current_memory_list[memory_cache_length]
         self.write_current_memory(self.current_memory_list)
         return self

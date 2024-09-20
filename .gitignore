@@ -1,6 +1,7 @@
 tools_config/napcat
 tools_config/ollama/ollama
-
+docker-compose.yaml
+docker-compose.yml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
