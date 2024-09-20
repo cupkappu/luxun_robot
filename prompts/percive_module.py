@@ -49,7 +49,7 @@ zip_memory_prompt=ChatPromptTemplate.from_messages(
 
     <INSTRUCTION>
     You are the core of memory center. You need to summary the current memory based on your personality and your knowledge.
-    You need summary the memory concisely.
+    You need summary the memory concisely and take the important points.
     </INSTRUCTION>
     """),
     ('user',"""

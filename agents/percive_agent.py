@@ -3,6 +3,8 @@ from langchain_core.language_models import BaseChatModel
 from typing import Annotated, Dict
 from dict2xml import dict2xml
 from langchain.tools import tool
+from datetime import datetime
+import asyncio
 
 # percive_module.prompt
 
@@ -36,7 +38,7 @@ class State():
 
     def add_perceive(self, xml_block):
         self.current_memory_list.append(self.perceive)
-        self.perceive = xml_block
+        self.perceive = xml_block + f'<Time>{datetime.now().strftime("%Y-%m-%d %H:%M")}</Time>'
         memory_length = len(self.current_memory_list)
         memory_limit = int(self.current_memory_length*0.9)
         memory_cache_length = int(self.current_memory_length*0.7)
@@ -50,15 +52,14 @@ class State():
             self.current_memory_list = [zip_memory]+self.current_memory_list[memory_cache_length]
         self.write_current_memory(self.current_memory_list)
         return self
-            
 
     def replace(self, **kwargs):
         self.personal_setting = kwargs.get('personal_setting', self.personal_setting)
-        self.current_memory = kwargs.get('current_memory', self.current_memory)
+        self.current_memory_list = kwargs.get('current_memory', self.current_memory_list)
         self.knowledge = kwargs.get('knowledge', self.knowledge)
         self.relate_memory = kwargs.get('relate_memory', self.relate_memory)
         self.perceive = kwargs.get('perceive', self.perceive)
-        self.current_memory_limit = kwargs.get('current_memory_limit',self.current_memory_limit)
+        self.current_memory_length = kwargs.get('current_memory_length',self.current_memory_length)
         self.llm = kwargs.get('llm',self.llm)
         return self
 
@@ -72,37 +73,40 @@ class State():
             'current_memory':self.write_current_memory().current_memory,
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
-            'perceive':self.perceive
+            'perceive':self.perceive,
         }
 
-
 class percive_agent:
-    def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None):
+    def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, ):
         self.prompt = percive_module.reaction_prompt
         self.tools = tools
         self.tools["stop_marker"] =  stop_marker
         self.state = state
         self.llm = llm
+        self.state.replace(llm=llm)
+        self.perceives = {}
         self.agent = self.prompt | self.llm.bind_tools(tools.values())
 
     def invoke(self,query):
-        self.state.add_perceive(dict2xml(query))
+        self.state.add_perceive(xml_block=dict2xml(query))
+        print("Perceive: "+self.state.perceive)
         msg = self.agent.invoke(self.state.to_dict())
         self.last_msg = msg
         tool_exec_result = self.tool_exec(msg)
-        if 'stop_marker' in tool_exec_result['ToolOutput'].keys():
+        if 'stop_marker' in tool_exec_result['Content'].keys():
             self.stop_mark = True
         return tool_exec_result
 
     def tool_exec(self, msg):
-        result = {'ToolOutput':{}}
+        result = {'Content':{}}
         for tool_call in msg.tool_calls:
             selected_tool = self.tools[tool_call["name"].lower()]
             tool_output = selected_tool.invoke(tool_call["args"])
-            result['ToolOutput'][tool_call["name"]] = {
+            result['Source'] = "ToolUse"
+            result['Content'][tool_call["name"]] = {
                 'input_args':tool_call["args"],
                 'output':tool_output}
-        print(result)
+        print("Tool Output: " + str(result))
         return result
 
     def workflow(self,query):
@@ -113,3 +117,18 @@ class percive_agent:
                 break
             pmt = self.invoke(pmt)
         return self
+
+    async def loop_invoke(self):
+        while True:
+            await asyncio.sleep(15)
+            print('check perceives.')
+            if self.perceives:
+                print('start workflow.')
+                self.workflow(self.perceives)
+                self.perceives = {}
+
+    async def loop(self):
+        loop_p = asyncio.get_event_loop()
+        loop_p.create_task(self.loop_invoke())
+        print('loop start')
+        return loop_p
