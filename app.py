@@ -8,7 +8,7 @@ from llm import llm
 from prompts.percive_module import test_query
 import os
 from functions import (qq,
-                       web_perceive,
+                       web_perceive,searxng
                        )
 
 tools = {}
@@ -17,6 +17,7 @@ async def run_all_functions():
     func_modules = [
         web_perceive,
         qq,
+        searxng,
     ]
 
     for i in func_modules:

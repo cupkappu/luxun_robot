@@ -4,3 +4,4 @@ dict2xml
 quart
 websockets
 python-dotenv
+langchain_community

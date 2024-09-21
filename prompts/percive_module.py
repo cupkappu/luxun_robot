@@ -1,6 +1,5 @@
 from langchain_core.prompts import ChatPromptTemplate
 
-
 reaction_prompt=ChatPromptTemplate.from_messages(
     [
     ("system", """<ROLE>

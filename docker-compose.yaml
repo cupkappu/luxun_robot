@@ -9,22 +9,24 @@ services:
     restart: always
     depends_on:
       - napcat
-  # searxng:
-  #   container_name: searxng
-  #   image: docker.io/searxng/searxng:latest
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./tools_config/searx:/etc/searxng
-  #   restart: always
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   volumes:
-  #       - ./tools_config/ollama/ollama:/root/.ollama
-  #   container_name: ollama
-  #   pull_policy: always
-  #   tty: true
-  #   restart: always
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    env_file:
+      - .env
+    volumes:
+      - ./tools_config/searx:/etc/searxng
+    restart: always
+    # ports:
+    #   - 8080:8080
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+        - ./tools_config/ollama/ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: always
   napcat:
     volumes: 
       - ./tools_config/napcat/QQ:/app/.config/QQ
@@ -33,12 +35,14 @@ services:
       - ACCOUNT=2840347661
       - WS_ENABLE=true
       - HTTP_ENABLE=true
+      # - HTTP_POST_ENABLE=true
+      # - HTTP_URLS='["http://172.17.0.1:5000"]'
       - NAPCAT_UID=${NAPCAT_UID}
       - NAPCAT_GID=${NAPCAT_GID}
-    ports:
-      - 3000:3000
-      - 3001:3001
-      - 6099:6099
+    # ports:
+    #   - 3000:3000
+    #   - 3001:3001
+    #   - 6099:6099
     container_name: napcat
     hostname: napcat
     restart: always
