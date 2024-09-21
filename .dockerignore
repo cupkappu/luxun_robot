@@ -1,0 +1,5 @@
+**/node_modules
+**/.conda
+**/.venv
+tools_config
+__pycache__

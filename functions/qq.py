@@ -57,7 +57,6 @@ async def on_message(msg:dict):
                 if str(msg['group_id']) in id_list:
                     perceive = {f"QQ群組{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
                     print(perceive)
-                    global g_agent
                     g_agent.perceives.append(perceive)
 
 tools = {"send_qq_msg":send_qq_msg}
