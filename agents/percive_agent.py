@@ -49,7 +49,7 @@ class State():
                 
                     self.write_current_memory(cache).to_dict(),
                 ).content
-            self.current_memory_list = [zip_memory]+self.current_memory_list[memory_cache_length]
+            self.current_memory_list = [zip_memory]+self.current_memory_list[::memory_cache_length]
         self.write_current_memory(self.current_memory_list)
         return self
 
