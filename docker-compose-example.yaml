@@ -40,4 +40,4 @@ services:
     container_name: napcat
     hostname: napcat
     restart: always
-    image: mlikiowa/napcat-docker:latest
+    image: mlikiowa/napcat-docker:v1.5.0

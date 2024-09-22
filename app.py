@@ -1,13 +1,13 @@
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 import asyncio
 from agents.percive_agent import State, percive_agent
 from llm import llm
 from prompts.percive_module import test_query
 import os
-from functions import (qq,
+from functions import (qq, save_state,note_tools, 
                        web_perceive,searxng
                        )
 
@@ -18,6 +18,8 @@ async def run_all_functions():
         web_perceive,
         qq,
         searxng,
+        save_state,
+        note_tools
     ]
 
     for i in func_modules:

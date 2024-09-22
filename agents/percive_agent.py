@@ -1,6 +1,6 @@
 from prompts import percive_module
 from langchain_core.language_models import BaseChatModel
-from typing import Annotated, Dict
+from typing import Annotated, Dict, Optional
 from dict2xml import dict2xml
 from langchain.tools import tool
 from datetime import datetime
@@ -9,7 +9,8 @@ import asyncio
 # percive_module.prompt
 
 @tool
-def stop_marker(stop_mark: Annotated[bool, 'Mark as true to stop.']) -> str:
+def stop_marker(stop_mark: Annotated[bool, 'Mark as true to stop.']
+                ) -> str:
     """Set the stop mark as true when you don't have more to do."""
     if stop_mark == True:
         return "<STOP_MARK />"
@@ -25,6 +26,7 @@ class State():
     current_memory_length: int = 30
     perceive_history: list
     llm: BaseChatModel
+    note: list = []
 
     def __init__(self, *args, **kwargs):
         self.personal_setting = kwargs['personal_setting']
@@ -35,6 +37,7 @@ class State():
         self.current_memory_length = kwargs.get('current_memory_length',self.current_memory_length)
         self.llm = kwargs.get('llm',None)
         self.zip_memory_prompt = percive_module.zip_memory_prompt
+        self.note = kwargs.get('note',[])
 
     def add_perceive(self, xml_block):
         self.current_memory_list.append(self.perceive)
@@ -54,12 +57,13 @@ class State():
 
     def replace(self, **kwargs):
         self.personal_setting = kwargs.get('personal_setting', self.personal_setting)
-        self.current_memory_list = kwargs.get('current_memory', self.current_memory_list)
+        self.current_memory_list = kwargs.get('current_memory_list', self.current_memory_list)
         self.knowledge = kwargs.get('knowledge', self.knowledge)
         self.relate_memory = kwargs.get('relate_memory', self.relate_memory)
         self.perceive = kwargs.get('perceive', self.perceive)
         self.current_memory_length = kwargs.get('current_memory_length',self.current_memory_length)
         self.llm = kwargs.get('llm',self.llm)
+        self.note = kwargs.get('note',self.note)
         return self
 
     def write_current_memory(self,memory_list:list = None):
@@ -73,6 +77,7 @@ class State():
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
             'perceive':self.perceive,
+            'note': "\n".join([f"<NOTE_UNIT>{dict2xml(i)}</NOTE_UNIT>" for i in self.note])
         }
 
 class percive_agent:
@@ -131,3 +136,4 @@ class percive_agent:
                 print('start workflow.')
                 self.workflow(self.perceives)
                 self.perceives = []
+                

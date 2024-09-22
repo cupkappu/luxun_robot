@@ -4,3 +4,6 @@
 tools_config
 __pycache__
 docker-compose.yaml
+docker-compose-example.yaml
+.env
+tools_config/data/state.json

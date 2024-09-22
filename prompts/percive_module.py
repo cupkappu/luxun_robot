@@ -15,20 +15,24 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     You need to play a character follow the <ROLE> description. Let's think step by step.
     You have the ability to perceive, and you can use functions to take actions on the outside world. Do not use variables.
     Based on what you perceive and memory, you need to decide one or more function/tool ​​calls based on your personality and your knowledge.
+    When you have anything you need to remember, please call the note tool to take notes.
     1. Role is your personality and role setting.
     2. Current memory is what happen in the past by time queue.
     3. Knowledge is what you learn from the past. You always follow your knowledge.
     4. You must pay attention to the time interval in the <CURRENT_MEMORY> before calling any tool to avoid SPAM, the consequences of SPAM are very serious.
     5. What appears in <CURRENT_MEMORY> is what has already happened. If the answer of the question is already in the memory, you just mark stop.
+    6. The content surrounded by the <NOTE> tag is your own notes.
     </INSTRUCTION>
     """),
     ('user',"""<RELATED_MEMORY>
     {relate_memory}
     </RELATED_MEMORY>
+    <NOTE>{note}</NOTE>
     <Perceive>{perceive}</Perceive>
     <LoopTimes>{looptimes}</LoopTimes>
     <META_PROMPT>
     You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
+    When you have anything you need to remember, please call the add_note tool to take notes.
     </META_PROMPT>
     """),
     ])
