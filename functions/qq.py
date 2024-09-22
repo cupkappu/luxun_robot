@@ -59,7 +59,7 @@ async def on_message(msg:dict):
                     print(perceive)
                     g_agent.perceives.append(perceive)
             if msg['message_type'] == 'private':
-                perceive = {f"QQ私聊":{"Sender": msg['sender'], 'Content':msg['message']}}
+                perceive = {f"QQ私聊|ID{msg['sender']['user_id']}":{"Sender": msg['sender']['nickname'], 'Content':msg['message']}}
                 print(perceive)
                 g_agent.perceives.append(perceive)
 
