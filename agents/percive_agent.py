@@ -14,7 +14,7 @@ def stop_marker(stop_mark: Annotated[bool, 'Mark as true to stop.']
     """Set the stop mark as true when you don't have more to do."""
     if stop_mark == True:
         return "<STOP_MARK />"
-    return ""
+    return "<STOP_MARK />"
 
 class State():
     personal_setting: str

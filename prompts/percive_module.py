@@ -31,7 +31,7 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     <Perceive>{perceive}</Perceive>
     <LoopTimes>{looptimes}</LoopTimes>
     <META_PROMPT>
-    You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
+    Unless someone is talking to you directly, in a group, You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
     When you have anything you need to remember, please call the add_note tool to take notes.
     </META_PROMPT>
     """),
