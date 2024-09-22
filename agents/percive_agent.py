@@ -99,6 +99,7 @@ class percive_agent:
         all_dict['looptimes'] = str(looptimes)
         msg = self.agent.invoke(all_dict)
         self.last_msg = msg
+        print(msg)
         tool_exec_result = self.tool_exec(msg)
         if 'stop_marker' in tool_exec_result['Content'].keys():
             self.stop_mark = True
