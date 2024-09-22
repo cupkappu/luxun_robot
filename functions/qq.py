@@ -58,5 +58,9 @@ async def on_message(msg:dict):
                     perceive = {f"QQ群組{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
                     print(perceive)
                     g_agent.perceives.append(perceive)
+            if msg['message_type'] == 'private':
+                perceive = {f"QQ私聊":{"Sender": msg['sender'], 'Content':msg['message']}}
+                print(perceive)
+                g_agent.perceives.append(perceive)
 
 tools = {"send_qq_msg":send_qq_msg}

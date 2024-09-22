@@ -29,7 +29,6 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     <LoopTimes>{looptimes}</LoopTimes>
     <META_PROMPT>
     You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
-    If LoopTimes exceeds 1, you need to consider whether you need to mark stop to avoid SPAM.
     </META_PROMPT>
     """),
     ])
@@ -48,8 +47,8 @@ zip_memory_prompt=ChatPromptTemplate.from_messages(
     </KNOWLEDGE>
 
     <INSTRUCTION>
-    You are the core of memory center. You need to summary the current memory based on your personality and your knowledge.
-    You need summary the memory concisely and take the important points.
+    You are the summarizer. You need to summary the current memory based on your personality and your knowledge.
+    You need summary the memory concisely and take the important points and only reply with summary content without any prefix or suffix.
     </INSTRUCTION>
     """),
     ('user',"""

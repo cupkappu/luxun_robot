@@ -43,13 +43,12 @@ class State():
         memory_limit = int(self.current_memory_length*0.9)
         memory_cache_length = int(self.current_memory_length*0.7)
         if memory_length >= memory_limit:
-            cache=self.current_memory[-(memory_length-memory_cache_length)]
+            cache=self.current_memory_list[:(memory_length-memory_cache_length)]
             invoker = self.zip_memory_prompt|self.llm
             zip_memory = invoker.invoke(
-                
                     self.write_current_memory(cache).to_dict(),
                 ).content
-            self.current_memory_list = [zip_memory]+self.current_memory_list[::memory_cache_length]
+            self.current_memory_list = [f"<Summarized_Memory>{zip_memory}</Summarized_Memory>"]+self.current_memory_list[memory_length-memory_cache_length:]
         self.write_current_memory(self.current_memory_list)
         return self
 
