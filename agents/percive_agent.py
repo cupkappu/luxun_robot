@@ -90,7 +90,7 @@ class percive_agent:
         self.llm = llm
         self.state.replace(llm=llm)
         self.perceives = []
-        self.agent = self.prompt | self.llm.bind_tools(tools.values())
+        self.agent = self.prompt | self.llm.bind_tools(tools.values(),tool_choice="any")
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
@@ -124,6 +124,8 @@ class percive_agent:
         while True:
             if self.stop_mark == True:
                 break
+            if looptimes >= self.looptime*0.9:
+                pmt.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = self.invoke(pmt,looptimes)
             looptimes += 1
         return self

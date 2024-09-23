@@ -33,6 +33,7 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     <META_PROMPT>
     Unless someone is talking to you directly, in a group, You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
     When you have anything you need to remember, please call the add_note tool to take notes.
+    You must use at least one tool.
     </META_PROMPT>
     """),
     ])
