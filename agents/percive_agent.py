@@ -117,6 +117,8 @@ class State():
         self.current_memory_length = kwargs.get('current_memory_length',self.current_memory_length)
         self.llm = kwargs.get('llm',self.llm)
         self.note = kwargs.get('note',self.note)
+        self.looptimes = kwargs.get('looptimes',10)
+        self.augmented_prompt = {}
         return self
 
     def write_current_memory(self,memory_list:list = None):
@@ -187,7 +189,7 @@ class percive_agent:
         while True:
             if self.stop_mark == True:
                 break
-            if looptimes >= self.looptime*0.9:
+            if looptimes >= self.looptimes*0.9:
                 pmt.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = self.invoke(pmt,looptimes)
             looptimes += 1
