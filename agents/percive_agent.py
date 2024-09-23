@@ -117,7 +117,6 @@ class State():
         self.current_memory_length = kwargs.get('current_memory_length',self.current_memory_length)
         self.llm = kwargs.get('llm',self.llm)
         self.note = kwargs.get('note',self.note)
-        self.looptimes = kwargs.get('looptimes',10)
         self.augmented_prompt = {}
         return self
 
@@ -152,6 +151,7 @@ class percive_agent:
         self.state.replace(llm=llm)
         self.perceives = []
         self.agent = self.prompt | self.llm.bind_tools(tools.values(),tool_choice="any")
+        self.looptimes = kwargs.get('looptimes',10)
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
