@@ -15,7 +15,7 @@ def give_callback(agent: percive_agent):
 async def start_callback():
     while True:
         await asyncio.sleep(g_agent.looptime)
-        g_agent.augmented_prompt[__name__] = augmented_prompt.format(**prompt_vars)
+        g_agent.augmented_prompts[__name__] = augmented_prompt.format(**prompt_vars)
         
 prompt_vars = {'current_task':''}
 
