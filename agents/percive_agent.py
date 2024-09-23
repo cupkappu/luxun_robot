@@ -161,7 +161,7 @@ class percive_agent:
         all_dict['augmented_prompt'] = "\n".join(self.augmented_prompts)
         msg = self.agent.invoke(all_dict)
         self.last_msg = msg
-        print(msg)
+        
         tool_exec_result = self.tool_exec(msg)
         if 'stop_marker' in tool_exec_result['Content'].keys():
             self.stop_mark = True
@@ -192,6 +192,7 @@ class percive_agent:
             if looptimes >= self.looptimes*0.9:
                 pmt.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = self.invoke(pmt,looptimes)
+            print(self.prompt.invoke({**self.state.to_dict(),"augmented_prompt":"\n".join(self.augmented_prompts)}))
             looptimes += 1
         return self
 
