@@ -16,7 +16,7 @@ id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
 @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
-          no: Annotated[str, 'Group or QQ Number you want to send to'],
+          no: Annotated[str, 'Group or QQ Number(Must be number, Do not use variable) you want to send to'],
           to_type: Annotated[str, 'group or private you need to select']):
     """Send messages to QQ"""
     params={}

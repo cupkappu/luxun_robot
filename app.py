@@ -28,7 +28,7 @@ async def run_all_functions():
     for i in func_modules:
         tools.update(i.tools)
 
-    agent = percive_agent(State(**test_query), tools=tools, llm=llm, looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)))
+    agent = percive_agent(State(**test_query, llm=llm), tools=tools, llm=llm, looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)))
 
     [i.give_callback(agent) for i in func_modules]
     functions = [i.start_callback() for i in func_modules] + [agent.loop()]
