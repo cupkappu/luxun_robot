@@ -31,6 +31,7 @@ def set_current_task(task: Annotated[str, 'The task you need to do based on the 
     global current_task
     if current_task == '':
         current_task = task
+        print(current_task)
         return f"Set {task} as the current task successfully."
     else:
         return "Already have a curren task! Please finish the curren task or stop your process."
