@@ -7,3 +7,4 @@ docker-compose.yaml
 docker-compose-example.yaml
 .env
 tools_config/data/state.json
+run.sh
