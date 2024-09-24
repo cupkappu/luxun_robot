@@ -36,7 +36,7 @@ class doc():
         self.doc = doc
         self.uuid = uuid.uuid4()
         if summary == '':
-            sumer = percive_module.sum_prompt | llm | JsonOutputParser(pydantic_object=sum_format)
+            sumer = percive_module.sum_prompt | llm.bind(response_format={"type": "json_object"}) | JsonOutputParser(pydantic_object=sum_format)
             self.summary = sumer.invoke({'content':self.__str__()})['summary']
             print("Doc add:" + self.summary)
         else:

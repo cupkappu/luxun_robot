@@ -73,14 +73,15 @@ zip_memory_prompt=ChatPromptTemplate.from_messages(
 sum_prompt=ChatPromptTemplate.from_messages(
 [
     ("system", """
-    <INSTRUCTION>
-    You need give the content surrounded by <CURRENT_MEMORY> a concise summary as JSON format with only one key 'summary' without any prefix or suffix.
-    </INSTRUCTION>
+    You are a helpful assistant.
     """),
     ('user',""" 
     <CURRENT_MEMORY>
     {content}
     </CURRENT_MEMORY>
+    <INSTRUCTION>
+    You need give the content surrounded by <CURRENT_MEMORY> a concise summary as JSON format with only one key 'summary' without any prefix or suffix.
+    </INSTRUCTION>
     """),
     ]
 )
