@@ -31,7 +31,7 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     <LoopTimes>{looptimes}</LoopTimes>
     <META_PROMPT>
     Unless someone is talking to you directly, in a group, You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
-    Add important notes ONLY.
+    Add notes when necessary and don’t add notes when not necessary.
     You MUST call at least one tool.
     </META_PROMPT>
     """),
