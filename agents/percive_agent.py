@@ -1,10 +1,14 @@
 from prompts import percive_module
 from langchain_core.language_models import BaseChatModel
-from typing import Annotated, Dict, Optional
+from pydantic import BaseModel, Field
+from typing import Annotated, List, Dict,Optional
+from langchain_core.output_parsers import JsonOutputParser
+
 from dict2xml import dict2xml
 from langchain.tools import tool
 from datetime import datetime
 import asyncio
+import uuid
 
 # percive_module.prompt
 
@@ -15,6 +19,54 @@ def stop_marker(stop_mark: Annotated[bool, 'Mark as true to stop.']
     if stop_mark == True:
         return "<STOP_MARK />"
     return "<STOP_MARK />"
+
+def get_time():
+    return f'<Time>{datetime.now().strftime("%Y-%m-%d %H:%M")}</Time>'
+
+
+class sum_format(BaseModel):
+    summary: str = Field(description="The summary of your current memory.")
+
+class doc():
+    doc: List
+    uuid: str
+    summary: str
+    time: str
+    def __init__(self,doc: List, llm: BaseChatModel=None, summary: str = ''):
+        self.doc = doc
+        self.uuid = uuid.uuid4()
+        if summary == '':
+            sumer = percive_module.sum_prompt | llm | JsonOutputParser(pydantic_object=sum_format)
+            self.summary = sumer.invoke({'content':self.__str__()})['summary']
+            print("Doc add:" + self.summary)
+        else:
+            self.summary = summary
+        self.time = get_time()
+    def __str__(self) -> str:
+        result = ""
+        for i in self.doc:
+            if isinstance(i, str):
+                result += i+'\n'
+            elif isinstance(i, doc):
+                result += i.get_summary()
+        return result
+    def get_summary(self) -> str:
+        return f"<DOC><UUID>{self.uuid}</UUID><SUMMARY>{self.summary}</SUMMARY>{self.time}</DOC>\n"
+
+class docs:
+    docs: List[doc]
+    def __init__(self, llm: BaseChatModel, docs: List[doc] = []):
+        self.docs = docs
+        self.llm = llm
+    def find_doc(self, uuid:str) -> doc:
+        for i in self.docs:
+            if str(i.uuid) == uuid:
+                return i
+        return None
+    def add_doc(self, content_list:list):
+        c_doc = doc(doc=content_list,llm=self.llm)
+        self.docs.append(c_doc)
+        return c_doc
 
 class State():
     personal_setting: str
@@ -27,6 +79,7 @@ class State():
     perceive_history: list
     llm: BaseChatModel
     note: list = []
+    docs_m: docs
 
     def __init__(self, *args, **kwargs):
         self.personal_setting = kwargs['personal_setting']
@@ -38,21 +91,21 @@ class State():
         self.llm = kwargs.get('llm',None)
         self.zip_memory_prompt = percive_module.zip_memory_prompt
         self.note = kwargs.get('note',[])
+        self.docs_m = docs(llm=self.llm)
 
     def add_perceive(self, xml_block):
         self.current_memory_list.append(self.perceive)
-        self.perceive = xml_block + f'<Time>{datetime.now().strftime("%Y-%m-%d %H:%M")}</Time>'
+        self.perceive = xml_block + get_time()
         memory_length = len(self.current_memory_list)
         memory_limit = int(self.current_memory_length*0.9)
         memory_cache_length = int(self.current_memory_length*0.7)
         if memory_length >= memory_limit:
             cache=self.current_memory_list[:(memory_length-memory_cache_length)]
-            invoker = self.zip_memory_prompt|self.llm
-            zip_memory = invoker.invoke(
-                    self.write_current_memory(cache).to_dict(),
-                ).content
-            self.current_memory_list = [f"<Summarized_Memory>{zip_memory}</Summarized_Memory>"]+self.current_memory_list[memory_length-memory_cache_length:]
-        self.write_current_memory(self.current_memory_list)
+            print('Zip Cache:\n',cache)
+            zip_memory = self.docs_m.add_doc(content_list=cache)
+            print(zip_memory)
+            self.current_memory_list = [zip_memory]+self.current_memory_list[memory_length-memory_cache_length:]
+        self.write_current_memory()
         return self
 
     def replace(self, **kwargs):
@@ -67,7 +120,13 @@ class State():
         return self
 
     def write_current_memory(self,memory_list:list = None):
-        self.current_memory = "\n".join(memory_list if memory_list != None else self.current_memory_list)
+        memory_list = memory_list if memory_list != None else self.current_memory_list
+        self.current_memory = ''
+        for i in memory_list:
+            if isinstance(i, doc):
+                self.current_memory += '\n' + i.get_summary()
+            if isinstance(i, str):
+                self.current_memory += '\n' + i
         return self
     
     def to_dict(self):

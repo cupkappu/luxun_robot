@@ -32,7 +32,8 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     <LoopTimes>{looptimes}</LoopTimes>
     <META_PROMPT>
     Unless someone is talking to you directly, in a group, You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
-    When you have anything you need to remember, please call the add_note tool to take notes.
+    Call add_note tool to add notes when you want plan before action.
+    You MUST call at least one tool.
     </META_PROMPT>
     """),
     ])
@@ -62,6 +63,21 @@ zip_memory_prompt=ChatPromptTemplate.from_messages(
 
     <CURRENT_MEMORY>
     {current_memory}
+    </CURRENT_MEMORY>
+    """),
+    ]
+)
+
+sum_prompt=ChatPromptTemplate.from_messages(
+[
+    ("system", """
+    <INSTRUCTION>
+    You need give the content surrounded by <CURRENT_MEMORY> a concise summary as JSON format with only one key 'summary' without any prefix or suffix.
+    </INSTRUCTION>
+    """),
+    ('user',""" 
+    <CURRENT_MEMORY>
+    {content}
     </CURRENT_MEMORY>
     """),
     ]
