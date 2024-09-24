@@ -156,6 +156,7 @@ class percive_agent:
         print("Perceive: "+self.state.perceive)
         all_dict = self.state.to_dict()
         all_dict['looptimes'] = str(looptimes)
+        all_dict['augmented_prompt'] = "\n".join(self.augmented_prompts)
         msg = self.agent.invoke(all_dict)
         self.last_msg = msg
         print(msg)
@@ -164,8 +165,8 @@ class percive_agent:
             self.stop_mark = True
         result = tool_exec_result
         if msg.content != '':
-            tool_exec_result += msg.content + '<NOTICE>You need call tools to make reaction instead direct speaking!</NOTICE>'
-        return tool_exec_result
+            result += msg.content + '<NOTICE>You need call tools to make reaction instead direct speaking!</NOTICE>'
+        return result
 
     def tool_exec(self, msg):
         result = {'Content':{}}

@@ -20,3 +20,5 @@ async def add_perceive():
     return jsonify({"message": f"Perceive added: {json_data}"})
 
 tools = {}
+
+augmented_prompt = """Search the internet only Task or User request to."""

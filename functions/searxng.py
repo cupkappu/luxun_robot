@@ -13,3 +13,5 @@ async def start_callback():
 
 tools = {"searx_search":load_tools(["searx-search"],
                     searx_host=os.getenv('SEARX_URL',"http://localhost:8080"))[0]}
+
+augmented_prompt = """"""

@@ -20,7 +20,9 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     3. Knowledge is what you learn from the past. You always follow your knowledge.
     4. You must pay attention to the time interval in the <CURRENT_MEMORY> before calling any tool to avoid SPAM, the consequences of SPAM are very serious.
     5. What appears in <CURRENT_MEMORY> is what has already happened. If the answer of the question is already in the memory, you just mark stop.
-    6. The content surrounded by the <NOTE> tag is your own notes.
+    <MORE>
+    {augmented_prompt}
+    </MORE>
     </INSTRUCTION>
     """),
     ('user',"""<RELATED_MEMORY>
@@ -31,7 +33,6 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     <LoopTimes>{looptimes}</LoopTimes>
     <META_PROMPT>
     Unless someone is talking to you directly, in a group, You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
-    Add notes when necessary and don’t add notes when not necessary.
     You MUST call at least one tool.
     </META_PROMPT>
     """),
