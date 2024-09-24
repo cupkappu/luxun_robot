@@ -7,11 +7,13 @@ from agents.percive_agent import State, percive_agent
 from llm import llm
 from prompts.percive_module import test_query
 import os
+
 from functions import (qq, 
                        save_state,
                        note_tools, 
                        web_perceive,
-                       searxng
+                       searxng,
+                        task_manager
                        )
 
 tools = {}
@@ -22,7 +24,8 @@ async def run_all_functions():
         qq,
         searxng,
         save_state,
-        note_tools
+        note_tools,
+        task_manager
     ]
 
     for i in func_modules:

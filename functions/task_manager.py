@@ -11,18 +11,34 @@ def give_callback(agent: percive_agent):
 async def start_callback():
     pass
 
-
-
+current_task = ''
 
 @tool
 def stop_marker(stop_mark: Annotated[bool, 'Mark as true to stop.']
                 ) -> str:
     """Set the stop mark as true when you don't have more to do."""
     g_agent.stop_mark = stop_mark
+    global current_task
+    current_task = ''
     if stop_mark == True:
         return "<STOP_MARK_IS_TRUE />"
     return "<STOP_MARK_IS_FALSE />"
 
-tools = {}
+@tool
+def set_current_task(task: Annotated[str, 'The task you need to do based on the instruction.']
+                ) -> str:
+    """Set a task as your current task you need to do. e.g. refer the question to somebody with some function and params."""
+    global current_task
+    current_task = task
+    return f"Set {task} as the current task successfully."
 
-augmented_prompt = """"""
+tools = {'stop_marker':stop_marker, 'set_current_task':set_current_task}
+
+augmented_prompt = f"""
+    <CURRENT_TASK>
+    {current_task}
+    </CURRENT_TASK>
+    <TODO>
+    What surround by <CURRENT_TASK> is your current task you need to finish. If it is blank, call set_current_task to add a need-todo task as current task. If all things done, call stop_marker.
+    </TODO>
+"""
