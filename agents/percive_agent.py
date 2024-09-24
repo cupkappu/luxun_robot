@@ -162,6 +162,9 @@ class percive_agent:
         tool_exec_result = self.tool_exec(msg)
         if 'stop_marker' in tool_exec_result['Content'].keys():
             self.stop_mark = True
+        result = tool_exec_result
+        if msg.content != '':
+            tool_exec_result += msg.content + '<NOTICE>You need call tools to make reaction instead direct speaking!</NOTICE>'
         return tool_exec_result
 
     def tool_exec(self, msg):
