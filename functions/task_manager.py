@@ -29,8 +29,11 @@ def set_current_task(task: Annotated[str, 'The task you need to do based on the 
                 ) -> str:
     """Set a task as your current task you need to do. e.g. refer the question to somebody with some function and params."""
     global current_task
-    current_task = task
-    return f"Set {task} as the current task successfully."
+    if current_task == '':
+        current_task = task
+        return f"Set {task} as the current task successfully."
+    else:
+        return "Already have a curren task! Please finish the curren task or stop your process."
 
 tools = {'stop_marker':stop_marker, 'set_current_task':set_current_task}
 
@@ -39,6 +42,9 @@ augmented_prompt = f"""
     {current_task}
     </CURRENT_TASK>
     <TODO>
-    What surround by <CURRENT_TASK> is your current task you need to finish. If it is blank, call set_current_task to add a need-todo task as current task. If all things done, call stop_marker.
+    What surround by <CURRENT_TASK> is your current task you need to finish. 
+    If it is blank, call set_current_task to add a need-todo task as current task with necessary information like the state you might be used.
+    For example: answer XXX(000000)'s [theme] problem.
+    If all things done, call stop_marker.
     </TODO>
 """
