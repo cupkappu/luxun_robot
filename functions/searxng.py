@@ -14,7 +14,7 @@ def give_callback(agent: percive_agent):
 async def start_callback():
     pass
 
-search = SearxSearchWrapper(earx_host=os.getenv('SEARX_URL',"http://localhost:8080"))
+search = SearxSearchWrapper(searx_host=os.getenv('SEARX_URL',"http://localhost:8080"))
 
 search_prompt=ChatPromptTemplate.from_messages(
 [
