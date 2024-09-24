@@ -150,6 +150,7 @@ class percive_agent:
         self.state.replace(llm=llm)
         self.perceives = []
         self.agent = self.prompt | self.llm.bind_tools(tools.values())
+        self.stop_mark = True
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
