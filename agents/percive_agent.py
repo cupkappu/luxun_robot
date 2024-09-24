@@ -27,7 +27,7 @@ def get_time():
 class sum_format(BaseModel):
     summary: str = Field(description="The summary of your current memory.")
 
-class doc():
+class doc(BaseModel):
     doc: List
     uuid: str
     summary: str
