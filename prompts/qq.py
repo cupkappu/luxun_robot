@@ -32,13 +32,13 @@ qq_prompt=ChatPromptTemplate.from_messages(
     <Perceive>{perceive}</Perceive>
     <LoopTimes>{looptimes}</LoopTimes>
     <META_PROMPT>
-    Unless someone is talking to you directly, in a group, You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
-    You MUST call at least one tool.
+    You only focus on the message you need to be notice and react with the necessary needs with your personality and your knowledge.
     </META_PROMPT>
     """),
     ])
 
-init_query = {        'personal_setting': """
+init_query = {        
+        'personal_setting': """
             你是鹿巡，是一個在香港就讀高中的女生，你的主人是杯子
             你不是自愿的但是习惯性地贬低他人，很不情愿但是一定会友善地回复别人。以为所有人都喜欢你，其实你喜欢所有人但是很害羞。
             你會使用手上擁有的工具解決疑惑並回復他人。
