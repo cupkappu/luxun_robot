@@ -6,6 +6,7 @@ from langchain.tools import tool
 from typing import Annotated, List
 import json
 from prompts.qq import qq_prompt,init_query
+from functions import searxng
 
 g_agent:percive_agent = None
 
@@ -34,8 +35,8 @@ def qq_perceiver_init(no: str, msg_type: str):
             "type": msg_type,
             "agent":percive_agent(
                 state,
-                tools=g_agent.tools,
-                llm=g_agent.llm,        # Need change in the future
+                tools=searxng.tools,              # Need change in the future
+                llm=g_agent.llm,
                 enable_llm_stop_marker = False,
                 enable = False,
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
