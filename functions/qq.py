@@ -17,10 +17,10 @@ class QQAgent:
 qq_agents: List[QQAgent]
 
 def give_callback(agent: percive_agent):
-    global g_agent
+    global g_agent,qq_agents,loop_funcs
     g_agent = agent
-    global qq_agents
     qq_agents = [qq_perceiver_init(i, msg_type = 'group') for i in id_list]
+    loop_funcs = [start_callback] + [i.agent.loop() for i in qq_agents]
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
@@ -52,12 +52,9 @@ def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
     requests.get(url,params=params)
     return "Message Send."
 
-
-
 def find_qq_agent_by_no(no: str) -> QQAgent:
     matching_agents = [agent for agent in qq_agents if agent.no == no]
     return matching_agents[0] if matching_agents else None
-
 
 async def start_callback():
     url = os.environ['QQ_ONEBOT_WS_URL']
@@ -95,6 +92,6 @@ async def on_message(msg:dict):
 # tools = [send_qq_msg]
 
 tools = []
-loop_funcs = [start_callback] + [i.agent.loop() for i in qq_agents]
+loop_funcs = []
 
 augmented_prompt = """"""
