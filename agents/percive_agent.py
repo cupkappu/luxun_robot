@@ -1,4 +1,3 @@
-from fastapi_cli.cli import callback
 from prompts import percive_module
 from langchain_core.language_models import BaseChatModel
 from pydantic import BaseModel, Field
@@ -96,6 +95,7 @@ class State():
         self.docs_m = docs(llm=self.llm)
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
 
+
     def add_perceive(self, xml_block):
         self.current_memory_list.append(self.perceive)
         self.perceive_history.append(xml_block)
@@ -166,6 +166,7 @@ class percive_agent:
         self.looptimes = kwargs.get('looptimes',10)
         self.enable_llm_stop_marker = kwargs.get('enable_llm_stop_marker', True)
         self.callback_invoker = kwargs.get('callback_invoker', None)
+        self.enable = True
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
@@ -218,7 +219,7 @@ class percive_agent:
         while True:
             await asyncio.sleep(self.looptime)
             print('check perceives.')
-            if self.perceives != []:
+            if self.perceives != [] and self.enable:
                 print('start workflow.')
                 self.workflow(self.perceives)
                 if not self.enable_llm_stop_marker:
