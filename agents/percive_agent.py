@@ -167,13 +167,14 @@ class percive_agent:
         self.enable_llm_stop_marker = kwargs.get('enable_llm_stop_marker', True)
         self.callback_invoker = kwargs.get('callback_invoker', None)
         self.enable = True
+        self.augmented_prompts = {}
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
         print("Perceive: "+self.state.perceive)
         all_dict = self.state.to_dict()
         all_dict['looptimes'] = str(looptimes)
-        all_dict['augmented_prompt'] = "\n".join([dict2xml(i) for i in self.augmented_prompts])
+        all_dict['augmented_prompt'] = "\n".join([dict2xml({k:v}) for k,v in self.augmented_prompts.items()])
         print(self.prompt.invoke(all_dict))
         msg = self.agent.invoke(all_dict)
         self.last_msg = msg
