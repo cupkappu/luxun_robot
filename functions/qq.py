@@ -42,7 +42,7 @@ def qq_perceiver_init(no: str, msg_type: str):
                 looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)),
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
 
-@tool
+# @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
           no: Annotated[str, 'Group or QQ Number(Must be number, Do not use variable) you want to send to'],
           to_type: Annotated[str, 'group or private you need to select']):
