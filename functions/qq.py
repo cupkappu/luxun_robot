@@ -1,10 +1,11 @@
 import requests
 import websockets
 import os
-from agents.percive_agent import percive_agent
+from agents.percive_agent import percive_agent,State
 from langchain.tools import tool
-from typing import Annotated
+from typing import Annotated, List
 import json
+from prompts.qq import qq_prompt,init_query
 
 g_agent:percive_agent = None
 
@@ -13,6 +14,23 @@ def give_callback(agent: percive_agent):
     g_agent = agent
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
+
+class QQAgent:
+    no: str
+    type: str
+    agent: percive_agent
+
+def qq_perceiver_init(no: str, msg_type: str):
+    state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
+    return QQAgent(**{"no": no,
+            "type": msg_type,
+            "agent":percive_agent(state,llm=g_agent.llm,)})
+
+qq_agents: List[QQAgent] = [qq_perceiver_init(i) for i in id_list]
+
+def find_qq_agent_by_no(no: str) -> QQAgent:
+    matching_agents = [agent for agent in qq_agents if agent.no == no]
+    return matching_agents[0] if matching_agents else None
 
 @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
@@ -58,12 +76,15 @@ async def on_message(msg:dict):
                     perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
                     print(perceive)
                     g_agent.perceives.append(perceive)
+                    find_qq_agent_by_no(str(msg['group_id'])).agent.perceives.append({"Sender": msg['sender'], 'Content':msg['message']})
             if msg['message_type'] == 'private':
                 perceive = {f"QQ私聊|QQ號{msg['sender']['user_id']}":{"Sender": msg['sender']['nickname'], 'Content':msg['message']}}
                 print(perceive)
                 g_agent.perceives.append(perceive)
 
-tools = [send_qq_msg]
-loop_funcs = [start_callback]
+# tools = [send_qq_msg]
+
+tools = []
+loop_funcs = [start_callback] + [i.agent.loop() for i in qq_agents]
 
 augmented_prompt = """"""

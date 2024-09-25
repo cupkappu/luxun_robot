@@ -5,3 +5,4 @@ quart
 websockets
 python-dotenv
 langchain_community
+langchain_huggingface
