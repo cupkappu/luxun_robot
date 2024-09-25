@@ -162,7 +162,7 @@ class percive_agent:
         self.llm = llm
         self.state.replace(llm=llm)
         self.perceives = kwargs.get('perceives',[])
-        self.agent = self.prompt | self.llm.bind_tools(tools.values(),tool_choice="any")
+        self.agent = self.prompt | self.llm.bind_tools(tools.values())
         self.looptimes = kwargs.get('looptimes',10)
         self.enable_llm_stop_marker = kwargs.get('enable_llm_stop_marker', True)
         self.callback_invoker = kwargs.get('callback_invoker', None)
