@@ -34,7 +34,8 @@ def qq_perceiver_init(no: str, msg_type: str):
             "type": msg_type,
             "agent":percive_agent(
                 state,
-                llm=g_agent.llm,
+                tools=g_agent.tools,
+                llm=g_agent.llm,        # Need change in the future
                 enable_llm_stop_marker = False,
                 enable = False,
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
