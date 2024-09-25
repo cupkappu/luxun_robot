@@ -13,6 +13,10 @@ class QQAgent:
     no: str
     type: str
     agent: percive_agent
+    def __init__(self, no:str, type:str, agent:percive_agent):
+        self.no = no
+        self.type = type
+        self.agent = agent
 
 qq_agents: List[QQAgent]
 
