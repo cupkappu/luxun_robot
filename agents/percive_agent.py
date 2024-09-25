@@ -1,3 +1,4 @@
+from fastapi_cli.cli import callback
 from prompts import percive_module
 from langchain_core.language_models import BaseChatModel
 from pydantic import BaseModel, Field
@@ -152,6 +153,7 @@ class percive_agent:
         looptime: time gap for each loop when enable_llm_stop_marker was True or not set
         enable_llm_stop_marker: set it as False to disable llm's ability to stop the conversation.
     """
+    callback_invoker: callable
     def __init__(self,state:State,tools:dict = [], llm:BaseChatModel = None, **kwargs):
         self.prompt = percive_module.reaction_prompt
         self.tools = tools
@@ -163,6 +165,7 @@ class percive_agent:
         self.agent = self.prompt | self.llm.bind_tools(tools.values(),tool_choice="any")
         self.looptimes = kwargs.get('looptimes',10)
         self.enable_llm_stop_marker = kwargs.get('enable_llm_stop_marker', True)
+        self.callback_invoker = kwargs.get('callback_invoker', None)
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
@@ -218,5 +221,6 @@ class percive_agent:
             if self.perceives != []:
                 print('start workflow.')
                 self.workflow(self.perceives)
+                if not self.enable_llm_stop_marker:
+                    self.callback_invoker(self.last_msg.content)
                 self.perceives = []
-

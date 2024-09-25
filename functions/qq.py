@@ -24,7 +24,10 @@ def qq_perceiver_init(no: str, msg_type: str):
     state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
     return QQAgent(**{"no": no,
             "type": msg_type,
-            "agent":percive_agent(state,llm=g_agent.llm,)})
+            "agent":percive_agent(
+                state,
+                llm=g_agent.llm,
+                callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
 
 qq_agents: List[QQAgent] = [qq_perceiver_init(i) for i in id_list]
 
