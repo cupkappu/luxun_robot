@@ -39,6 +39,7 @@ def qq_perceiver_init(no: str, msg_type: str):
                 llm=g_agent.llm,
                 enable_llm_stop_marker = False,
                 enable = False,
+                looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)),
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
 
 @tool
