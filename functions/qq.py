@@ -9,12 +9,29 @@ from prompts.qq import qq_prompt,init_query
 
 g_agent:percive_agent = None
 
+class QQAgent:
+    no: str
+    type: str
+    agent: percive_agent
+
+qq_agents: List[QQAgent]
+
 def give_callback(agent: percive_agent):
     global g_agent
     g_agent = agent
+    global qq_agents
+    qq_agents = [qq_perceiver_init(i, msg_type = 'group') for i in id_list]
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
+def qq_perceiver_init(no: str, msg_type: str):
+    state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
+    return QQAgent(**{"no": no,
+            "type": msg_type,
+            "agent":percive_agent(
+                state,
+                llm=g_agent.llm,
+                callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
 
 @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
@@ -35,21 +52,7 @@ def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
     requests.get(url,params=params)
     return "Message Send."
 
-class QQAgent:
-    no: str
-    type: str
-    agent: percive_agent
 
-def qq_perceiver_init(no: str, msg_type: str):
-    state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
-    return QQAgent(**{"no": no,
-            "type": msg_type,
-            "agent":percive_agent(
-                state,
-                llm=g_agent.llm,
-                callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
-
-qq_agents: List[QQAgent] = [qq_perceiver_init(i, msg_type = 'group') for i in id_list]
 
 def find_qq_agent_by_no(no: str) -> QQAgent:
     matching_agents = [agent for agent in qq_agents if agent.no == no]
