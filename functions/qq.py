@@ -15,25 +15,6 @@ def give_callback(agent: percive_agent):
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
-class QQAgent:
-    no: str
-    type: str
-    agent: percive_agent
-
-def qq_perceiver_init(no: str, msg_type: str):
-    state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
-    return QQAgent(**{"no": no,
-            "type": msg_type,
-            "agent":percive_agent(
-                state,
-                llm=g_agent.llm,
-                callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
-
-qq_agents: List[QQAgent] = [qq_perceiver_init(i) for i in id_list]
-
-def find_qq_agent_by_no(no: str) -> QQAgent:
-    matching_agents = [agent for agent in qq_agents if agent.no == no]
-    return matching_agents[0] if matching_agents else None
 
 @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
@@ -53,6 +34,27 @@ def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
     url = f"{os.environ['QQ_ONEBOT_HTTP_URL']}/send_msg"
     requests.get(url,params=params)
     return "Message Send."
+
+class QQAgent:
+    no: str
+    type: str
+    agent: percive_agent
+
+def qq_perceiver_init(no: str, msg_type: str):
+    state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
+    return QQAgent(**{"no": no,
+            "type": msg_type,
+            "agent":percive_agent(
+                state,
+                llm=g_agent.llm,
+                callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
+
+qq_agents: List[QQAgent] = [qq_perceiver_init(i, msg_type = 'group') for i in id_list]
+
+def find_qq_agent_by_no(no: str) -> QQAgent:
+    matching_agents = [agent for agent in qq_agents if agent.no == no]
+    return matching_agents[0] if matching_agents else None
+
 
 async def start_callback():
     url = os.environ['QQ_ONEBOT_WS_URL']
