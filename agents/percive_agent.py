@@ -224,4 +224,5 @@ class percive_agent:
                 self.workflow(self.perceives)
                 if not self.enable_llm_stop_marker:
                     self.callback_invoker(self.last_msg.content)
+                    self.enable = False
                 self.perceives = []

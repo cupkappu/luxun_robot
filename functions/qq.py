@@ -84,7 +84,9 @@ async def on_message(msg:dict):
                     perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
                     print(perceive)
                     g_agent.perceives.append(perceive)
-                    find_qq_agent_by_no(str(msg['group_id'])).agent.perceives.append({"Sender": msg['sender'], 'Content':msg['message']})
+                    qq_agent = find_qq_agent_by_no(str(msg['group_id'])).agent
+                    qq_agent.perceives.append({"Sender": msg['sender'], 'Content':msg['message']})
+                    qq_agent.enable = True
             if msg['message_type'] == 'private':
                 perceive = {f"QQ私聊|QQ號{msg['sender']['user_id']}":{"Sender": msg['sender']['nickname'], 'Content':msg['message']}}
                 print(perceive)
