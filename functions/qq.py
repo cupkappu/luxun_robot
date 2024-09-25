@@ -35,7 +35,7 @@ def qq_perceiver_init(no: str, msg_type: str):
             "type": msg_type,
             "agent":percive_agent(
                 state,
-                tools=dict(zip([i.__name__ for i in searxng.tools],searxng.tools)),              # Need change in the future
+                tools=dict(zip([i.name for i in searxng.tools],searxng.tools)),              # Need change in the future
                 llm=g_agent.llm,
                 enable_llm_stop_marker = False,
                 enable = False,
