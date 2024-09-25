@@ -154,7 +154,7 @@ class percive_agent:
         enable_llm_stop_marker: set it as False to disable llm's ability to stop the conversation.
     """
     callback_invoker: callable
-    def __init__(self,state:State,tools:dict = [], llm:BaseChatModel = None, **kwargs):
+    def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, **kwargs):
         self.prompt = percive_module.reaction_prompt
         self.tools = tools
         self.looptime = kwargs.get('looptime',15)
