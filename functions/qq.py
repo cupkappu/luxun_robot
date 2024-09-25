@@ -35,6 +35,8 @@ def qq_perceiver_init(no: str, msg_type: str):
             "agent":percive_agent(
                 state,
                 llm=g_agent.llm,
+                enable_llm_stop_marker = False,
+                enable = False,
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
 
 @tool
@@ -87,7 +89,8 @@ async def on_message(msg:dict):
                     g_agent.perceives.append(perceive)
                     qq_agent = find_qq_agent_by_no(str(msg['group_id'])).agent
                     qq_agent.perceives.append({"Sender": msg['sender'], 'Content':msg['message']})
-                    qq_agent.enable = True
+                    if str(msg['self_id']) in msg['message']:
+                        qq_agent.enable = True
             if msg['message_type'] == 'private':
                 perceive = {f"QQ私聊|QQ號{msg['sender']['user_id']}":{"Sender": msg['sender']['nickname'], 'Content':msg['message']}}
                 print(perceive)
