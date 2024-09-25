@@ -32,7 +32,6 @@ def give_callback(agent: percive_agent):
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
 def qq_perceiver_init(no: str, msg_type: str):
-    state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
     return QQAgent(**{"no": no,
             "type": msg_type,
             "agent":percive_agent(
