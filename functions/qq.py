@@ -24,7 +24,7 @@ def give_callback(agent: percive_agent):
     global g_agent,qq_agents,loop_funcs
     g_agent = agent
     qq_agents = [qq_perceiver_init(i, msg_type = 'group') for i in id_list]
-    loop_funcs = [start_callback] + [i.agent.loop() for i in qq_agents]
+    loop_funcs = [start_callback] + [i.agent.loop for i in qq_agents]
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
