@@ -25,17 +25,16 @@ qq_states: Dict[str,State]
 def give_callback(agent: percive_agent):
     global g_agent,qq_agents,loop_funcs, qq_states
     g_agent = agent
-    qq_states = dict(zip(id_list,[State(**init_query,llm=g_agent.llm,prompt=qq_prompt) for _ in id_list]))
-    qq_agents = [qq_perceiver_init(i, msg_type = 'group') for i in id_list]
+    qq_agents = [qq_perceiver_init(i, msg_type = 'group', state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)) for i in id_list]
     loop_funcs = [start_callback] + [i.agent.loop for i in qq_agents]
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
-def qq_perceiver_init(no: str, msg_type: str):
+def qq_perceiver_init(no: str, msg_type: str, state: State):
     return QQAgent(**{"no": no,
             "type": msg_type,
             "agent":percive_agent(
-                qq_states[no],
+                state,
                 tools=dict(zip([i.name for i in searxng.tools],searxng.tools)),              # Need change in the future
                 llm=g_agent.llm,
                 enable_llm_stop_marker = False,
