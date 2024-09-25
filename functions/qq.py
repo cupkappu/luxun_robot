@@ -3,7 +3,7 @@ import websockets
 import os
 from agents.percive_agent import percive_agent,State
 from langchain.tools import tool
-from typing import Annotated, List
+from typing import Annotated, List,Dict
 import json
 from prompts.qq import qq_prompt,init_query
 from functions import searxng
@@ -20,10 +20,12 @@ class QQAgent:
         self.agent = agent
 
 qq_agents: List[QQAgent]
+qq_states: Dict[str,State]
 
 def give_callback(agent: percive_agent):
-    global g_agent,qq_agents,loop_funcs
+    global g_agent,qq_agents,loop_funcs, qq_states
     g_agent = agent
+    qq_states = dict(zip(id_list,[State(**init_query,llm=g_agent.llm,prompt=qq_prompt) for _ in id_list]))
     qq_agents = [qq_perceiver_init(i, msg_type = 'group') for i in id_list]
     loop_funcs = [start_callback] + [i.agent.loop for i in qq_agents]
 
@@ -34,7 +36,7 @@ def qq_perceiver_init(no: str, msg_type: str):
     return QQAgent(**{"no": no,
             "type": msg_type,
             "agent":percive_agent(
-                state,
+                qq_states[no],
                 tools=dict(zip([i.name for i in searxng.tools],searxng.tools)),              # Need change in the future
                 llm=g_agent.llm,
                 enable_llm_stop_marker = False,
