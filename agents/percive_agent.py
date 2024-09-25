@@ -211,7 +211,7 @@ class percive_agent:
                 pmt.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = self.invoke(pmt,looptimes)
             looptimes += 1
-        else:
+        if self.enable_llm_stop_marker == False:
             self.invoke(pmt,looptimes)
         return self
 
@@ -220,7 +220,7 @@ class percive_agent:
         while True:
             await asyncio.sleep(self.looptime)
             print('check perceives.')
-            if self.perceives != [] and self.enable:
+            if (self.perceives != []) and (self.enable):
                 print('start workflow.')
                 self.workflow(self.perceives)
                 if not self.enable_llm_stop_marker:
