@@ -144,7 +144,6 @@ class percive_agent:
     def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, **kwargs):
         self.prompt = percive_module.reaction_prompt
         self.tools = tools
-        self.tools["stop_marker"] =  stop_marker
         self.looptime = kwargs.get('looptime',15)
         self.state = state
         self.llm = llm

@@ -4,8 +4,6 @@ from langchain.tools import tool
 import asyncio
 import os
 
-
-
 g_agent:percive_agent = None
 
 def give_callback(agent: percive_agent):
