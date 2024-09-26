@@ -165,13 +165,12 @@ class percive_agent:
         self.last_msg = msg
         
         tool_exec_result = self.tool_exec(msg)
-        if 'stop_marker' in tool_exec_result['Content'].keys():
-            self.stop_mark = True
-        result = tool_exec_result
+
+        result = [tool_exec_result]
         if msg.content != '':
             if self.enable_llm_stop_marker == False:
                 return {"result": msg.content}
-            result.update({'raw_assistant_message':msg.content ,'NOTICE':'You need call tools to make reaction instead direct speaking!'})
+            result.append({'raw_assistant_message':{'content':msg.content ,'NOTICE':'You need call tools to make reaction instead direct speaking!'}})
         return result
 
     def tool_exec(self, msg):

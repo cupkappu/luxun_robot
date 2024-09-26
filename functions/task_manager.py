@@ -25,6 +25,7 @@ def stop_marker(stop_mark: Annotated[bool, 'Mark as true to stop.']
     global prompt_vars
     prompt_vars['current_task'] = ''
     if stop_mark == True:
+        g_agent.stop_mark = True
         return "<STOP_MARK_IS_TRUE />"
     return "<STOP_MARK_IS_FALSE />"
 
