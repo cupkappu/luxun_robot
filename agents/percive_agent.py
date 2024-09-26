@@ -153,10 +153,11 @@ class percive_agent:
         llm: a BaseChatModel the agent can use.
         looptime: time gap for each loop when enable_llm_stop_marker was True or not set
         enable_llm_stop_marker: set it as False to disable llm's ability to stop the conversation.
+        prompt: the agent prompt.
     """
     callback_invoker: callable
     def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, **kwargs):
-        self.prompt = percive_module.reaction_prompt
+        self.prompt = kwargs.get('prompt',percive_module.reaction_prompt)
         self.tools = tools
         self.looptime = kwargs.get('looptime',15)
         self.state = state
@@ -167,9 +168,10 @@ class percive_agent:
         self.looptimes = kwargs.get('looptimes',10)
         self.enable_llm_stop_marker = kwargs.get('enable_llm_stop_marker', True)
         self.callback_invoker = kwargs.get('callback_invoker', None)
-        self.enable = True
+        self.enable = kwargs.get('enable', True)
         self.augmented_prompts = {}
         self.metadata = kwargs.get('metadata',{})
+        print(self.metadata)
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
