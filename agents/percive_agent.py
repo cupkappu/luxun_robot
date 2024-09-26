@@ -67,7 +67,7 @@ class State():
     relate_memory: str
     perceive: str
     current_memory_length: int = 30
-    perceive_history: list
+    perceive_history: list = []
     llm: BaseChatModel
     note: list = []
     docs_m: docs
@@ -83,6 +83,7 @@ class State():
         self.zip_memory_prompt = percive_module.zip_memory_prompt
         self.note = kwargs.get('note',[])
         self.docs_m = docs(llm=self.llm)
+        self.augmented_prompt = kwargs.get('augmented_prompt',[])
 
     def add_perceive(self, xml_block):
         self.current_memory_list.append(self.perceive)
@@ -109,7 +110,7 @@ class State():
         self.current_memory_length = kwargs.get('current_memory_length',self.current_memory_length)
         self.llm = kwargs.get('llm',self.llm)
         self.note = kwargs.get('note',self.note)
-        self.augmented_prompt = {}
+        self.perceive_history = kwargs.get('perceive_history', self.perceive_history)
         return self
 
     def write_current_memory(self,memory_list:list = None):
