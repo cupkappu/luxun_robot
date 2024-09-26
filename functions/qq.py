@@ -66,8 +66,11 @@ def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
     return "Message Send."
 
 def find_qq_agent_by_no(no: str) -> QQAgent:
-    matching_agents = [agent for agent in qq_agents if agent.no == no]
-    return matching_agents[0] if matching_agents else None
+    matching_agents = None
+    for i in qq_agents:
+        if i.no == no:
+            matching_agents = i
+    return matching_agents if matching_agents else None
 
 async def start_callback():
     url = os.environ['QQ_ONEBOT_WS_URL']
