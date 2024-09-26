@@ -26,5 +26,6 @@ async def start_callback():
             f.write(json.dumps(state))
 
 tools = []
+loop_funcs = [start_callback]
 
 augmented_prompt = """"""

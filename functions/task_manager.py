@@ -44,6 +44,8 @@ def set_current_task(task: Annotated[str, 'The task you need to do based on the 
 
 tools = [stop_marker,set_current_task]
 
+loop_funcs = [start_callback]
+
 augmented_prompt = """
     <CURRENT_TASK>
     {current_task}

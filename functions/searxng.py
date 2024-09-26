@@ -31,6 +31,7 @@ search_prompt=ChatPromptTemplate.from_messages(
     ]
 )
 
+loop_funcs = [start_callback]
 
 @tool
 def searx_search(query: Annotated[str, 'Keywords to search']

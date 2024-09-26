@@ -86,6 +86,7 @@ class State():
 
     def add_perceive(self, xml_block):
         self.current_memory_list.append(self.perceive)
+        self.perceive_history.append(xml_block)
         self.perceive = xml_block + get_time()
         memory_length = len(self.current_memory_list)
         memory_limit = int(self.current_memory_length*0.9)
@@ -132,6 +133,14 @@ class State():
         }
 
 class percive_agent:
+    """
+    args:
+        state: State class object
+        tools: a dict for the agent use.
+        llm: a BaseChatModel the agent can use.
+        looptime: time gap for each loop when enable_llm_stop_marker was True or not set
+        enable_llm_stop_marker: set it as False to disable llm's ability to stop the conversation.
+    """
     def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, **kwargs):
         self.prompt = percive_module.reaction_prompt
         self.tools = tools
@@ -159,6 +168,8 @@ class percive_agent:
             self.stop_mark = True
         result = tool_exec_result
         if msg.content != '':
+            if self.enable_llm_stop_marker == False:
+                return {"result": msg.content}
             result.update({'raw_assistant_message':msg.content ,'NOTICE':'You need call tools to make reaction instead direct speaking!'})
         return result
 
@@ -178,7 +189,7 @@ class percive_agent:
         self.stop_mark = False
         pmt = query
         looptimes = 1
-        while True:
+        while self.enable_llm_stop_marker:
             if self.stop_mark == True:
                 break
             if looptimes >= self.looptimes*0.9:
@@ -186,6 +197,8 @@ class percive_agent:
             pmt = self.invoke(pmt,looptimes)
             print(self.prompt.invoke({**self.state.to_dict(),"augmented_prompt":"\n".join(self.augmented_prompts),'looptimes':looptimes}))
             looptimes += 1
+        else:
+            self.invoke(pmt,looptimes)
         return self
 
     async def loop(self):
@@ -197,4 +210,4 @@ class percive_agent:
                 print('start workflow.')
                 self.workflow(self.perceives)
                 self.perceives = []
-                
+

@@ -21,4 +21,6 @@ async def add_perceive():
 
 tools = []
 
+loop_funcs = [start_callback]
+
 augmented_prompt = """Search the internet only Task or User request to."""

@@ -36,7 +36,7 @@ async def run_all_functions():
 
     [i.give_callback(agent) for i in func_modules]
     agent.augmented_prompts = dict(zip([i.__name__ for i in func_modules],[i.augmented_prompt for i in func_modules]))
-    functions = [i.start_callback() for i in func_modules] + [agent.loop()]
+    functions = [j() for i in func_modules for j in i.loop_funcs] + [agent.loop()]
     await asyncio.gather(*functions)
 
 if __name__ == '__main__':

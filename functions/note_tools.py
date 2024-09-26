@@ -35,5 +35,6 @@ def delete_note(title: Annotated[str, 'The title of the note.']):
     return f'Note {title} not found.'
 
 tools = [add_note,delete_note]
+loop_funcs = [start_callback]
 
 augmented_prompt = """The content surrounded by the <NOTE> tag is your own notes. Add notes when necessary and don’t add notes when not necessary."""

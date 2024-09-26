@@ -12,5 +12,6 @@ async def start_callback():
     pass
 
 tools = []
+loop_funcs = [start_callback]
 
 augmented_prompt = """"""
