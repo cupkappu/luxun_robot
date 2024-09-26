@@ -11,6 +11,6 @@ def give_callback(agent: percive_agent):
 async def start_callback():
     pass
 
-tools = {}
+tools = []
 
 augmented_prompt = """"""

@@ -40,6 +40,6 @@ def searx_search(query: Annotated[str, 'Keywords to search']
     result = g_agent.state.docs_m.add_doc(results).get_summary()
     return result
 
-tools = {"searx_search":searx_search}
+tools = [searx_search]
 
 augmented_prompt = """"""

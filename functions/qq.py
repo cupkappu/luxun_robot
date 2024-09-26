@@ -63,6 +63,6 @@ async def on_message(msg:dict):
                 print(perceive)
                 g_agent.perceives.append(perceive)
 
-tools = {"send_qq_msg":send_qq_msg}
+tools = [send_qq_msg]
 
 augmented_prompt = """"""

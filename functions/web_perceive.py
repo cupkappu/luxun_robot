@@ -19,6 +19,6 @@ async def add_perceive():
     g_agent.perceives.append(json_data)
     return jsonify({"message": f"Perceive added: {json_data}"})
 
-tools = {}
+tools = []
 
 augmented_prompt = """Search the internet only Task or User request to."""

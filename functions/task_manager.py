@@ -42,7 +42,7 @@ def set_current_task(task: Annotated[str, 'The task you need to do based on the 
     else:
         return "Already have a curren task! Please finish the curren task or stop your process."
 
-tools = {'stop_marker':stop_marker, 'set_current_task':set_current_task}
+tools = [stop_marker,set_current_task]
 
 augmented_prompt = """
     <CURRENT_TASK>

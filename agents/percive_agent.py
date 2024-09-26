@@ -12,17 +12,8 @@ import uuid
 
 # percive_module.prompt
 
-@tool
-def stop_marker(stop_mark: Annotated[bool, 'Mark as true to stop.']
-                ) -> str:
-    """Set the stop mark as true when you don't have more to do."""
-    if stop_mark == True:
-        return "<STOP_MARK />"
-    return "<STOP_MARK />"
-
 def get_time():
     return f'<Time>{datetime.now().strftime("%Y-%m-%d %H:%M")}</Time>'
-
 
 class sum_format(BaseModel):
     summary: str = Field(description="The summary of your current memory.")
@@ -152,6 +143,7 @@ class percive_agent:
         self.perceives = []
         self.agent = self.prompt | self.llm.bind_tools(tools.values(),tool_choice="any")
         self.looptimes = kwargs.get('looptimes',10)
+        self.enable_llm_stop_marker = kwargs.get('enable_llm_stop_marker', True)
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))

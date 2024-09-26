@@ -25,6 +25,6 @@ async def start_callback():
             state['note'] = g_agent.state.note
             f.write(json.dumps(state))
 
-tools = {}
+tools = []
 
 augmented_prompt = """"""

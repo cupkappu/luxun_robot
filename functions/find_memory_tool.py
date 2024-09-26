@@ -19,6 +19,6 @@ def find_doc(uuid: Annotated[str,'The UUID of the document you want to find']):
         return 'Document not found.'
     return str(doc)
 
-tools = {'find_doc': find_doc}
+tools = [find_doc]
 
 augmented_prompt = """If the document surround by <DOC> is helpful for your current task, you can use find_doc to load the doc."""
