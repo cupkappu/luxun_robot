@@ -94,6 +94,7 @@ class State():
         self.note = kwargs.get('note',[])
         self.docs_m = docs(llm=self.llm)
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
+        self.metadata = kwargs.get('metadata',{})
 
 
     def add_perceive(self, xml_block):
@@ -168,6 +169,7 @@ class percive_agent:
         self.callback_invoker = kwargs.get('callback_invoker', None)
         self.enable = True
         self.augmented_prompts = {}
+        self.metadata = kwargs.get('metadata',{})
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
