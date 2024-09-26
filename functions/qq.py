@@ -25,22 +25,24 @@ qq_states: Dict[str,State]
 def give_callback(agent: percive_agent):
     global g_agent,qq_agents,loop_funcs, qq_states
     g_agent = agent
-    qq_agents = [qq_perceiver_init(i, msg_type = 'group', state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)) for i in id_list]
+    qq_agents = [qq_perceiver_init(i, msg_type = 'group',) for i in id_list]
     loop_funcs = [start_callback] + [i.agent.loop for i in qq_agents]
+
+
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
-def qq_perceiver_init(no: str, msg_type: str, state: State):
-    return QQAgent(**{"no": no,
-            "type": msg_type,
-            "agent":percive_agent(
-                state,
+def qq_perceiver_init(no: str, msg_type: str,):
+    n_state = State(**init_query,llm=g_agent.llm,prompt=qq_prompt)
+    agent = percive_agent(
+                n_state,
                 tools=dict(zip([i.name for i in searxng.tools],searxng.tools)),              # Need change in the future
                 llm=g_agent.llm,
                 enable_llm_stop_marker = False,
                 enable = False,
                 looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)),
-                callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))})
+                callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))
+    return QQAgent(no= no,type=msg_type,agent=agent)
 
 # @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
@@ -89,7 +91,7 @@ async def on_message(msg:dict):
                 if str(msg['group_id']) in id_list:
                     perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
                     print(perceive)
-                    g_agent.perceives.append(perceive)
+                    # g_agent.perceives.append(perceive)
                     qq_agent = find_qq_agent_by_no(str(msg['group_id'])).agent
                     qq_agent.perceives.append({"Sender": msg['sender'], 'Content':msg['message']})
                     if str(msg['self_id']) in msg['message']:
@@ -97,7 +99,7 @@ async def on_message(msg:dict):
             if msg['message_type'] == 'private':
                 perceive = {f"QQ私聊|QQ號{msg['sender']['user_id']}":{"Sender": msg['sender']['nickname'], 'Content':msg['message']}}
                 print(perceive)
-                g_agent.perceives.append(perceive)
+                # g_agent.perceives.append(perceive)
 
 # tools = [send_qq_msg]
 
