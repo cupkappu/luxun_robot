@@ -184,6 +184,7 @@ class percive_agent:
         for j in tools:
             self.tools.update({j.name:j})
         self.agent = self.prompt | self.llm.bind_tools(self.tools.values())
+        print(f'Add tools{ " ".join([i.name for i in tools]) }.')
 
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
