@@ -4,9 +4,10 @@ from langchain.tools import tool
 from typing import List
 import asyncio
 import time
+from functions.qq import QQAgent
 
 g_agent:percive_agent = None
-qq_agents: list = []
+qq_agents: List[QQAgent] = []
 
 class AsyncAlarm:
     def __init__(self, user, callback: callable = None):
@@ -14,7 +15,6 @@ class AsyncAlarm:
         self.alarms = []
         self.countdowns = []
         self.callback = callback
-        print()
 
     def set_alarm(self, hour, minute, message):
         print(f'Add alarm {hour}:{minute}')
@@ -26,25 +26,37 @@ class AsyncAlarm:
 
     async def check_alarm(self):
         print(f'Alarm watchdog for {self.user} will active now.')
-        while True:
+        while self.running:
             current_time = time.localtime()
+            alarms_to_remove = []
             for alarm in self.alarms:
                 if current_time.tm_hour == alarm[0] and current_time.tm_min == alarm[1]:
-                    self.callback(alarm[2])
-                    self.alarms.remove(alarm)
+                    try:
+                        if self.callback:
+                            self.callback(alarm[2])
+                    except Exception as e:
+                        print(f"Error in alarm callback: {e}")
+                    alarms_to_remove.append(alarm)
+            for alarm in alarms_to_remove:
+                self.alarms.remove(alarm)
             await asyncio.sleep(1)
 
     async def check_countdown(self):
         print(f'Countdown watchdog for {self.user} will active now.')
-        while self.countdowns:
-            for i in range(len(self.countdowns)):
-                remaining_time = self.countdowns[i][0]
+        while self.running:
+            countdowns_to_update = []
+            for countdown in self.countdowns:
+                remaining_time, message = countdown
                 if remaining_time <= 0:
-                    self.callback(self.countdowns[i][1])
-                    self.countdowns.remove(self.countdowns[i])
+                    try:
+                        if self.callback:
+                            self.callback(message)
+                    except Exception as e:
+                        print(f"Error in countdown callback: {e}")
                 else:
-                    self.countdowns[i] = (remaining_time - 1, self.countdowns[i][1])
-            await asyncio.sleep(1)  # ???????????????????????????
+                    countdowns_to_update.append((remaining_time - 1, message))
+            self.countdowns = countdowns_to_update
+            await asyncio.sleep(1)
 
     async def loop(self):
         await asyncio.gather(
@@ -65,12 +77,14 @@ def tool_factory(alarms:AsyncAlarm):
                    minute: Annotated[int, 'The minute of the alarm you want to set.'], 
                    message: Annotated[str, 'The message when alarm active you want to let you notice.']):
         """Use add_alarm to add an alarm with a determined time. """
+        print(f"setting {str(alarms.user)}'s alarm.")
         alarms.set_alarm(hour,minute,message)
         return "Alarm setted."
     @tool
     def add_countdown(seconds: Annotated[int, 'The seconds of the countdown you want to set.'], 
                    message: Annotated[str, 'The message when your countdown finished you want to let you notice.']):
         """Use add_countdown to add a countdown."""
+        print(f"setting {str(alarms.user)}'s countdown.")
         alarms.set_countdown(seconds,message)
         return "Countdown seted."
     return [add_alarm, add_countdown]
