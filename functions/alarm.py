@@ -16,11 +16,11 @@ class AsyncAlarm:
         self.callback = callback
         print()
 
-    async def set_alarm(self, hour, minute, message):
+    def set_alarm(self, hour, minute, message):
         print(f'Add alarm {hour}:{minute}')
         self.alarms.append((hour, minute, message))
 
-    async def set_countdown(self, seconds, message):
+    def set_countdown(self, seconds, message):
         print(f'Add countdown {seconds}s')
         self.countdowns.append((seconds, message))
 
@@ -44,7 +44,7 @@ class AsyncAlarm:
                     self.countdowns.remove(self.countdowns[i])
                 else:
                     self.countdowns[i] = (remaining_time - 1, self.countdowns[i][1])
-            await asyncio.sleep(1)  # 每秒更新一次倒計時
+            await asyncio.sleep(1)  # ???????????????????????????
 
     async def loop(self):
         await asyncio.gather(
