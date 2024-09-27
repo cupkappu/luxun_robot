@@ -84,6 +84,6 @@ def give_callback(agent: percive_agent, in_qq_agents = []):
         i.add_tools(tool_factory(alarm))
 
 tools = []
-loop_funcs = [i.loop for i in alarms]
+loop_funcs = [i.check_alarm for i in alarms] + [i.check_countdown for i in alarms]
 
 augmented_prompt = """Use add_alarm to add an alarm with a determined time. Use add_countdown to add an countdown."""
