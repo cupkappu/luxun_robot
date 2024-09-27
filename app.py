@@ -13,7 +13,8 @@ from functions import (qq,
                        note_tools, 
                        web_perceive,
                        searxng,
-                        task_manager
+                        task_manager,
+                        alarm
                        )
 
 tools = {}
@@ -25,7 +26,8 @@ async def run_all_functions():
         searxng,
         save_state,
         note_tools,
-        task_manager
+        task_manager,
+        alarm
     ]
 
     for i in func_modules:
