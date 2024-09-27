@@ -224,7 +224,7 @@ class percive_agent:
         if self.perceive_limit != 0:
             result = [query[i:i + self.perceive_limit] for i in range(0, len(query), self.perceive_limit)] if len(query) > self.perceive_limit else [[query]]
             for i in result[:-1]:
-                self.state.add_perceive(i)
+                self.state.add_perceive(xml_block=dict2xml(i))
         pmt = result[-1]
         looptimes = 1
         while True:
