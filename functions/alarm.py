@@ -73,10 +73,10 @@ def tool_factory(alarms:AsyncAlarm):
 
 alarms: List[AsyncAlarm] = []
 
-def give_callback(agent: percive_agent, in_qq_agents = []):
+def give_callback(agent: percive_agent, **kwargs):
     global g_agent, qq_agents,alarms,loop_funcs
     g_agent = agent
-    qq_agents = in_qq_agents
+    qq_agents = kwargs.get('qq',[])
     alarms = []
     for i in qq_agents:
         alarm = AsyncAlarm(i.agent.metadata['group'], callback_factory(i))

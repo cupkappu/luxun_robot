@@ -7,7 +7,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 g_agent:percive_agent = None
 
-def give_callback(agent: percive_agent):
+def give_callback(agent: percive_agent, **kwargs):
     global g_agent
     g_agent = agent
 
