@@ -26,7 +26,7 @@ class AsyncAlarm:
 
     async def check_alarm(self):
         print(f'Alarm watchdog for {self.user} will active now.')
-        while self.running:
+        while True:
             current_time = time.localtime()
             alarms_to_remove = []
             for alarm in self.alarms:
@@ -43,7 +43,7 @@ class AsyncAlarm:
 
     async def check_countdown(self):
         print(f'Countdown watchdog for {self.user} will active now.')
-        while self.running:
+        while True:
             countdowns_to_update = []
             for countdown in self.countdowns:
                 remaining_time, message = countdown
