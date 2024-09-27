@@ -25,6 +25,7 @@ class AsyncAlarm:
         self.countdowns.append((seconds, message))
 
     async def check_alarm(self):
+        print(f'Alarm watchdog for {self.user} will active now.')
         while True:
             current_time = time.localtime()
             for alarm in self.alarms:
@@ -34,6 +35,7 @@ class AsyncAlarm:
             await asyncio.sleep(1)
 
     async def check_countdown(self):
+        print(f'Countdown watchdog for {self.user} will active now.')
         while self.countdowns:
             for i in range(len(self.countdowns)):
                 remaining_time = self.countdowns[i][0]
