@@ -180,6 +180,11 @@ class percive_agent:
         self.perceive_limit = kwargs.get('perceive_limit', 10)
         print(self.metadata)
 
+    def add_tools(self,tools: list):
+        for j in tools:
+            self.tools.update({j.name:j})
+        self.agent = self.prompt | self.llm.bind_tools(self.tools.values())
+
     def invoke(self,query,looptimes):
         self.state.add_perceive(xml_block=dict2xml(query))
         print("Perceive: "+self.state.perceive)

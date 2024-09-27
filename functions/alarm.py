@@ -78,7 +78,7 @@ def give_callback(agent: percive_agent, in_qq_agents = []):
     for i in qq_agents:
         alarm = AsyncAlarm(i.metadata['group'], callback_factory(i))
         alarms.append(alarm)
-        i.tools += tool_factory(alarm)
+        i.add_tools(tool_factory(alarm))
 
 tools = []
 loop_funcs = [i.loop for i in alarms]
