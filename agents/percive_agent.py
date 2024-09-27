@@ -160,6 +160,7 @@ class percive_agent:
         enable_llm_stop_marker: set it as False to disable llm's ability to stop the conversation.
         prompt: the agent prompt.
     """
+    metadata: any
     callback_invoker: callable
     def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, **kwargs):
         self.prompt = kwargs.get('prompt',percive_module.reaction_prompt)

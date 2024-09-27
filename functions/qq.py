@@ -28,11 +28,12 @@ def give_callback(agent: percive_agent):
     g_agent = agent
     qq_agents = [qq_perceiver_init(i, msg_type = 'group',) for i in id_list]
     loop_funcs = [start_callback] + [i.agent.loop for i in qq_agents]
+    print(" | ".join([i.metadata for i in qq_agents]))
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
 def qq_perceiver_init(no: str, msg_type: str,):
-    n_state = State(**init_query,llm=g_agent.llm,metadata={'group':no})
+    n_state = State(**init_query,llm=g_agent.llm,metadata={msg_type:no})
     agent = percive_agent(
                 n_state,
                 prompt=qq_prompt,
@@ -69,7 +70,7 @@ def find_qq_agent_by_no(no: str) -> QQAgent:
     for i in qq_agents:
         if i.no == no:
             matching_agents = i
-    return matching_agents if matching_agents else None
+    return matching_agents
 
 async def start_callback():
     url = os.environ['QQ_ONEBOT_WS_URL']
