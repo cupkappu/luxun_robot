@@ -57,19 +57,19 @@ def callback_factory(agent:percive_agent):
 
 def tool_factory(alarms:AsyncAlarm):
     @tool
-    def alarm_tool(hour: Annotated[int, 'The hour of the alarm you want to set.'], 
+    def add_alarm(hour: Annotated[int, 'The hour of the alarm you want to set.'], 
                    minute: Annotated[int, 'The minute of the alarm you want to set.'], 
                    message: Annotated[str, 'The message when alarm active you want to let you notice.']):
         """Set a alarm to notice you in at the setted time moment."""
         alarms.set_alarm(hour,minute,message)
         return "Alarm setted."
     @tool
-    def countdown_tool(seconds: Annotated[int, 'The seconds of the countdown you want to set.'], 
+    def add_countdown(seconds: Annotated[int, 'The seconds of the countdown you want to set.'], 
                    message: Annotated[str, 'The message when your countdown finished you want to let you notice.']):
         """Set a countdown to notice you after the second."""
         alarms.set_countdown(seconds,message)
         return "Countdown seted."
-    return [alarm_tool, countdown_tool]
+    return [add_alarm, add_countdown]
 
 alarms: List[AsyncAlarm] = []
 
@@ -86,4 +86,4 @@ def give_callback(agent: percive_agent, in_qq_agents = []):
 tools = []
 loop_funcs = [i.loop for i in alarms]
 
-augmented_prompt = """"""
+augmented_prompt = """Use add_alarm to add an alarm with a determined time. Use add_countdown to add an countdown."""
