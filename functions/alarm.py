@@ -6,7 +6,7 @@ import asyncio
 import time
 
 g_agent:percive_agent = None
-qq_agents: List[percive_agent] = []
+qq_agents: list = []
 
 class AsyncAlarm:
     def __init__(self, user, callback: callable = None):
@@ -79,9 +79,9 @@ def give_callback(agent: percive_agent, in_qq_agents = []):
     qq_agents = in_qq_agents
     alarms = []
     for i in qq_agents:
-        alarm = AsyncAlarm(i.metadata['group'], callback_factory(i))
+        alarm = AsyncAlarm(i.agent.metadata['group'], callback_factory(i))
         alarms.append(alarm)
-        i.add_tools(tool_factory(alarm))
+        i.agent.add_tools(tool_factory(alarm))
     loop_funcs = [i.check_alarm for i in alarms] + [i.check_countdown for i in alarms]
 
 tools = []
