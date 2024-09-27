@@ -74,7 +74,7 @@ def tool_factory(alarms:AsyncAlarm):
 alarms: List[AsyncAlarm] = []
 
 def give_callback(agent: percive_agent, in_qq_agents = []):
-    global g_agent, qq_agents,alarms
+    global g_agent, qq_agents,alarms,loop_funcs
     g_agent = agent
     qq_agents = in_qq_agents
     alarms = []
@@ -82,8 +82,9 @@ def give_callback(agent: percive_agent, in_qq_agents = []):
         alarm = AsyncAlarm(i.metadata['group'], callback_factory(i))
         alarms.append(alarm)
         i.add_tools(tool_factory(alarm))
+    loop_funcs = [i.check_alarm for i in alarms] + [i.check_countdown for i in alarms]
 
 tools = []
-loop_funcs = [i.check_alarm for i in alarms] + [i.check_countdown for i in alarms]
+loop_funcs = []
 
 augmented_prompt = """Use add_alarm to add an alarm with a determined time. Use add_countdown to add an countdown."""

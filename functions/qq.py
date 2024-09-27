@@ -7,7 +7,8 @@ from typing import Annotated, List,Dict
 import json
 from prompts.qq import qq_prompt,init_query
 from functions import searxng
-import time
+from functions import alarm
+import asyncio
 
 g_agent:percive_agent = None
 
@@ -28,6 +29,7 @@ def give_callback(agent: percive_agent):
     g_agent = agent
     qq_agents = [qq_perceiver_init(i, msg_type = 'group',) for i in id_list]
     loop_funcs = [start_callback] + [i.agent.loop for i in qq_agents]
+    alarm.give_callback(agent, qq_agents)
     print([i.agent.metadata for i in qq_agents])
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
@@ -75,6 +77,7 @@ def find_qq_agent_by_no(no: str) -> QQAgent:
 async def start_callback():
     url = os.environ['QQ_ONEBOT_WS_URL']
     print('start connect to', url)
+    asyncio.create_task(alarm.loop_funcs)
     async with websockets.connect(url) as websocket:
         await websocket.send("Hello, WebSocket!")
         while True:
