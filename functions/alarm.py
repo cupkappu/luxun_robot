@@ -76,7 +76,7 @@ alarms: List[AsyncAlarm] = []
 def give_callback(agent: percive_agent, **kwargs):
     global g_agent, qq_agents,alarms,loop_funcs
     g_agent = agent
-    qq_agents = kwargs.get('qq',[])
+    qq_agents = kwargs.get('functions.qq',[])
     alarms = []
     for i in qq_agents:
         alarm = AsyncAlarm(i.agent.metadata['group'], callback_factory(i))
