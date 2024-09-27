@@ -1,4 +1,4 @@
-from agents.percive_agent import percive_agent
+from agents.percive_agent import percive_agent, get_time
 from typing import Annotated
 from langchain.tools import tool
 from typing import List
@@ -67,7 +67,7 @@ class AsyncAlarm:
 def callback_factory(agent:percive_agent):
     def warpper(message):
         print(f"Time Count task over, adding perceive into {str(agent.metadata)} perceives.")
-        agent.perceives.append({"Alarm":message})
+        agent.perceives.append({"Alarm":message+get_time()})
         agent.enable = True
     return warpper
 
