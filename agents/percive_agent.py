@@ -177,6 +177,7 @@ class percive_agent:
         self.enable = kwargs.get('enable', True)
         self.augmented_prompts = {}
         self.metadata = kwargs.get('metadata',{})
+        self.tool_called = False
         self.perceive_limit = kwargs.get('perceive_limit', 10)
         print(self.metadata)
 
