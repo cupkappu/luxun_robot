@@ -214,6 +214,7 @@ class percive_agent:
             result['Content'][tool_call["name"]] = {
                 'input_args':tool_call["args"],
                 'output':tool_output}
+            self.tool_called = True
         print("Tool Output: " + str(result))
         return result
 
@@ -231,7 +232,10 @@ class percive_agent:
             if looptimes >= self.looptimes*0.9:
                 pmt.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = self.invoke(pmt,looptimes)
-            if (self.last_msg.content != "") and (not self.enable_llm_stop_marker):
+            if self.tool_called:
+                self.enable = True
+                self.tool_called = False
+            elif (self.last_msg.content != "") and (not self.enable_llm_stop_marker):
                 self.enable = False
                 break
             looptimes += 1

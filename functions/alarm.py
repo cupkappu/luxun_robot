@@ -60,13 +60,13 @@ def tool_factory(alarms:AsyncAlarm):
     def add_alarm(hour: Annotated[int, 'The hour of the alarm you want to set.'], 
                    minute: Annotated[int, 'The minute of the alarm you want to set.'], 
                    message: Annotated[str, 'The message when alarm active you want to let you notice.']):
-        """Set a alarm to notice you in at the setted time moment."""
+        """Use add_alarm to add an alarm with a determined time. """
         alarms.set_alarm(hour,minute,message)
         return "Alarm setted."
     @tool
     def add_countdown(seconds: Annotated[int, 'The seconds of the countdown you want to set.'], 
                    message: Annotated[str, 'The message when your countdown finished you want to let you notice.']):
-        """Set a countdown to notice you after the second."""
+        """Use add_countdown to add a countdown."""
         alarms.set_countdown(seconds,message)
         return "Countdown seted."
     return [add_alarm, add_countdown]
@@ -87,4 +87,6 @@ def give_callback(agent: percive_agent, **kwargs):
 tools = []
 loop_funcs = []
 
-augmented_prompt = """Use add_alarm to add an alarm with a determined time. Use add_countdown to add an countdown."""
+augmented_prompt = """
+Use add_alarm to add an alarm with a determined time. 
+Use add_countdown to add a countdown."""
