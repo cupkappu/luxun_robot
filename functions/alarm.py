@@ -52,6 +52,7 @@ class AsyncAlarm:
 def callback_factory(agent:percive_agent):
     def warpper(message):
         agent.workflow({"Alarm":message})
+        agent.enable = True
     return warpper
 
 def tool_factory(alarms:AsyncAlarm):
