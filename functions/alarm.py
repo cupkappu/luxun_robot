@@ -61,11 +61,13 @@ def tool_factory(alarms:AsyncAlarm):
                    message: Annotated[str, 'The message when alarm active you want to let you notice.']):
         """Set a alarm to notice you in at the setted time moment."""
         alarms.set_alarm(hour,minute,message)
+        return "Alarm setted."
     @tool
     def countdown_tool(seconds: Annotated[int, 'The seconds of the countdown you want to set.'], 
                    message: Annotated[str, 'The message when your countdown finished you want to let you notice.']):
         """Set a countdown to notice you after the second."""
         alarms.set_countdown(seconds,message)
+        return "Countdown seted."
     return [alarm_tool, countdown_tool]
 
 alarms: List[AsyncAlarm] = []
