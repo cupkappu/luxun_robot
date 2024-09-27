@@ -14,6 +14,7 @@ class AsyncAlarm:
         self.alarms = []
         self.countdowns = []
         self.callback = callback
+        print()
 
     async def set_alarm(self, hour, minute, message):
         print(f'Add alarm {hour}:{minute}')
@@ -51,6 +52,7 @@ class AsyncAlarm:
 
 def callback_factory(agent:percive_agent):
     def warpper(message):
+        print(f"Time Count task over, adding perceive into {str(agent.metadata)} perceives.")
         agent.perceives.append({"Alarm":message})
         agent.enable = True
     return warpper
@@ -79,7 +81,7 @@ def give_callback(agent: percive_agent, **kwargs):
     qq_agents = kwargs.get('functions.qq',[])
     alarms = []
     for i in qq_agents:
-        alarm = AsyncAlarm(i.agent.metadata['group'], callback_factory(i))
+        alarm = AsyncAlarm(i.agent.metadata['group'], callback_factory(i.agent))
         alarms.append(alarm)
         i.agent.add_tools(tool_factory(alarm))
     loop_funcs = [i.check_alarm for i in alarms] + [i.check_countdown for i in alarms]

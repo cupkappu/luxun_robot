@@ -245,7 +245,7 @@ class percive_agent:
         print('start loop')
         while True:
             await asyncio.sleep(self.looptime)
-            print('check perceives.')
+            # print('check perceives.')
             if (self.perceives != []) and (self.enable):
                 print('start workflow.')
                 self.workflow(self.perceives)
