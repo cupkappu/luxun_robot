@@ -7,6 +7,7 @@ from typing import Annotated, List,Dict
 import json
 from prompts.qq import qq_prompt,init_query
 from functions import searxng
+import time
 
 g_agent:percive_agent = None
 
@@ -27,8 +28,6 @@ def give_callback(agent: percive_agent):
     g_agent = agent
     qq_agents = [qq_perceiver_init(i, msg_type = 'group',) for i in id_list]
     loop_funcs = [start_callback] + [i.agent.loop for i in qq_agents]
-
-
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 

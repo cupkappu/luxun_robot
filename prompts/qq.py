@@ -2,9 +2,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 qq_prompt=ChatPromptTemplate.from_messages(
     [
-    ("system", """<ROLE>
-    {personal_setting}
-    </ROLE>
+    ("system", """
     <CURRENT_MEMORY>
     {current_memory}
     </CURRENT_MEMORY>
@@ -32,6 +30,9 @@ qq_prompt=ChatPromptTemplate.from_messages(
     <LoopTimes>{looptimes}</LoopTimes>
 
     <Real_Perceive>{perceive}</Real_Perceive>
+    <ROLE>
+    {personal_setting}
+    </ROLE>
     <META_PROMPT>
     XML tag <Real_Perceive> surrounds what you need to focus on. React with your personality and your knowledge.
     You are not allow ask the user if they need any further help, only direct reply.

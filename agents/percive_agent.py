@@ -95,11 +95,16 @@ class State():
         self.docs_m = docs(llm=self.llm)
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
         self.metadata = kwargs.get('metadata',{})
+        self.perceive_length_limit = kwargs.get('perceive_length_limit', 0)
 
 
     def add_perceive(self, xml_block):
         self.current_memory_list.append(self.perceive)
         self.perceive_history.append(xml_block)
+        # if self.perceive_length_limit != 0:
+
+        #     zip_perceive = self.docs_m.add_doc(content_list=[xml_block])
+            
         self.perceive = xml_block + get_time()
         memory_length = len(self.current_memory_list)
         memory_limit = int(self.current_memory_length*0.9)
@@ -171,6 +176,7 @@ class percive_agent:
         self.enable = kwargs.get('enable', True)
         self.augmented_prompts = {}
         self.metadata = kwargs.get('metadata',{})
+        self.perceive_limit = kwargs.get('perceive_limit', 10)
         print(self.metadata)
 
     def invoke(self,query,looptimes):
@@ -206,7 +212,11 @@ class percive_agent:
 
     def workflow(self,query):
         self.stop_mark = False
-        pmt = query
+        if self.perceive_limit != 0:
+            result = [query[i:i + self.perceive_limit] for i in range(0, len(query), self.perceive_limit)] if len(query) > self.perceive_limit else [[query]]
+            for i in result[:-1]:
+                self.state.add_perceive(i)
+        pmt = result[-1]
         looptimes = 1
         while True:
             if self.stop_mark == True:
