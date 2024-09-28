@@ -33,13 +33,14 @@ def give_callback(agent: percive_agent, **kwargs):
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
 def qq_perceiver_init(no: str, msg_type: str,):
-    n_state = State(**init_query,llm=g_agent.llm,metadata={msg_type:no})
+    metadata = {msg_type:no,'category':'chat','platform':'qq'}
+    n_state = State(**init_query,llm=g_agent.llm,metadata=metadata)
     agent = percive_agent(
                 n_state,
                 prompt=qq_prompt,
                 tools=dict(zip([i.name for i in searxng.tools],searxng.tools)),              # Need change in the future
                 llm=g_agent.llm,
-                metadata={'group':no},
+                metadata=metadata,
                 enable_llm_stop_marker = False,
                 enable = False,
                 looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)),
