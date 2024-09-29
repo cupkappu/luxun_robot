@@ -1,10 +1,10 @@
 from agents.percive_agent import percive_agent, get_time
-from typing import Annotated
+from typing import Annotated,List,Optional
 from langchain.tools import tool
-from typing import List
 import asyncio
-import time
+from datetime import datetime, timedelta
 from functions.qq import QQAgent
+import uuid
 
 g_agent:percive_agent = None
 qq_agents: List[QQAgent] = []
@@ -12,13 +12,15 @@ qq_agents: List[QQAgent] = []
 class AsyncAlarm:
     def __init__(self, user, callback: callable = None):
         self.user = user
-        self.alarms = []
+        self.alarms = {}
         self.countdowns = []
         self.callback = callback
 
-    def set_alarm(self, hour, minute, message):
+    def set_alarm(self, hour, minute, message, repeat_type='none', repeat_value=None):
         print(f'Add alarm {hour}:{minute}')
-        self.alarms.append((hour, minute, message))
+        alarm_id = str(uuid.uuid4())
+        self.alarms[alarm_id] = (hour, minute, message, repeat_type, repeat_value)
+        return alarm_id
 
     def set_countdown(self, seconds, message):
         print(f'Add countdown {seconds}s')
@@ -27,18 +29,17 @@ class AsyncAlarm:
     async def check_alarm(self):
         print(f'Alarm watchdog for {self.user} will active now.')
         while True:
-            current_time = time.localtime()
-            alarms_to_remove = []
-            for alarm in self.alarms:
-                if current_time.tm_hour == alarm[0] and current_time.tm_min == alarm[1]:
+            current_time = datetime.now()
+            for alarm_id, (hour, minute, message, repeat_type, repeat_value) in list(self.alarms.items()):
+                if current_time.hour == hour and current_time.minute == minute:
                     try:
-                        if self.callback:
-                            self.callback(alarm[2])
+                        if repeat_type == 'daily' or (repeat_type == 'weekly' and (current_time.weekday() + 1) == repeat_value) or (repeat_type == 'monthly' and current_time.day == repeat_value):
+                            self.callback(message)
+                        elif repeat_type == None:
+                            self.callback(message)
+                            del self.alarms[alarm_id]
                     except Exception as e:
                         print(f"Error in alarm callback: {e}")
-                    alarms_to_remove.append(alarm)
-            for alarm in alarms_to_remove:
-                self.alarms.remove(alarm)
             await asyncio.sleep(1)
 
     async def check_countdown(self):
@@ -64,6 +65,19 @@ class AsyncAlarm:
             self.check_countdown()
         )
 
+    def get_alarms(self):
+        results = []
+        for k, i in self.alarms.items():
+            results.append({'id':k,'Time':f"{i[0]}:{i[1]}","message":i[2],"repeat_type":i[3],"repeat_value":i[4]})
+        return results
+    
+    def remove_alarm(self, alarm_id):
+        if alarm_id in self.alarms:
+            del self.alarms[alarm_id]
+            print(f'Alarm with ID {alarm_id} removed.')
+        else:
+            print(f'No alarm found with ID {alarm_id}.')
+
 def callback_factory(agent:percive_agent):
     def warpper(message):
         print(f"Time Count task over, adding perceive into {str(agent.metadata)} perceives.")
@@ -71,23 +85,43 @@ def callback_factory(agent:percive_agent):
         agent.enable = True
     return warpper
 
-def tool_factory(alarms:AsyncAlarm):
+def tool_factory(alarms: AsyncAlarm):
     @tool
-    def add_alarm(hour: Annotated[int, 'The hour of the alarm you want to set.'], 
-                   minute: Annotated[int, 'The minute of the alarm you want to set.'], 
-                   message: Annotated[str, 'The message when alarm active you want to let you notice.']):
-        """Use add_alarm to add an alarm with a determined time. """
-        print(f"setting {str(alarms.user)}'s alarm.")
-        alarms.set_alarm(hour,minute,message)
-        return "Alarm setted."
+    def add_alarm(hour: Annotated[int, 'The hour of the alarm you want to set.'],
+                   minute: Annotated[int, 'The minute of the alarm you want to set.'],
+                   message: Annotated[str, 'The message to display when the alarm is triggered.'],
+                   repeat_type: Optional[Annotated[str, 'The type of repetition for the alarm, e.g., "daily", "weekly", "monthly".']] = 'none',
+                   repeat_value: Optional[Annotated[int, 'The value for the repetition type, e.g., day of the week (1-7) for weekly, or day of the month for monthly.']] = None):
+        """
+        Use add_alarm to add an alarm with a determined time and optional repetition.
+        """
+        print(f"Setting {str(alarms.user)}'s alarm.")
+        alarm_id = alarms.set_alarm(hour, minute, message, repeat_type, repeat_value)
+        return f"Alarm {alarm_id} set."
     @tool
-    def add_countdown(seconds: Annotated[int, 'The seconds of the countdown you want to set.'], 
-                   message: Annotated[str, 'The message when your countdown finished you want to let you notice.']):
-        """Use add_countdown to add a countdown."""
-        print(f"setting {str(alarms.user)}'s countdown.")
-        alarms.set_countdown(seconds,message)
-        return "Countdown seted."
-    return [add_alarm, add_countdown]
+    def add_countdown(seconds: Annotated[int, 'The seconds of the countdown you want to set.'],
+                       message: Annotated[str, 'The message to display when the countdown finishes.']):
+        """
+        Use add_countdown to add a countdown.
+        """
+        print(f"Setting {str(alarms.user)}'s countdown.")
+        alarms.set_countdown(seconds, message)
+        return "Countdown set."
+    @tool
+    def get_alarms() -> Annotated[List[dict], 'List of alarms']:
+        """
+        Use get_alarms to retrieve all set alarms.
+        """
+        return alarms.get_alarms()
+    @tool
+    def remove_alarm(alarm_id: Annotated[str, 'The unique identifier for the alarm to remove.']):
+        """
+        Use remove_alarm to remove a specific alarm by its ID.
+        """
+        print(f"Removing alarm with ID {str(alarm_id)} for {str(alarms.user)}.")
+        alarms.remove_alarm(alarm_id)
+        return f"Alarm {alarm_id} removed."
+    return [add_alarm, add_countdown,get_alarms,remove_alarm]
 
 alarms: List[AsyncAlarm] = []
 
