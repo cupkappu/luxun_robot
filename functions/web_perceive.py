@@ -47,13 +47,13 @@ def render_page(content:str):
 async def get_doc(doc_no):
     qagent = qq_agents[0]
     result = qagent.agent.state.docs_m.find_doc(doc_no,meta_on=False)
-    return render_page(jsonify(result.to_dict()))
+    return jsonify(result.to_dict())
 
 @app.route('/list_doc')
 async def list_doc():
     qagent = qq_agents[0]
     result = qagent.agent.state.docs_m.list(meta_on=False)
-    return render_page(str(result))
+    return str(result)
 
 tools = []
 
