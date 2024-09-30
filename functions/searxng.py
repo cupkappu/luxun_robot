@@ -44,8 +44,9 @@ def tool_factory(docs_m: docs):
     def searx_search(query: Annotated[str, 'Keywords to search']
                     ) -> str:
         """Search Engine to search information from web."""
-        results = search.run(query=query)
-        result = docs_m.add_doc(f'Query:{query}\n'+results).get_summary()
+        results = search.results(query=query,num_results=20,)
+        results.append({'Query':query})
+        result = docs_m.add_doc(results).get_summary()
         return result
     return [searx_search]
 
