@@ -14,7 +14,7 @@ bus_prompt = ChatPromptTemplate.from_messages(
 - get_route_eta_info: Retrieve ETA information for a specific route.""",
         ),
         ("placeholder", "{chat_history}"),
-        ("query", "{query}"),
+        ("user", "{query}"),
         ("placeholder", "{agent_scratchpad}"),
     ]
 )
