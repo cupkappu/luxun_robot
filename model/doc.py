@@ -36,7 +36,7 @@ class doc(have_dict):
                 result += i.get_summary()
         return result
     def get_summary(self) -> str:
-        return f"<DOC><UUID>{self.uuid}</UUID><SUMMARY>{self.summary}</SUMMARY>{self.time}</DOC>\n"
+        return {'DOC':{'UUID':self.uuid,'SUMMARY':self.summary,'time':self.time}}
     def to_dict(self):
         return {
             'doc':self.doc,
