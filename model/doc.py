@@ -54,13 +54,13 @@ class docs:
             self.storage_driver = db_drivers[storage](db_uri=db_uri,db_name=db_name,table=table,constructor=doc, metadata = metadata)
         self.storage = storage
         self.llm = llm
-    def find_doc(self, uuid:str) -> doc:
+    def find_doc(self, uuid:str, meta_on = True) -> doc:
         if self.storage == 'memory':
             for i in self.docs:
                 if str(i.uuid) == uuid:
                     return i
             return None
-        return self.storage_driver.find_one(uuid)
+        return self.storage_driver.find_one(uuid, meta_on)
     def add_doc(self, content_list:list):
         c_doc = doc(doc=content_list,llm=self.llm)
         if self.storage == 'memory': self.docs.append(c_doc)

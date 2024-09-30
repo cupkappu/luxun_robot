@@ -13,8 +13,11 @@ class MongoAdapter(Adapter):
         data = content.to_dict()
         data.update({'metadata':self.metadata})
         self.table.insert_one(data)
-    def find_one(self, uuid:str):
-        doc_dict = self.table.find_one({"uuid": uuid, 'metadata':self.metadata})
+    def find_one(self, uuid:str, meta_on: bool):
+        if meta_on:
+            doc_dict = self.table.find_one({"uuid": uuid, 'metadata':self.metadata})
+        else:
+            doc_dict = self.table.find_one({"uuid": uuid,})
         if doc_dict:
             return self.source_class_constructor(**doc_dict)
         return None

@@ -5,6 +5,7 @@ from agents.percive_agent import percive_agent,State
 from typing import Annotated, List,Dict
 import json
 from prompts.qq import qq_prompt,init_query
+import re
 
 g_agent:percive_agent = None
 
@@ -99,11 +100,11 @@ async def on_message(msg:dict):
         if msg['post_type'] == 'message':
             if msg['message_type'] == 'group':
                 if str(msg['group_id']) in id_list:
-                    perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
+                    perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':re.sub(r'\[CQ:.*?\]', '', msg['message'])}}
                     print(perceive)
                     # g_agent.perceives.append(perceive)
                     qq_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id'])).agent
-                    qq_agent.perceives.append({"Sender": msg['sender'], 'Content':msg['message']})
+                    qq_agent.perceives.append(perceive)
                     if str(msg['self_id']) in msg['message']:
                         qq_agent.enable = True
             if msg['message_type'] == 'private':

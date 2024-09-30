@@ -4,7 +4,7 @@ from functions.qq import find_qq_agent_by_no, QQAgent
 from typing import List
 
 g_agent:percive_agent = None
-qq_agents: List[percive_agent]
+qq_agents: List[QQAgent]
 
 def give_callback(agent: percive_agent, **kwargs):
     global g_agent, qq_agents
@@ -29,6 +29,9 @@ async def get_qq_prompt(group_no):
     prompt_state = qagent.agent.state.to_dict()
     prompt_state.update({'looptimes':0, 'augmented_prompt':''})
     result = qagent.agent.prompt.invoke(prompt_state).to_string()
+    return render_page(result)
+
+def render_page(content:str):
     return f"""
     <style>
         textarea {{
@@ -38,7 +41,13 @@ async def get_qq_prompt(group_no):
             box-sizing: border-box; /* 确保内边距和边框不会增加元素的总宽度 */
         }}
     </style>
-    <textarea readonly>{result}</textarea>"""
+    <textarea readonly>{content}</textarea>"""
+
+@app.route('/get_doc/<doc_no>')
+async def get_qq_prompt(doc_no):
+    qagent = qq_agents[0]
+    result = qagent.agent.state.docs_m.find_doc(doc_no,meta_on=False)
+    return render_page(jsonify(result.to_dict()))
 
 tools = []
 
