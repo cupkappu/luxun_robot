@@ -1,65 +1,16 @@
 from prompts import percive_module
 from langchain_core.language_models import BaseChatModel
-from pydantic import BaseModel, Field
-from typing import Annotated, List, Dict,Optional
-from langchain_core.output_parsers import JsonOutputParser
+from typing import List
 
 from dict2xml import dict2xml
-from langchain.tools import tool
 from datetime import datetime
 import asyncio
-import uuid
+from model.doc import doc, docs
 
 from langchain_core.prompts.chat import ChatPromptTemplate
 
 # percive_module.prompt
-
-def get_time():
-    return f'<Time>{datetime.now().strftime("%Y-%m-%d %H:%M")}</Time>'
-
-class sum_format(BaseModel):
-    summary: str = Field(description="The summary of your current memory.")
-
-class doc():
-    doc: List
-    uuid: str
-    summary: str
-    time: str
-    def __init__(self,doc: List, llm: BaseChatModel=None, summary: str = ''):
-        self.doc = doc
-        self.uuid = uuid.uuid4()
-        if summary == '':
-            sumer = percive_module.sum_prompt | llm.bind(response_format={"type": "json_object"}) | JsonOutputParser(pydantic_object=sum_format)
-            self.summary = sumer.invoke({'content':self.__str__()})['summary']
-            print("Doc add:" + self.summary)
-        else:
-            self.summary = summary
-        self.time = get_time()
-    def __str__(self) -> str:
-        result = ""
-        for i in self.doc:
-            if isinstance(i, str):
-                result += i+'\n'
-            elif isinstance(i, doc):
-                result += i.get_summary()
-        return result
-    def get_summary(self) -> str:
-        return f"<DOC><UUID>{self.uuid}</UUID><SUMMARY>{self.summary}</SUMMARY>{self.time}</DOC>\n"
-
-class docs:
-    docs: List[doc]
-    def __init__(self, llm: BaseChatModel, docs: List[doc] = []):
-        self.docs = docs
-        self.llm = llm
-    def find_doc(self, uuid:str) -> doc:
-        for i in self.docs:
-            if str(i.uuid) == uuid:
-                return i
-        return None
-    def add_doc(self, content_list:list):
-        c_doc = doc(doc=content_list,llm=self.llm)
-        self.docs.append(c_doc)
-        return c_doc
+from utils import get_time
 
 class State():
     """
@@ -94,7 +45,7 @@ class State():
         self.llm = kwargs.get('llm',None)
         self.zip_memory_prompt = kwargs.get('prompt',percive_module.zip_memory_prompt)
         self.note = kwargs.get('note',[])
-        self.docs_m = docs(llm=self.llm)
+        self.docs_m = docs(llm=self.llm,metadata=kwargs.get('metadata',{}))
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
         self.metadata = kwargs.get('metadata',{})
         self.perceive_length_limit = kwargs.get('perceive_length_limit', 0)
