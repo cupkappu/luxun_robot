@@ -30,5 +30,5 @@ class MongoAdapter(Adapter):
             query = {'metadata':self.metadata}
         else:
             query = {}
-        return self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields])))
+        return list(self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields]))))
     
