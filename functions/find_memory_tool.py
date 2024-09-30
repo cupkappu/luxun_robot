@@ -20,7 +20,7 @@ async def start_callback():
 def tool_factory(docs_m: docs):
     @tool
     def find_doc(uuid: Annotated[str,'The UUID of the document you want to find']):
-        """Find and load the document by UUID"""
+        """Find and load the document detail by UUID"""
         doc = docs_m.find_doc(uuid=uuid)
         if doc == None:
             return 'Document not found.'
