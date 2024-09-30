@@ -26,7 +26,12 @@ def tool_factory(docs_m: docs):
         if doc == None:
             return 'Document not found.'
         return str(doc)
-    return [find_doc]
+    @tool
+    def list_doc(all:Annotated[bool,'Turn on to find all document, Turn of to find more centralized document.']):
+        """List all documents"""
+        docs = docs_m.list(meta_on = all)
+        return docs
+    return [find_doc, list_doc]
 
 @tool
 def find_doc(uuid: Annotated[str,'The UUID of the document you want to find']):
