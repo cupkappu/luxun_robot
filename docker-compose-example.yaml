@@ -42,7 +42,7 @@ services:
     restart: always
     image: mlikiowa/napcat-docker:v1.5.0
   mongodb:
-    image: mongo:3.5
+    image: mongo:latest
     restart: on-failure
     volumes:
       - ./db:/data/db
