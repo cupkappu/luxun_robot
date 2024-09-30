@@ -10,6 +10,8 @@ from datetime import datetime
 import asyncio
 import uuid
 
+from langchain_core.prompts.chat import ChatPromptTemplate
+
 # percive_module.prompt
 
 def get_time():
@@ -162,6 +164,7 @@ class percive_agent:
     """
     metadata: any
     callback_invoker: callable
+    prompt: ChatPromptTemplate
     def __init__(self,state:State,tools:dict = {}, llm:BaseChatModel = None, **kwargs):
         self.prompt = kwargs.get('prompt',percive_module.reaction_prompt)
         self.tools = tools
