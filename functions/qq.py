@@ -2,11 +2,9 @@ import requests
 import websockets
 import os
 from agents.percive_agent import percive_agent,State
-from langchain.tools import tool
 from typing import Annotated, List,Dict
 import json
 from prompts.qq import qq_prompt,init_query
-from functions import searxng
 
 g_agent:percive_agent = None
 
