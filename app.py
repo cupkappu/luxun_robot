@@ -14,6 +14,7 @@ from functions import (
                     note_tools, 
                     web_perceive,
                     searxng,
+                    find_memory_tool,
                     task_manager,
                     alarm
                     )
@@ -28,6 +29,7 @@ async def run_all_functions():
         save_state,
         note_tools,
         task_manager,
+        find_memory_tool,
         alarm
     ]
 
