@@ -1,13 +1,16 @@
 from agents.percive_agent import percive_agent
-from typing import Annotated
+from typing import Annotated, List
 from langchain.tools import tool
 import os
 
 g_agent:percive_agent = None
+qq_agents: List[percive_agent]
 
 def give_callback(agent: percive_agent, **kwargs):
-    global g_agent
+    global g_agent, qq_agents
     g_agent = agent
+    qq_agents = kwargs.get('functions.qq',[])
+
 
 async def start_callback():
     pass
