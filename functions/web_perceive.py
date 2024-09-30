@@ -53,7 +53,7 @@ async def get_doc(doc_no):
 async def list_doc():
     qagent = qq_agents[0]
     result = qagent.agent.state.docs_m.list(meta_on=False)
-    return render_page(jsonify(result))
+    return render_page(str(result))
 
 tools = []
 
