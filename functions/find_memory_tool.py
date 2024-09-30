@@ -22,7 +22,7 @@ def tool_factory(docs_m: docs):
     @tool
     def find_doc(uuid: Annotated[str,'The UUID of the document you want to find']):
         """Read the document detail by providing the UUID for to gain a deeper understanding"""
-        doc = docs_m.find_doc(uuid=uuid)
+        doc = docs_m.find_doc(uuid=uuid,meta_on=False)
         if doc == None:
             return 'Document not found.'
         return str(doc)
