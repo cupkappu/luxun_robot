@@ -22,8 +22,8 @@ tools = {}
 
 async def run_all_functions():
     func_modules = [
-        web_perceive,
         qq,
+        web_perceive,
         searxng,
         save_state,
         note_tools,
