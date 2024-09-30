@@ -52,7 +52,7 @@ class docs:
             self.docs = docs
         else:
             self.storage_driver = db_drivers[storage](db_uri=db_uri,db_name=db_name,table=table,constructor=doc, metadata = metadata)
-        self.storage == storage
+        self.storage = storage
         self.llm = llm
     def find_doc(self, uuid:str) -> doc:
         if self.storage == 'memory':
