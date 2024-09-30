@@ -45,7 +45,6 @@ def render_page(content:str):
 
 @app.route('/get_doc/<doc_no>')
 async def get_doc(doc_no):
-
     qagent = qq_agents[0]
     result = qagent.agent.state.docs_m.find_doc(doc_no,meta_on=False)
     return render_page(jsonify(result.to_dict()))

@@ -17,7 +17,7 @@ class doc(have_dict):
     uuid: str
     summary: str
     time: str
-    def __init__(self,doc: List, uuid: str = str(uuidl.uuid4()), llm: BaseChatModel=None, summary: str = '',time:str = get_time()):
+    def __init__(self,doc: List, uuid: str = str(uuidl.uuid4()), llm: BaseChatModel=None, summary: str = '',time:str = get_time(),**kwargs):
         self.doc = doc
         self.uuid = uuid
         if summary == '':
