@@ -23,7 +23,7 @@ async def add_perceive():
     g_agent.perceives.append(json_data)
     return jsonify({"message": f"Perceive added: {json_data}"})
 
-@app.route('/get_qq_prompt/<str:group_no>')
+@app.route('/get_qq_prompt/<group_no>')
 async def get_qq_prompt(group_no):
     qagent = find_qq_agent_by_no(qq_agents,group_no)
     prompt_state = qagent.agent.state.to_dict()
