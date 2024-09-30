@@ -4,10 +4,10 @@ from typing import List
 from pydantic import BaseModel, Field
 from prompts import percive_module
 from langchain_core.output_parsers import JsonOutputParser
-from datetime import datetime
 from .base_models import have_dict
 from model.adapter import *
 from utils import get_time
+from dict2xml import dict2xml
 
 class sum_format(BaseModel):
     summary: str = Field(description="The summary of your current memory.")
@@ -31,7 +31,7 @@ class doc(have_dict):
         result = ""
         for i in self.doc:
             if isinstance(i, str):
-                result += i+'\n'
+                result += dict2xml(i)+'\n'
             elif isinstance(i, doc):
                 result += i.get_summary()
         return result
