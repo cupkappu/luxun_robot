@@ -27,9 +27,9 @@ def tool_factory(docs_m: docs):
             return 'Document not found.'
         return str(doc)
     @tool
-    def list_doc(all:Annotated[bool,'Turn on to find all document, Turn of to find more centralized document.']):
+    def list_doc(all:Annotated[bool,'Turn on to find all document, Turn off to find more centralized document.']):
         """List all documents"""
-        docs = docs_m.list(meta_on = all)
+        docs = docs_m.list(meta_on = not all)
         return docs
     return [find_doc, list_doc]
 
