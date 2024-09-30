@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from .base import Adapter
 from ..base_models import *
+from typing import List
 
 class MongoAdapter(Adapter):
     def __init__(self, db_uri:str,db_name:str,table:str, constructor:callable, metadata:dict = {}):
@@ -24,3 +25,10 @@ class MongoAdapter(Adapter):
     def delete_one(self, uuid:str):
         result = self.table.delete_one({"uuid": uuid,'metadata':self.metadata})
         return result.deleted_count > 0
+    def list_all(self, fields:List[str], meta_on:bool = True):
+        if meta_on:
+            query = {'metadata':self.metadata}
+        else:
+            query = {}
+        return self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields])))
+    

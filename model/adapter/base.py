@@ -12,3 +12,6 @@ class Adapter(ABC):
     @abstractmethod
     def delete_one(self, content):
         pass
+    @abstractmethod
+    def list_all(self):
+        pass
