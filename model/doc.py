@@ -60,7 +60,7 @@ class docs:
                 if str(i.uuid) == uuid:
                     return i
             return None
-        return self.storage_driver.find_one(uuid, meta_on)
+        return self.storage_driver.find_one(uuid, meta_on, llm=self.llm)
     def add_doc(self, content_list:list):
         c_doc = doc(doc=content_list,llm=self.llm)
         if self.storage == 'memory': self.docs.append(c_doc)
