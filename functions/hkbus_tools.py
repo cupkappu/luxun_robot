@@ -42,14 +42,9 @@ def tool_factory():
         base_url = "https://data.etabus.gov.hk/"
         endpoint = "v1/transport/kmb/route/"
         full_url = base_url + endpoint
+        response = requests.get(full_url)
+        return response.json()
 
-        try:
-            response = requests.get(full_url)
-            response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-            return response.json()
-        except requests.RequestException as e:
-            print(f"An error occurred: {e}")
-            return {}
     @tool
     def get_route_info(route: Annotated[str, "The route number of the respective bus company"], direction: Annotated[str, "The direction of the route"], service_type: Annotated[str, "The service type of the bus route"]) -> dict:
         """
@@ -59,10 +54,7 @@ def tool_factory():
         endpoint = f"/v1/transport/kmb/route/{route}/{direction}/{service_type}"
         url = base_url + endpoint
         response = requests.get(url)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return {"error": "Failed to retrieve data", "status_code": response.status_code}
+        return response.json()
     @tool
     def get_stop_list() -> dict:
         """
@@ -70,10 +62,8 @@ def tool_factory():
         """
         base_url = "https://data.etabus.gov.hk/"
         response = requests.get(f"{base_url}/v1/transport/kmb/stop")
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise Exception("Failed to retrieve stop list")
+        return response.json()
+
     @tool
     def get_bus_stop_info(stop_id: Annotated[str, "16-character representation of a bus stop"]) -> dict:
         """
@@ -96,10 +86,7 @@ def tool_factory():
         endpoint = f"/v1/transport/kmb/eta/{stop_id}/{route}/{service_type}"
         url = base_url + endpoint
         response = requests.get(url)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return {"error": "Failed to fetch data", "status_code": response.status_code}
+        return response.json()
 
     @tool
     def get_stop_eta_info(stop_id: Annotated[str, "16-characters representation of a bus stop"]) -> dict:
@@ -110,10 +97,7 @@ def tool_factory():
         endpoint = f"/v1/transport/kmb/stop-eta/{stop_id}"
         url = base_url + endpoint
         response = requests.get(url)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return {"error": "Failed to fetch data", "status_code": response.status_code}
+        return response.json()
 
     @tool
     def get_route_eta_info(route: Annotated[str, "The route number of the respective bus company"], service_type: Annotated[str, "The service type of the bus route"]) -> dict:
@@ -124,10 +108,8 @@ def tool_factory():
         endpoint = f"/v1/transport/kmb/route-eta/{route}/{service_type}"
         url = base_url + endpoint
         response = requests.get(url)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return {"error": "Failed to fetch data", "status_code": response.status_code}
+        return response.json()
+
     return [get_kmb_route_list,get_route_info,get_stop_list,get_bus_stop_info,get_eta_info,get_stop_eta_info,get_route_eta_info]
 
 tools = []
