@@ -5,7 +5,7 @@ from langchain.tools import tool
 import requests
 from prompts.bus_agent import bus_prompt
 from langchain_core.language_models import BaseChatModel
-from langchain.agents import create_self_ask_with_search_agent
+from langchain.agents import create_tool_calling_agent
 from langchain.agents import AgentExecutor
 
 g_agent:percive_agent = None
@@ -24,7 +24,7 @@ async def start_callback():
     pass
 
 def bus_info_agent_factory(tools,llm: BaseChatModel):
-    agent = create_self_ask_with_search_agent(llm, tools, bus_prompt)
+    agent = create_tool_calling_agent(llm, tools, bus_prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     @tool
     def ask_bus_info(query:  Annotated[str,"The query of bus information, could be route or stops or somethings."]):
