@@ -45,7 +45,7 @@ def tool_factory(docs_m: docs):
                     ) -> str:
         """Search Engine to search information from web."""
         results = search.run(query=query)
-        result = docs_m.add_doc(f'Query:{query}\n'+results).get_summary()
+        result = docs_m.add_doc([f'Query:{query}\n'+results]).get_summary()
         return result
     return [searx_search]
 
