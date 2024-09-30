@@ -13,6 +13,7 @@ def give_callback(agent: percive_agent, **kwargs):
     qq_agents = kwargs.get('functions.qq',[])
     for i in qq_agents:
         i.agent.add_tools(tool_factory(i.agent.state.docs_m))
+        i.agent.augmented_prompts['find_memory_tool'] = augmented_prompt
 
 async def start_callback():
     pass
@@ -20,7 +21,7 @@ async def start_callback():
 def tool_factory(docs_m: docs):
     @tool
     def find_doc(uuid: Annotated[str,'The UUID of the document you want to find']):
-        """Find and load the document detail by UUID"""
+        """Read the document detail by providing the UUID for to gain a deeper understanding"""
         doc = docs_m.find_doc(uuid=uuid)
         if doc == None:
             return 'Document not found.'
