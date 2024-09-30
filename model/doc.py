@@ -29,6 +29,8 @@ class doc(have_dict):
         self.time = time
     def __str__(self) -> str:
         result = ""
+        if isinstance(self.doc, str):
+            return self.doc
         for i in self.doc:
             if isinstance(i, str):
                 result += dict2xml(i)+'\n'
