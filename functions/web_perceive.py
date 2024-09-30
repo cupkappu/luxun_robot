@@ -29,7 +29,16 @@ async def get_qq_prompt(group_no):
     prompt_state = qagent.agent.state.to_dict()
     prompt_state.update({'looptimes':0, 'augmented_prompt':''})
     result = qagent.agent.prompt.invoke(prompt_state).to_string()
-    return f"<textarea>{result}</textarea>"
+    return f"""
+    <style>
+        textarea {{
+            width: 100%;
+            height: 300px; /* 根据需要调整高度 */
+            resize: both; /* 允许用户调整大小 */
+            box-sizing: border-box; /* 确保内边距和边框不会增加元素的总宽度 */
+        }}
+    </style>
+    <textarea readonly>{result}</textarea>"""
 
 tools = []
 
