@@ -28,7 +28,7 @@ async def get_qq_prompt(group_no):
     qagent = find_qq_agent_by_no(qq_agents,group_no)
     prompt_state = qagent.agent.state.to_dict()
     prompt_state.update({'looptimes':0, 'augmented_prompt':''})
-    result = "\n\n".join([i for i in qagent.agent.prompt.invoke(prompt_state).content])
+    result = "\n\n".join([i for i in qagent.agent.prompt.invoke(prompt_state)])
     return result
 
 tools = []
