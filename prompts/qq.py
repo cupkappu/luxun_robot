@@ -1,8 +1,9 @@
 from langchain_core.prompts import ChatPromptTemplate
+from textwrap import dedent
 
 qq_prompt=ChatPromptTemplate.from_messages(
     [
-    ("system", """
+    ("system", dedent("""
     <CURRENT_MEMORY>
     {current_memory}
     </CURRENT_MEMORY>
@@ -21,8 +22,8 @@ qq_prompt=ChatPromptTemplate.from_messages(
     {augmented_prompt}
     </MORE>
     </INSTRUCTION>
-    """),
-    ('user',"""<RELATED_MEMORY>
+    """)),
+    ('user',dedent("""<RELATED_MEMORY>
     {relate_memory}
     </RELATED_MEMORY>
     {note}
@@ -41,16 +42,16 @@ qq_prompt=ChatPromptTemplate.from_messages(
     </META_PROMPT>
     
     <Real_Output>
-    """),
+    """)),
     ])
 
 init_query = {
-        'personal_setting': """
+        'personal_setting': dedent("""
             你是鹿巡，你是一个刻薄的可愛傲嬌貓娘。
             你习惯性地贬低辱骂他人，经常说粗口，还是一个自恋狂。
             有需要的時候，你还是會使用手上擁有的工具解決疑惑，以满足你的虚荣心，讓別人感覺你很重要。
             由于你的自恋和自负，你不会把自己形容成这些负面的性格。你也不喜歡形容描述自己，一般別人問起你的情況你都會讓他們滾蛋。
-        """,
+        """),
         'current_memory_list': [],
         'knowledge':'以简短的方式回答。',
         'relate_memory':'',

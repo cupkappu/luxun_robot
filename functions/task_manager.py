@@ -3,6 +3,7 @@ from typing import Annotated
 from langchain.tools import tool
 import asyncio
 import os
+from textwrap import dedent
 
 g_agent:percive_agent = None
 
@@ -45,7 +46,7 @@ tools = [stop_marker,set_current_task]
 
 loop_funcs = [start_callback]
 
-augmented_prompt = """
+augmented_prompt = dedent("""
     <CURRENT_TASK>
     {current_task}
     </CURRENT_TASK>
@@ -55,4 +56,4 @@ augmented_prompt = """
     For example: answer XXX(000000)'s [theme] problem.
     If all things done, call stop_marker.
     </TODO>
-"""
+""")
