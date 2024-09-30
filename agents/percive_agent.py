@@ -45,7 +45,7 @@ class State():
         self.llm = kwargs.get('llm',None)
         self.zip_memory_prompt = kwargs.get('prompt',percive_module.zip_memory_prompt)
         self.note = kwargs.get('note',[])
-        self.docs_m = docs(llm=self.llm,metadata=kwargs.get('metadata',{}))
+        self.docs_m = docs(llm=self.llm,metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
         self.metadata = kwargs.get('metadata',{})
         self.perceive_length_limit = kwargs.get('perceive_length_limit', 0)

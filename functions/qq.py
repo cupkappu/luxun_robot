@@ -37,6 +37,12 @@ def qq_perceiver_init(no: str, msg_type: str,):
     n_state = State(**init_query,llm=g_agent.llm,metadata=metadata)
     agent = percive_agent(
                 n_state,
+                db_info = {
+                    'storage':os.getenv('QQ_DB_TYPE','memory'),
+                    'db_uri': os.getenv('QQ_DB_URI',''),
+                    'db_name': os.getenv('QQ_DB_NAME',''),
+                    'table': os.getenv('QQ_DB_TABLE',''),
+                    },
                 prompt=qq_prompt,
                 tools=dict(zip([i.name for i in searxng.tools],searxng.tools)),              # Need change in the future
                 llm=g_agent.llm,
