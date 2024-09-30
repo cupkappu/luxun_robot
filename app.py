@@ -16,7 +16,8 @@ from functions import (
                     searxng,
                     find_memory_tool,
                     task_manager,
-                    alarm
+                    alarm,
+                    hkbus_tools
                     )
 
 tools = {}
@@ -30,7 +31,8 @@ async def run_all_functions():
         note_tools,
         task_manager,
         find_memory_tool,
-        alarm
+        alarm,
+        hkbus_tools
     ]
 
     for i in func_modules:
