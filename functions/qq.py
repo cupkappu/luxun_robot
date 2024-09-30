@@ -66,7 +66,7 @@ def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
     requests.get(url,params=params)
     return "Message Send."
 
-def find_qq_agent_by_no(no: str) -> QQAgent:
+def find_qq_agent_by_no(qq_agents:List[QQAgent],no: str) -> QQAgent:
     matching_agents = None
     for i in qq_agents:
         if i.no == no:
@@ -98,7 +98,7 @@ async def on_message(msg:dict):
                     perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':msg['message']}}
                     print(perceive)
                     # g_agent.perceives.append(perceive)
-                    qq_agent = find_qq_agent_by_no(str(msg['group_id'])).agent
+                    qq_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id'])).agent
                     qq_agent.perceives.append({"Sender": msg['sender'], 'Content':msg['message']})
                     if str(msg['self_id']) in msg['message']:
                         qq_agent.enable = True

@@ -16,10 +16,10 @@ class AsyncAlarm:
         self.countdowns = []
         self.callback = callback
 
-    def set_alarm(self, hour, minute, message, repeat_type='none', repeat_value=None):
+    def set_alarm(self, hour, minute, message,):
         print(f'Add alarm {hour}:{minute}')
         alarm_id = str(uuid.uuid4())
-        self.alarms[alarm_id] = (hour, minute, message, repeat_type, repeat_value)
+        self.alarms[alarm_id] = (hour, minute, message,)
         return alarm_id
 
     def set_countdown(self, seconds, message):
@@ -30,14 +30,11 @@ class AsyncAlarm:
         print(f'Alarm watchdog for {self.user} will active now.')
         while True:
             current_time = datetime.now()
-            for alarm_id, (hour, minute, message, repeat_type, repeat_value) in list(self.alarms.items()):
+            for alarm_id, (hour, minute, message,) in list(self.alarms.items()):
                 if current_time.hour == hour and current_time.minute == minute:
                     try:
-                        if repeat_type == 'daily' or (repeat_type == 'weekly' and (current_time.weekday() + 1) == repeat_value) or (repeat_type == 'monthly' and current_time.day == repeat_value):
-                            self.callback(message)
-                        elif repeat_type == None:
-                            self.callback(message)
-                            del self.alarms[alarm_id]
+                        self.callback(message)
+                        del self.alarms[alarm_id]
                     except Exception as e:
                         print(f"Error in alarm callback: {e}")
             await asyncio.sleep(1)
@@ -89,14 +86,12 @@ def tool_factory(alarms: AsyncAlarm):
     @tool
     def add_alarm(hour: Annotated[int, 'The hour of the alarm you want to set.'],
                    minute: Annotated[int, 'The minute of the alarm you want to set.'],
-                   message: Annotated[str, 'The message to display when the alarm is triggered.'],
-                   repeat_type: Optional[Annotated[str, 'The type of repetition for the alarm, e.g., "daily", "weekly", "monthly".']] = 'none',
-                   repeat_value: Optional[Annotated[int, 'The value for the repetition type, e.g., day of the week (1-7) for weekly, or day of the month for monthly.']] = None):
+                   message: Annotated[str, 'The message to display when the alarm is triggered.'],):
         """
         Use add_alarm to add an alarm with a determined time and optional repetition.
         """
         print(f"Setting {str(alarms.user)}'s alarm.")
-        alarm_id = alarms.set_alarm(hour, minute, message, repeat_type, repeat_value)
+        alarm_id = alarms.set_alarm(hour, minute, message,)
         return f"Alarm {alarm_id} set."
     @tool
     def add_countdown(seconds: Annotated[int, 'The seconds of the countdown you want to set.'],
