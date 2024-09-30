@@ -34,17 +34,17 @@ id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
 def qq_perceiver_init(no: str, msg_type: str,):
     metadata = {msg_type:no,'category':'chat','platform':'qq'}
-    n_state = State(**init_query,llm=g_agent.llm,metadata=metadata)
-    agent = percive_agent(
-                n_state,
-                db_info = {
+    n_state = State(**init_query,llm=g_agent.llm,metadata=metadata,
+                    db_info = {
                     'storage':os.getenv('QQ_DB_TYPE','memory'),
                     'db_uri': os.getenv('QQ_DB_URI',''),
                     'db_name': os.getenv('QQ_DB_NAME',''),
                     'table': os.getenv('QQ_DB_TABLE',''),
-                    },
+                    },)
+    agent = percive_agent(
+                n_state,
                 prompt=qq_prompt,
-                tools=dict(zip([i.name for i in searxng.tools],searxng.tools)),              # Need change in the future
+                tools={},
                 llm=g_agent.llm,
                 metadata=metadata,
                 enable_llm_stop_marker = False,

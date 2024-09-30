@@ -1,15 +1,21 @@
 from agents.percive_agent import percive_agent
 import os
 from langchain_community.utilities import SearxSearchWrapper
-from typing import Annotated
+from typing import Annotated, List
 from langchain.tools import tool
 from langchain_core.prompts import ChatPromptTemplate
+from model.doc import docs
+from functions.qq import QQAgent
 
 g_agent:percive_agent = None
+qq_agents: List[QQAgent]
 
 def give_callback(agent: percive_agent, **kwargs):
-    global g_agent
+    global g_agent, qq_agents
     g_agent = agent
+    qq_agents = kwargs.get('functions.qq',[])
+    for i in qq_agents:
+        i.agent.add_tools(tool_factory(i.agent.state.docs_m))
 
 async def start_callback():
     pass
@@ -32,6 +38,16 @@ search_prompt=ChatPromptTemplate.from_messages(
 )
 
 loop_funcs = [start_callback]
+
+def tool_factory(docs_m: docs):
+    @tool
+    def searx_search(query: Annotated[str, 'Keywords to search']
+                    ) -> str:
+        """Search Engine to search information from web."""
+        results = search.run(query=query)
+        result = docs_m.add_doc(results).get_summary()
+        return result
+    return [searx_search]
 
 @tool
 def searx_search(query: Annotated[str, 'Keywords to search']
