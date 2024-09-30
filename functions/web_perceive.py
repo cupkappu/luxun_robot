@@ -33,7 +33,7 @@ async def get_qq_prompt(group_no):
     <style>
         textarea {{
             width: 100%;
-            height: 300px; /* 根据需要调整高度 */
+            height: 100%; /* 根据需要调整高度 */
             resize: both; /* 允许用户调整大小 */
             box-sizing: border-box; /* 确保内边距和边框不会增加元素的总宽度 */
         }}
