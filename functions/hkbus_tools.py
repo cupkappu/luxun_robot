@@ -2,6 +2,7 @@ from agents.percive_agent import percive_agent
 from functions.qq import QQAgent
 from typing import Annotated, List
 from langchain.tools import tool
+from utils import fuzzy_match
 import requests
 from prompts.bus_agent import bus_prompt
 from langchain_core.language_models import BaseChatModel
@@ -29,24 +30,32 @@ def bus_info_agent_factory(tools,llm: BaseChatModel):
     @tool
     def ask_bus_info(query:  Annotated[str,"The query of bus information, could be route or stops or somethings."]):
         """Get the bus information, include stop and route and ETA info."""
-        return agent_executor.invoke({"query": query})['output']
+        try:
+            return agent_executor.invoke({"query": query})['output']
+        except:
+            return "Fetch error."
+        
     return [ask_bus_info]
 
 def tool_factory():
-    @tool
-    def get_kmb_route_list() -> dict:
-        """
-        Fetches the list of all bus routes of KMB.
-        """
 
+    @tool
+    def get_kmb_route_list(route: Annotated[str, "The route code of the respective bus company"]) -> dict:
+        """
+        Fetches the basic information of bus route of KMB.
+        """
         base_url = "https://data.etabus.gov.hk/"
         endpoint = "v1/transport/kmb/route/"
         full_url = base_url + endpoint
         response = requests.get(full_url)
-        return response.json()
+        result = response.json()['data']
+        result = list(filter(lambda i: i['route'] == route,result))
+        return result
 
     @tool
-    def get_route_info(route: Annotated[str, "The route number of the respective bus company"], direction: Annotated[str, "The direction of the route"], service_type: Annotated[str, "The service type of the bus route"]) -> dict:
+    def get_route_info(route: Annotated[str, "The route number of the respective bus company"], 
+                       direction: Annotated[str, "The direction of the route, Valid directions are: outbound / inbound"], 
+                       service_type: Annotated[str, "The service type of the bus route, default 1"]) -> dict:
         """
         Fetches route information for a specified KMB bus route.
         """
@@ -55,14 +64,17 @@ def tool_factory():
         url = base_url + endpoint
         response = requests.get(url)
         return response.json()
+
     @tool
-    def get_stop_list() -> dict:
+    def get_stop_list(stop_name: Annotated[str, "Chinese / English name of the stop"]) -> dict:
         """
-        Retrieves all bus stop information from the KMB Stop List API.
+        Retrieves the basic information of bus stop from the KMB Stop List API.
         """
         base_url = "https://data.etabus.gov.hk/"
         response = requests.get(f"{base_url}/v1/transport/kmb/stop")
-        return response.json()
+        result = response.json()['data']
+        result =  fuzzy_match(result, stop_name, ['name_tc','name_en','name_sc'])
+        return result
 
     @tool
     def get_bus_stop_info(stop_id: Annotated[str, "16-character representation of a bus stop"]) -> dict:
@@ -74,19 +86,23 @@ def tool_factory():
         url = base_url + endpoint.format(stop_id=stop_id)
         response = requests.get(url)
         if response.status_code == 200:
-            return response.json()
+            return response.json()['data']
         else:
             return {"error": "Failed to fetch data", "status_code": response.status_code}
+        
     @tool
-    def get_eta_info(stop_id: Annotated[str, "16-characters representation of a bus stop"], route: Annotated[str, "The route number of the respective bus company"], service_type: Annotated[str, "The service type of the bus route"]) -> dict:
+    def get_eta_info(stop_id: Annotated[str, "16-characters representation of a bus stop"], 
+                     route: Annotated[str, "The route number of the respective bus company"]) -> dict:
         """
         Retrieves the ETA information for a specific stop ID, route, and service type.
         """
         base_url = "https://data.etabus.gov.hk/"
-        endpoint = f"/v1/transport/kmb/eta/{stop_id}/{route}/{service_type}"
+        endpoint = f"/v1/transport/kmb/stop-eta/{stop_id}"
         url = base_url + endpoint
         response = requests.get(url)
-        return response.json()
+        result = response.json()['data']
+        result = list(filter(lambda i: i['route'] == route,result))
+        return result
 
     @tool
     def get_stop_eta_info(stop_id: Annotated[str, "16-characters representation of a bus stop"]) -> dict:
@@ -97,7 +113,8 @@ def tool_factory():
         endpoint = f"/v1/transport/kmb/stop-eta/{stop_id}"
         url = base_url + endpoint
         response = requests.get(url)
-        return response.json()
+        result = response.json()['data']
+        return result
 
     @tool
     def get_route_eta_info(route: Annotated[str, "The route number of the respective bus company"], service_type: Annotated[str, "The service type of the bus route"]) -> dict:
@@ -110,7 +127,16 @@ def tool_factory():
         response = requests.get(url)
         return response.json()
 
-    return [get_kmb_route_list,get_route_info,get_stop_list,get_bus_stop_info,get_eta_info,get_stop_eta_info,get_route_eta_info]
+    return [
+        get_kmb_route_list,
+        get_route_info,
+        get_stop_list,
+        get_bus_stop_info,
+        get_eta_info,
+        get_stop_eta_info,
+        get_route_eta_info]
+
+
 
 tools = []
 loop_funcs = [start_callback]
