@@ -43,9 +43,9 @@ class State():
         self.current_memory_list = memory_list(
             kwargs['current_memory_list'],
             kwargs.get('current_memory_length',self.current_memory_length),
-            lambda x: self.docs_m.add_doc(x).get_summary())
+            lambda x: self.docs_m.add_doc(x).get_summary(),**kwargs.get('db_info',{}))
         self.perceives = perceive_group(kwargs.get('perceives',[]), kwargs.get('perceive_limit', 10),
-                                        store_memory=self.current_memory_list.append)
+                                        store_memory=self.current_memory_list.append,**kwargs.get('db_info',{}))
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
         self.metadata = kwargs.get('metadata',{})
 

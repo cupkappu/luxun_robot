@@ -72,7 +72,7 @@ class memory_list():
                  memorys: List[perceive_unit] = [], 
                  memory_limit:int = 30, 
                  zip_memory: callable = None, 
-                 memory_zip_rate: float = 0.3
+                 memory_zip_rate: float = 0.3,**kwargs
                  ):
         self.memorys = memorys
         self.memory_limit = memory_limit
