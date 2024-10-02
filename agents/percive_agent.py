@@ -50,10 +50,9 @@ class State():
         self.metadata = kwargs.get('metadata',{})
 
     def add_perceive(self, content_dict):
-        self.current_memory_list.append(content_dict)
-        self.perceive_history.append(content_dict)
+        self.perceives.append(content_dict)
         self.write_current_memory()
-        self.perceive = str(content_dict) + get_time()
+        self.perceive = str(self.perceives) + get_time()
         return self
 
     def replace(self, **kwargs):

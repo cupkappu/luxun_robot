@@ -3,26 +3,36 @@ from typing import Union, List
 from dict2xml import dict2xml
 from .doc import docs
 from .adapter import db_drivers
+import uuid as uuidl
 
 class perceive_unit(have_dict):
+
     content: Union[str,dict]
-    def __init__(self, content:Union[str,dict]):
+    uuid: str
+
+    def __init__(self, content:Union[str,dict],uuid: str = str(uuidl.uuid4()),**kwargs):
         self.content = content
+        self.metadata = kwargs.get('metadata',{})
+        self.uuid = uuid
+
     def __str__(self) -> str:
         if isinstance(self.content, str):
             return str(self.content)
         elif isinstance(self.content, dict):
             return dict2xml(self.content)
         return ""
+    
     def to_dict(self) -> dict:
         return {
             'content': self.content
         }
 
 class perceive_group():
+
     perceives: List[perceive_unit]
     perceive_limit: int
     store_memory: callable
+
     def __init__(self, 
                  perceives:List[perceive_unit] = [], 
                  perceive_limit: int = 20, 
@@ -46,8 +56,13 @@ class perceive_group():
                 table=table,
                 constructor=perceive_unit, 
                 metadata = metadata)
+            
     def __str__(self) -> str:
-        return "\n".join([str(i) for i in self.perceives])
+        self.store_memory(self.perceives)
+        result = "\n".join([str(i) for i in self.perceives])
+        self.perceives = []
+        return result
+    
     def append(self, content: Union[str, dict]):
         new_perceive = perceive_unit(content=content)
         self.perceives.append(new_perceive)
@@ -64,10 +79,12 @@ class perceive_group():
                 self.perceives = self.perceives[-self.perceive_limit:]
 
 class memory_list():
+
     memorys: List[perceive_unit]
     memory_limit: int = 30
     memory_zip_rate: float = 0.3
     zip_memory: callable
+
     def __init__(self, 
                  memorys: List[perceive_unit] = [], 
                  memory_limit:int = 30, 
@@ -78,8 +95,10 @@ class memory_list():
         self.memory_limit = memory_limit
         self.zip_memory = zip_memory
         self.memory_zip_rate = memory_zip_rate
+
     def __str__(self) -> str:
         return "\n".join([str(i) for i in self.memorys])
+    
     def append(self,content:perceive_unit):
         self.memorys.append(content)
         if self.zip_memory != None:
@@ -99,4 +118,3 @@ class memory_perceive_union:
         self.docs = doc_m
     def get_unions(self):
         return self.memorys, self.perceives
-    
