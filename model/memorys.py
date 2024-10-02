@@ -44,8 +44,11 @@ class memory_list():
         self.memory_zip_rate = memory_zip_rate
     def __str__(self):
         return "\n".join([str(i) for i in self.memorys])
-    def append(self,content:List[perceive_unit]):
-        self.memorys += content
+    def append(self,content):
+        if not isinstance(content, have_dict):
+            self.memorys.append(perceive_unit(content))
+        else:
+            self.memorys.append(content)
         if self.zip_memory != None:
             if len(self.memorys) > self.memory_limit:
                 willzip_memory = self.memorys[int(30*self.memory_zip_rate)]
