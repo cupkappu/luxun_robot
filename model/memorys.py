@@ -9,10 +9,10 @@ class perceive_unit():
         self.content = content
     def __str__(self) -> str:
         if isinstance(self.content, str):
-            return self.content
+            return str(self.content)
         elif isinstance(self.content, dict):
             return dict2xml(self.content)
-        return None
+        return ""
     
 class perceive_group():
     perceives: List[perceive_unit]
@@ -24,36 +24,40 @@ class perceive_group():
         self.store_memory = store_memory
     def __str__(self) -> str:
         return "\n".join([str(i) for i in self.perceives])
-    def append(self, content:Union[str, dict], ):
-        self.perceives.append(perceive_unit(content=content))
-        if self.store_memory != None:
-            result = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives), self.perceive_limit)] if len(self.perceives) > self.perceive_limit else [[self.perceives]]
-            for i in result[:-1]:
-                self.store_memory(i)
-            self.perceives = result[-1]
+    def append(self, content: Union[str, dict]):
+        new_perceive = perceive_unit(content=content)
+        self.perceives.append(new_perceive)
+        if self.store_memory is not None:
+            if len(self.perceives) > self.perceive_limit:
+                chunks = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives) - self.perceive_limit, self.perceive_limit)]
+                for chunk in chunks:
+                    try:
+                        for perceive in chunk:
+                            self.store_memory(perceive)
+                    except Exception as e:
+                        print(f"存儲記憶時出錯: {e}")
+                self.perceives = self.perceives[-self.perceive_limit:]
+
 
 class memory_list():
-    memorys: List[have_dict]
+    memorys: List[perceive_unit]
     memory_limit: int = 30
     memory_zip_rate: float = 0.3
     zip_memory: callable
-    def __init__(self, memorys: List[have_dict] = [], memory_limit:int = 30, zip_memory: callable = None, memory_zip_rate: float = 0.3):
+    def __init__(self, memorys: List[perceive_unit] = [], memory_limit:int = 30, zip_memory: callable = None, memory_zip_rate: float = 0.3):
         self.memorys = memorys
         self.memory_limit = memory_limit
         self.zip_memory = zip_memory
         self.memory_zip_rate = memory_zip_rate
-    def __str__(self):
+    def __str__(self) -> str:
         return "\n".join([str(i) for i in self.memorys])
-    def append(self,content):
-        if not isinstance(content, have_dict):
-            self.memorys.append(perceive_unit(content))
-        else:
-            self.memorys.append(content)
+    def append(self,content:perceive_unit):
+        self.memorys.append(content)
         if self.zip_memory != None:
             if len(self.memorys) > self.memory_limit:
-                willzip_memory = self.memorys[int(30*self.memory_zip_rate)]
-                mem_sum = self.zip_memory(willzip_memory)
-                self.memorys = [mem_sum] + self.memorys[int(30*self.memory_zip_rate)-1:]
+                willzip_memory = self.memorys[:int(self.memory_limit*self.memory_zip_rate)]
+                mem_sum = self.zip_memory("\n".join([str(i) for i in willzip_memory]))
+                self.memorys = [mem_sum] + self.memorys[int(self.memory_limit*self.memory_zip_rate)-1:]
 
 class memory_perceive_union:
     memorys: memory_list
