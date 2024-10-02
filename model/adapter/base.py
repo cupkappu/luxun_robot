@@ -15,3 +15,5 @@ class Adapter(ABC):
     @abstractmethod
     def list_all(self):
         pass
+    def list_nums(self):
+        pass
