@@ -4,3 +4,6 @@ class have_dict(ABC):
     @abstractmethod
     def to_dict(self) -> dict:
         pass
+    @abstractmethod
+    def __str__(self) -> str:
+        pass

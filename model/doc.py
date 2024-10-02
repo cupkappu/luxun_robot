@@ -1,6 +1,6 @@
 import uuid as uuidl
 from langchain_core.language_models import BaseChatModel
-from typing import List
+from typing import List, Union
 from pydantic import BaseModel, Field
 from prompts import percive_module
 from langchain_core.output_parsers import JsonOutputParser
@@ -29,13 +29,15 @@ class doc(have_dict):
         self.time = time
     def __str__(self) -> str:
         result = ""
-        if isinstance(self.doc, str):
-            return self.doc
+        if not isinstance(self.doc, doc):
+            return str(self.doc)
         for i in self.doc:
             if isinstance(i, str):
-                result += dict2xml(i)+'\n'
+                result += i+'\n'
             elif isinstance(i, doc):
                 result += i.get_summary()
+            else:
+                result += str(i) + '\n'
         return result
     def get_summary(self) -> str:
         return {'DOC':{'UUID':self.uuid,'SUMMARY':self.summary,'time':self.time}}
