@@ -31,6 +31,7 @@ class MongoAdapter(Adapter):
         return result.deleted_count > 0
     
     def list_all(self, fields:List[str] = None, meta_on:bool = True):
+        query = {}
         if meta_on:
             query = {'metadata':self.metadata}
         else:
@@ -40,6 +41,7 @@ class MongoAdapter(Adapter):
         return list(self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields]))))
     
     def list_nums(self, fields:List[str] = None, meta_on:bool = True,nums:int = 1):
+        query = {}
         if meta_on:
             query = {'metadata':self.metadata}
         else:
