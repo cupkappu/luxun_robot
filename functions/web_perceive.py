@@ -41,7 +41,7 @@ def render_page(content:str):
             box-sizing: border-box; /* 确保内边距和边框不会增加元素的总宽度 */
         }}
     </style>
-    <textarea readonly>{content}</textarea>"""
+    <code>{content}</code>"""
 
 @app.route('/get_doc/<doc_no>')
 async def get_doc(doc_no):

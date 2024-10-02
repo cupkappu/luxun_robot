@@ -4,6 +4,7 @@ from dict2xml import dict2xml
 from .doc import docs
 from .adapter import db_drivers
 import uuid as uuidl
+from utils import get_time
 
 class perceive_unit(have_dict):
 
@@ -13,6 +14,7 @@ class perceive_unit(have_dict):
     def __init__(self, content:Union[str,dict],uuid: str = str(uuidl.uuid4()),**kwargs):
         self.content = content
         self.metadata = kwargs.get('metadata',{})
+        self.time = get_time()
         self.uuid = uuid
 
     def __str__(self) -> str:
@@ -25,6 +27,7 @@ class perceive_unit(have_dict):
     def to_dict(self) -> dict:
         return {
             'content': self.content,
+            'time': self.time
         }
 
 class perceive_group():
@@ -46,15 +49,15 @@ class perceive_group():
         self.perceives = perceives
         self.perceive_limit = perceive_limit
         self.store_memory = store_memory
-        metadata['type'] = 'perceive'
+        self.metadata = metadata
+        self.metadata['type'] = 'perceive'
         if storage != 'memory':
-            metadata['type'] = 'perceive'
             self.storage_driver = db_drivers[storage](
                 db_uri=db_uri,
                 db_name=db_name,
                 table=table,
                 constructor=perceive_unit, 
-                metadata = metadata)
+                metadata = self.metadata)
             
     def __str__(self) -> str:
         self.store_memory(self.perceives)
@@ -99,7 +102,8 @@ class memory_list():
         self.memory_limit = memory_limit
         self.zip_memory = zip_memory
         self.memory_zip_rate = memory_zip_rate
-        metadata['type'] = 'perceive'
+        self.metadata = metadata
+        self.metadata['type'] = 'perceive'
         if storage != 'memory':
             metadata['type'] = 'perceive'
             self.storage_driver = db_drivers[storage](
@@ -107,7 +111,7 @@ class memory_list():
                 db_name=db_name,
                 table=table,
                 constructor=perceive_unit, 
-                metadata = metadata)
+                metadata = self.metadata)
             self.memorys = self.storage_driver.list_nums(fields=['content','summary','uuid'],nums = int(round(memory_limit*0.3)))
 
     def __str__(self) -> str:
