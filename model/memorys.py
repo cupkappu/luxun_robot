@@ -24,7 +24,7 @@ class perceive_unit(have_dict):
     
     def to_dict(self) -> dict:
         return {
-            'content': self.content
+            'content': self.content,
         }
 
 class perceive_group():
@@ -47,9 +47,7 @@ class perceive_group():
         self.perceive_limit = perceive_limit
         self.store_memory = store_memory
         metadata['type'] = 'perceive'
-        if storage == 'memory':
-            self.perceives = perceives
-        else:
+        if storage != 'memory':
             metadata['type'] = 'perceive'
             self.storage_driver = db_drivers[storage](
                 db_uri=db_uri,
@@ -57,7 +55,6 @@ class perceive_group():
                 table=table,
                 constructor=perceive_unit, 
                 metadata = metadata)
-            self.perceives = self.storage_driver.list_nums(nums=self.perceive_limit)
             
     def __str__(self) -> str:
         self.store_memory(self.perceives)
@@ -91,12 +88,27 @@ class memory_list():
                  memorys: List[perceive_unit] = [], 
                  memory_limit:int = 30, 
                  zip_memory: callable = None, 
-                 memory_zip_rate: float = 0.3,**kwargs
+                 memory_zip_rate: float = 0.3,
+                 storage: str = 'memory', 
+                 db_uri: str = '',
+                 db_name:str = '',
+                 table:str = '', 
+                 metadata: dict = {},**kwargs
                  ):
         self.memorys = memorys
         self.memory_limit = memory_limit
         self.zip_memory = zip_memory
         self.memory_zip_rate = memory_zip_rate
+        metadata['type'] = 'perceive'
+        if storage != 'memory':
+            metadata['type'] = 'perceive'
+            self.storage_driver = db_drivers[storage](
+                db_uri=db_uri,
+                db_name=db_name,
+                table=table,
+                constructor=perceive_unit, 
+                metadata = metadata)
+            self.memorys = self.storage_driver.list_nums(fields=['content','summary','uuid'],nums = int(round(memory_limit*0.3)))
 
     def __str__(self) -> str:
         return "\n".join([str(i) for i in self.memorys])
