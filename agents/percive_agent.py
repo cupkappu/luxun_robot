@@ -49,9 +49,7 @@ class State():
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
         
 
-    def add_perceive(self, content_dict):
-        self.perceives.append(content_dict)
-        self.write_current_memory()
+    def write_perceive(self):
         self.perceive = str(self.perceives) + get_time()
         return self
 
@@ -118,8 +116,9 @@ class percive_agent:
         self.agent = self.prompt | self.llm.bind_tools(self.tools.values())
         print(f'Add tools{ " ".join([i.name for i in tools]) }.')
 
-    async def invoke(self,query,looptimes):
-        self.state.add_perceive(content_dict=query)
+    async def invoke(self,looptimes):
+        self.state.write_perceive()
+        self.state.write_current_memory()
         print("Perceive: "+self.state.perceive)
         all_dict = self.state.to_dict()
         all_dict['looptimes'] = str(looptimes)
@@ -158,7 +157,7 @@ class percive_agent:
                 break
             if looptimes >= self.looptimes*0.9:
                 self.perceives.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
-            pmt = await self.invoke(str(self.perceives),looptimes)
+            pmt = await self.invoke(looptimes)
             self.perceives.append(pmt)
             if self.tool_called:
                 self.enable = True
