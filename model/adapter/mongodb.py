@@ -39,7 +39,7 @@ class MongoAdapter(Adapter):
             return list(self.table.find(query))
         return list(self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields]))))
     
-    def list_nums(self, fields:List[str], meta_on:bool = True,nums:int = 1):
+    def list_nums(self, fields:List[str] = None, meta_on:bool = True,nums:int = 1):
         if meta_on:
             query = {'metadata':self.metadata}
         else:
