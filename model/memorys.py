@@ -41,7 +41,7 @@ class perceive_group():
                  db_uri: str = '',
                  db_name:str = '',
                  table:str = '', 
-                 metadata: dict = {}
+                 metadata: dict = {},**kwargs
                  ):
         self.perceives = perceives
         self.perceive_limit = perceive_limit
