@@ -103,7 +103,6 @@ class memory_list():
         self.memory_zip_rate = memory_zip_rate
         self.metadata = metadata
         if storage != 'memory':
-            metadata['type'] = 'perceive'
             self.storage_driver = db_drivers[storage](
                 db_uri=db_uri,
                 db_name=db_name+'_perceive',
