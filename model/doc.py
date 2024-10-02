@@ -56,8 +56,7 @@ class docs:
             self.docs = docs
         else:
             self.metadata = metadata
-            self.metadata['type'] = 'doc'
-            self.storage_driver = db_drivers[storage](db_uri=db_uri,db_name=db_name,table=table,constructor=doc, metadata = self.metadata)
+            self.storage_driver = db_drivers[storage](db_uri=db_uri,db_name=db_name,table=table+'_doc',constructor=doc, metadata = self.metadata)
         self.storage = storage
         self.llm = llm
     def find_doc(self, uuid:str, meta_on = True) -> doc:

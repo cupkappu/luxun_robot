@@ -50,12 +50,11 @@ class perceive_group():
         self.perceive_limit = perceive_limit
         self.store_memory = store_memory
         self.metadata = metadata
-        self.metadata['type'] = 'perceive'
         if storage != 'memory':
             self.storage_driver = db_drivers[storage](
                 db_uri=db_uri,
                 db_name=db_name,
-                table=table,
+                table=table+'_perceive',
                 constructor=perceive_unit, 
                 metadata = self.metadata)
             
@@ -103,12 +102,11 @@ class memory_list():
         self.zip_memory = zip_memory
         self.memory_zip_rate = memory_zip_rate
         self.metadata = metadata
-        self.metadata['type'] = 'perceive'
         if storage != 'memory':
             metadata['type'] = 'perceive'
             self.storage_driver = db_drivers[storage](
                 db_uri=db_uri,
-                db_name=db_name,
+                db_name=db_name+'_perceive',
                 table=table,
                 constructor=perceive_unit, 
                 metadata = self.metadata)
