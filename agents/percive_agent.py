@@ -45,14 +45,14 @@ class State():
         self.perceive_length_limit = kwargs.get('perceive_length_limit', 0)
 
 
-    def add_perceive(self, xml_block):
+    def add_perceive(self, content_dict):
         self.current_memory_list.append(self.perceive)
-        self.perceive_history.append(xml_block)
+        self.perceive_history.append(content_dict)
         # if self.perceive_length_limit != 0:
 
         #     zip_perceive = self.docs_m.add_doc(content_list=[xml_block])
             
-        self.perceive = xml_block + get_time()
+        self.perceive = content_dict + get_time()
         memory_length = len(self.current_memory_list)
         memory_limit = int(self.current_memory_length*0.9)
         memory_cache_length = int(self.current_memory_length*0.7)
@@ -82,9 +82,9 @@ class State():
         self.current_memory = ''
         for i in memory_list:
             if isinstance(i, doc):
-                self.current_memory += '\n' + i.get_summary()
+                self.current_memory += '\n' + dict2xml(i.get_summary())
             if isinstance(i, str):
-                self.current_memory += '\n' + i
+                self.current_memory += '\n' + dict2xml(i)
         return self
     
     def to_dict(self):
@@ -93,7 +93,7 @@ class State():
             'current_memory':self.write_current_memory().current_memory,
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
-            'perceive':self.perceive,
+            'perceive':dict2xml(self.perceive),
             'note': "\n".join([f"<NOTE_UNIT>{dict2xml(i)}</NOTE_UNIT>" for i in self.note])
         }
 
@@ -136,12 +136,11 @@ class percive_agent:
         print(f'Add tools{ " ".join([i.name for i in tools]) }.')
 
     def invoke(self,query,looptimes):
-        self.state.add_perceive(xml_block=dict2xml(query))
+        self.state.add_perceive(content_dict=query)
         print("Perceive: "+self.state.perceive)
         all_dict = self.state.to_dict()
         all_dict['looptimes'] = str(looptimes)
-        all_dict['augmented_prompt'] = "\n".join([dict2xml({k:v}) for k,v in self.augmented_prompts.items()])
-        print(self.prompt.invoke(all_dict))
+        all_dict['augmented_prompt'] = dict2xml(self.augmented_prompts)
         msg = self.agent.invoke(all_dict)
         self.last_msg = msg
         
@@ -173,7 +172,7 @@ class percive_agent:
         if self.perceive_limit != 0:
             result = [query[i:i + self.perceive_limit] for i in range(0, len(query), self.perceive_limit)] if len(query) > self.perceive_limit else [[query]]
             for i in result[:-1]:
-                self.state.add_perceive(xml_block=dict2xml(i))
+                self.state.add_perceive(xml_block=i)
         pmt = result[-1]
         looptimes = 1
         while True:
