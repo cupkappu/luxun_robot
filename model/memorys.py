@@ -46,6 +46,7 @@ class perceive_group():
         self.perceives = perceives
         self.perceive_limit = perceive_limit
         self.store_memory = store_memory
+        metadata['type'] = 'perceive'
         if storage == 'memory':
             self.perceives = perceives
         else:
@@ -56,13 +57,14 @@ class perceive_group():
                 table=table,
                 constructor=perceive_unit, 
                 metadata = metadata)
+            self.perceives = self.storage_driver.list_nums(nums=self.perceive_limit)
             
     def __str__(self) -> str:
         self.store_memory(self.perceives)
         result = "\n".join([str(i) for i in self.perceives])
         self.perceives = []
         return result
-    
+
     def append(self, content: Union[str, dict]):
         new_perceive = perceive_unit(content=content)
         self.perceives.append(new_perceive)
