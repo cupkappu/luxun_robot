@@ -46,4 +46,4 @@ class MongoAdapter(Adapter):
             query = {}
         if fields != None:
             return list(self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields]))).sort('timestamp', -1).limit(nums))
-        return list(self.table.find().sort('timestamp', -1).limit(nums))
+        return list(self.table.find(query).sort('timestamp', -1).limit(nums))
