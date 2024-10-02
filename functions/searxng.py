@@ -15,7 +15,7 @@ def give_callback(agent: percive_agent, **kwargs):
     g_agent = agent
     qq_agents = kwargs.get('functions.qq',[])
     for i in qq_agents:
-        i.agent.add_tools(tool_factory(i.agent.state.docs_m))
+        i.agent.add_tools(tool_factory(i.agent))
 
 async def start_callback():
     pass
@@ -39,13 +39,13 @@ search_prompt=ChatPromptTemplate.from_messages(
 
 loop_funcs = [start_callback]
 
-def tool_factory(docs_m: docs):
+def tool_factory(agent: percive_agent):
     @tool
     def searx_search(query: Annotated[str, 'Keywords to search']
                     ) -> str:
         """Search Engine to search information from web."""
         results = search.run(query=query)
-        result = docs_m.add_doc([f'Query:{query}\n'+results]).get_summary()
+        result = agent.state.docs_m.add_doc([f'Original Perceive:\n{str(agent.state.perceives)}\n\nQuery:{query}\n'+results]).get_summary()
         return result
     return [searx_search]
 
