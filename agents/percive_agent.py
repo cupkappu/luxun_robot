@@ -118,7 +118,7 @@ class percive_agent:
         self.agent = self.prompt | self.llm.bind_tools(self.tools.values())
         print(f'Add tools{ " ".join([i.name for i in tools]) }.')
 
-    def invoke(self,query,looptimes):
+    async def invoke(self,query,looptimes):
         self.state.add_perceive(content_dict=query)
         print("Perceive: "+self.state.perceive)
         all_dict = self.state.to_dict()
@@ -150,7 +150,7 @@ class percive_agent:
         print("Tool Output: " + str(result))
         return result
 
-    def workflow(self,):
+    async def workflow(self,):
         self.stop_mark = False
         looptimes = 1
         while True:
@@ -158,7 +158,8 @@ class percive_agent:
                 break
             if looptimes >= self.looptimes*0.9:
                 self.perceives.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
-            self.perceives.append(self.invoke(str(self.perceives),looptimes))
+            pmt = await self.invoke(str(self.perceives),looptimes)
+            self.perceives.append(pmt)
             if self.tool_called:
                 self.enable = True
                 self.tool_called = False
@@ -175,7 +176,7 @@ class percive_agent:
             # print('check perceives.')
             if (self.perceives != []) and (self.enable):
                 print('start workflow.')
-                self.workflow()
+                await self.workflow()
                 if not self.enable_llm_stop_marker:
                     self.callback_invoker(self.last_msg.content)
                 self.perceives = []
