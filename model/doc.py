@@ -38,7 +38,7 @@ class doc(have_dict):
                 result += i.get_summary()
         return result
     def get_summary(self) -> str:
-        return {'DOC':{'UUID':self.uuid,'SUMMARY':self.summary,'time':self.time}}
+        return dict2xml({'DOC':{'UUID':self.uuid,'SUMMARY':self.summary,'time':self.time}})
     def to_dict(self):
         return {
             'doc':self.doc,

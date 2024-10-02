@@ -1,0 +1,23 @@
+version: '3'
+services:
+  luxun-robot:
+    build: .
+    logging:
+      driver: syslog9
+#    ports:
+#      - "5000:5000"
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./tools_config/data:/app/data
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    env_file:
+      - .env
+#    ports:
+#      - "8080:8080"
+    volumes:
+      - ./tools_config/searx:/etc/searxng
+    restart: always
