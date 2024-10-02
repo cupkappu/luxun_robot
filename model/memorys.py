@@ -2,8 +2,9 @@ from .base_models import have_dict
 from typing import Union, List
 from dict2xml import dict2xml
 from .doc import docs
+from .adapter import db_drivers
 
-class perceive_unit():
+class perceive_unit(have_dict):
     content: Union[str,dict]
     def __init__(self, content:Union[str,dict]):
         self.content = content
@@ -13,20 +14,44 @@ class perceive_unit():
         elif isinstance(self.content, dict):
             return dict2xml(self.content)
         return ""
-    
+    def to_dict(self) -> dict:
+        return {
+            'content': self.content
+        }
+
 class perceive_group():
     perceives: List[perceive_unit]
     perceive_limit: int
     store_memory: callable
-    def __init__(self, perceives:List[perceive_unit] = [], perceive_limit: int = 20, store_memory:callable = None):
+    def __init__(self, 
+                 perceives:List[perceive_unit] = [], 
+                 perceive_limit: int = 20, 
+                 store_memory:callable = None,
+                 storage: str = 'memory', 
+                 db_uri: str = '',
+                 db_name:str = '',
+                 table:str = '', 
+                 metadata: dict = {}
+                 ):
         self.perceives = perceives
         self.perceive_limit = perceive_limit
         self.store_memory = store_memory
+        if storage == 'memory':
+            self.perceives = perceives
+        else:
+            metadata['type'] = 'perceive'
+            self.storage_driver = db_drivers[storage](
+                db_uri=db_uri,
+                db_name=db_name,
+                table=table,
+                constructor=perceive_unit, 
+                metadata = metadata)
     def __str__(self) -> str:
         return "\n".join([str(i) for i in self.perceives])
     def append(self, content: Union[str, dict]):
         new_perceive = perceive_unit(content=content)
         self.perceives.append(new_perceive)
+        self.storage_driver.save_one(new_perceive)
         if self.store_memory is not None:
             if len(self.perceives) > self.perceive_limit:
                 chunks = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives) - self.perceive_limit, self.perceive_limit)]
@@ -38,13 +63,17 @@ class perceive_group():
                         print(f"存儲記憶時出錯: {e}")
                 self.perceives = self.perceives[-self.perceive_limit:]
 
-
 class memory_list():
     memorys: List[perceive_unit]
     memory_limit: int = 30
     memory_zip_rate: float = 0.3
     zip_memory: callable
-    def __init__(self, memorys: List[perceive_unit] = [], memory_limit:int = 30, zip_memory: callable = None, memory_zip_rate: float = 0.3):
+    def __init__(self, 
+                 memorys: List[perceive_unit] = [], 
+                 memory_limit:int = 30, 
+                 zip_memory: callable = None, 
+                 memory_zip_rate: float = 0.3
+                 ):
         self.memorys = memorys
         self.memory_limit = memory_limit
         self.zip_memory = zip_memory

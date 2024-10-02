@@ -55,6 +55,7 @@ class docs:
         if storage == 'memory':
             self.docs = docs
         else:
+            metadata['type'] = 'doc'
             self.storage_driver = db_drivers[storage](db_uri=db_uri,db_name=db_name,table=table,constructor=doc, metadata = metadata)
         self.storage = storage
         self.llm = llm
