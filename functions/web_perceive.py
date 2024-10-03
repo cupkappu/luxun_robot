@@ -1,4 +1,4 @@
-from quart import Quart, jsonify, request
+from quart import Quart, jsonify, request, render_template
 from agents.percive_agent import percive_agent
 from functions.qq import find_qq_agent_by_no, QQAgent
 from typing import List
@@ -32,16 +32,7 @@ async def get_qq_prompt(group_no):
     return render_page(result)
 
 def render_page(content:str):
-    return f"""
-    <style>
-        textarea {{
-            width: 100%;
-            height: 100%; /* 根据需要调整高度 */
-            resize: both; /* 允许用户调整大小 */
-            box-sizing: border-box; /* 确保内边距和边框不会增加元素的总宽度 */
-        }}
-    </style>
-    <code>{content}</code>"""
+    return render_template('index.html', xml_code=content)
 
 @app.route('/get_doc/<doc_no>')
 async def get_doc(doc_no):

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+        .xml-tag {
+            color: #007bff;
+        }
+        .xml-value {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="mb-4">{{ title }}</h1>
+    <pre>
+<code>
+{% for line in xml_code.splitlines() %}
+    {{ line | replace('<', '<span class="xml-tag">&lt;') | replace('>', '&gt;</span>') | replace('"', '<span class="xml-value">"') }}
+{% endfor %}
+</code>
+    </pre>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
