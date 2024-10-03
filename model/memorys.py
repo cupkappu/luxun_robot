@@ -72,15 +72,15 @@ class perceive_group():
         new_perceive = perceive_unit(content=content)
         self.perceives.append(new_perceive)
         self.storage_driver.save_one(new_perceive)
-        if self.store_memory is not None:
-            if len(self.perceives) > self.perceive_limit:
-                chunks = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives) - self.perceive_limit, self.perceive_limit)]
-                for chunk in chunks:
-                    try:
-                        self.store_memory(chunk)
-                    except Exception as e:
-                        print(f"存儲記憶時出錯: {e}")
-                self.perceives = self.perceives[-self.perceive_limit:]
+#        if self.store_memory is not None:
+#            if len(self.perceives) > self.perceive_limit:
+#                chunks = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives) - self.perceive_limit, self.perceive_limit)]
+#                for chunk in chunks:
+#                    try:
+#                        self.store_memory(chunk)
+#                    except Exception as e:
+#                        print(f"?????????????????????: {e}")
+#                self.perceives = self.perceives[-self.perceive_limit:]
 
 class memory_list():
 
