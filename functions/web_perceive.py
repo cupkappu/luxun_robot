@@ -11,7 +11,7 @@ def give_callback(agent: percive_agent, **kwargs):
     g_agent = agent
     qq_agents = kwargs['functions.qq']
 
-app: Quart = Quart(__name__)
+app: Quart = Quart(__name__,template_folder='./html_template')
 
 async def start_callback():
     config = {"host": "0.0.0.0", "port": 5000, "debug": False}
@@ -29,10 +29,10 @@ async def get_qq_prompt(group_no):
     prompt_state = qagent.agent.state.to_dict()
     prompt_state.update({'looptimes':0, 'augmented_prompt':''})
     result = qagent.agent.prompt.invoke(prompt_state).to_string()
-    return render_page(result)
+    return render_template('render_xml.html', xml_code=result, title=group_no+' Prompt')
 
 def render_page(content:str):
-    return render_template('index.html', xml_code=content)
+    return 
 
 @app.route('/get_doc/<doc_no>')
 async def get_doc(doc_no):
