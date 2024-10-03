@@ -29,7 +29,7 @@
     <pre>
 <code>
 {% for line in xml_code.splitlines() %}
-    {{ line | replace('<', '&lt;') | replace('>', '&gt;') }}
+    {{ line | replace('<', '<') | replace('>', '>') }}
 {% endfor %}
 </code>
     </pre>
