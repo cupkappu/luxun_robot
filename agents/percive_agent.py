@@ -18,7 +18,6 @@ class State():
     llm\n
     """
     personal_setting: str
-    current_memory: str
     current_memory_list: memory_list
     knowledge: str
     relate_memory: str
@@ -45,9 +44,8 @@ class State():
             kwargs.get('current_memory_length',self.current_memory_length),
             lambda x: self.docs_m.add_doc(x).get_summary(),metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
         self.perceives = perceive_group(kwargs.get('perceives',[]), kwargs.get('perceive_limit', 10),
-                                        store_memory=self.current_memory_list.append,metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
+                                        store_memory=self.current_memory_list.add,metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
-        
 
     def write_perceive(self):
         self.perceive = str(self.perceives) + get_time()
@@ -62,16 +60,11 @@ class State():
         self.note = kwargs.get('note',self.note)
         self.perceive_history = kwargs.get('perceive_history', self.perceive_history)
         return self
-
-    def write_current_memory(self,memory_list:memory_list = None):
-        memory_list = memory_list if memory_list != None else self.current_memory_list
-        self.current_memory = str(memory_list)
-        return self
     
     def to_dict(self):
         return {
             'personal_setting':self.personal_setting,
-            'current_memory':self.write_current_memory().current_memory,
+            'current_memory':str(self.current_memory_list),
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
             'perceive':str(self.perceive),
@@ -118,7 +111,6 @@ class percive_agent:
 
     async def invoke(self,looptimes):
         self.state.write_perceive()
-        self.state.write_current_memory()
         print("Perceive: "+self.state.perceive)
         all_dict = self.state.to_dict()
         all_dict['looptimes'] = str(looptimes)

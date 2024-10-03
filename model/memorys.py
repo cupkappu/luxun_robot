@@ -73,8 +73,7 @@ class perceive_group():
                 chunks = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives) - self.perceive_limit, self.perceive_limit)]
                 for chunk in chunks:
                     try:
-                        for perceive in chunk:
-                            self.store_memory(perceive)
+                        self.store_memory(chunk)
                     except Exception as e:
                         print(f"存儲記憶時出錯: {e}")
                 self.perceives = self.perceives[-self.perceive_limit:]
@@ -121,6 +120,13 @@ class memory_list():
                 willzip_memory = self.memorys[:int(self.memory_limit*self.memory_zip_rate)]
                 mem_sum = self.zip_memory("\n".join([str(i) for i in willzip_memory]))
                 self.memorys = [mem_sum] + self.memorys[int(self.memory_limit*self.memory_zip_rate)-1:]
+    def add(self,content:List[perceive_unit]):
+        self.memorys += content
+        if self.zip_memory != None:
+            if len(self.memorys) > self.memory_limit:
+                willzip_memory = self.memorys[:int(self.memory_limit*self.memory_zip_rate)]
+                mem_sum = self.zip_memory("\n".join([str(i) for i in willzip_memory]))
+                self.memorys = [mem_sum] + self.memorys[int(self.memory_limit*self.memory_zip_rate)-1:]
 
 class memory_perceive_union:
     memorys: memory_list
@@ -129,7 +135,7 @@ class memory_perceive_union:
         self.memorys = memorys
         self.memorys.zip_memory = lambda x :doc_m.add_doc(x).get_summary()
         self.perceives = perceives
-        self.perceives.store_memory = self.memorys.append
+        self.perceives.store_memory = self.memorys.add
         self.docs = doc_m
     def get_unions(self):
         return self.memorys, self.perceives
