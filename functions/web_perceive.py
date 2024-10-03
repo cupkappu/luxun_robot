@@ -31,8 +31,6 @@ async def get_qq_prompt(group_no):
     result = qagent.agent.prompt.invoke(prompt_state).to_string()
     return render_template('render_xml.html', xml_code=result, title=group_no+' Prompt')
 
-def render_page(content:str):
-    return 
 
 @app.route('/get_doc/<doc_no>')
 async def get_doc(doc_no):
