@@ -64,10 +64,10 @@ class State():
     def to_dict(self):
         return {
             'personal_setting':self.personal_setting,
-            'current_memory':str(self.current_memory_list),
+            'current_memory': str(self.current_memory_list),
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
-            'perceive':str(self.perceive),
+            'perceive': self.perceives.get_perceive(),
             'note': "\n".join([f"<NOTE_UNIT>{dict2xml(i)}</NOTE_UNIT>" for i in self.note])
         }
 
@@ -165,9 +165,9 @@ class percive_agent:
         while True:
             await asyncio.sleep(self.looptime)
             # print('check perceives.')
-            if (self.perceives != []) and (self.enable):
+            if (self.perceives.perceives != []) and (self.enable):
                 print('start workflow.')
                 await self.workflow()
                 if not self.enable_llm_stop_marker:
                     self.callback_invoker(self.last_msg.content)
-                self.perceives = []
+                self.perceives.perceives = []
