@@ -40,12 +40,10 @@ class MongoAdapter(Adapter):
             return list(self.table.find(query))
         return list(self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields]))))
     
-    def list_nums(self, fields:List[str] = None, meta_on:bool = True,nums:int = 1):
+    def list_nums(self, meta_on:bool = True,nums:int = 1):
         query = {}
         if meta_on:
             query = {'metadata':self.metadata,'timestamp': {'$exists': True}}
         else:
             query = {'timestamp': {'$exists': True}}
-        if fields != None:
-            return list(self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields]))).sort('timestamp', -1).limit(nums))
-        return list(self.table.find(query).sort('timestamp', -1).limit(nums))
+        return [self.source_class_constructor(i) for i in list(self.table.find(query).sort('timestamp', -1).limit(nums))]
