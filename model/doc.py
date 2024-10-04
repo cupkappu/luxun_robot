@@ -72,6 +72,6 @@ class docs:
         if self.storage == 'memory': self.docs.append(c_doc)
         else: self.storage_driver.save_one(c_doc)
         return c_doc
-    def list(self,fields:List[str] = ['uuid','summary'], meta_on:bool = True):
+    def list_docs(self,fields:List[str] = ['uuid','summary'], meta_on:bool = True):
         result = self.storage_driver.list_all(fields=fields, meta_on = meta_on)
         return result

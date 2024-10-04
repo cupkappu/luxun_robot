@@ -112,7 +112,7 @@ class memory_list():
                 table=table,
                 constructor=perceive_unit, 
                 metadata = self.metadata)
-            self.memorys = self.storage_driver.list_nums(nums = int(round(memory_limit*0.3)))
+            self.memorys = self.storage_driver.find_nums(nums = int(round(memory_limit*0.3)))
 
     def __str__(self) -> str:
         return "\n".join([str(i) for i in self.memorys])

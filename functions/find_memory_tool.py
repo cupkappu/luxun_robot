@@ -29,7 +29,7 @@ def tool_factory(docs_m: docs):
     @tool
     def list_doc(all:Annotated[bool,'Turn on to find all document, Turn off to find more centralized document.']):
         """List all documents"""
-        docs = docs_m.list(meta_on = not all)
+        docs = docs_m.list_docs(meta_on = not all)
         return docs
     return [find_doc, list_doc]
 
