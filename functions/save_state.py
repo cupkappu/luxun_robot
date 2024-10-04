@@ -19,7 +19,7 @@ async def start_callback():
     while True:
         await asyncio.sleep(g_agent.looptime)
         with open(os.getenv('SAVE_STATE_PATH'), 'w') as f:
-            state = g_agent.state.to_dict()
+            state = g_agent.state.to_dict(change=False)
             state['current_memory_list'] = []
             # g_agent.state.current_memory_list
             state['note'] = g_agent.state.note

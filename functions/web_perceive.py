@@ -26,7 +26,7 @@ async def add_perceive():
 @app.route('/get_qq_prompt/<group_no>')
 async def get_qq_prompt(group_no):
     qagent = find_qq_agent_by_no(qq_agents,group_no)
-    prompt_state = qagent.agent.state.to_dict()
+    prompt_state = qagent.agent.state.to_dict(change=False)
     prompt_state.update({'looptimes':0, 'augmented_prompt':''})
     result = qagent.agent.prompt.invoke(prompt_state).to_string()
     return await render_template('render_xml.html', xml_code=result, title=group_no+' Prompt')

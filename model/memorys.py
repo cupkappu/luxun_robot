@@ -58,10 +58,11 @@ class perceive_group():
                 constructor=perceive_unit, 
                 metadata = self.metadata)
     
-    def get_perceive(self) -> str:
-        self.store_memory(self.perceives)
+    def get_perceive(self, change:bool = True) -> str:
         result = "\n".join([str(i) for i in self.perceives])
-        self.perceives = []
+        if change:
+            self.store_memory(self.perceives)
+            self.perceives = []
         return result
 
     def __str__(self) -> str:

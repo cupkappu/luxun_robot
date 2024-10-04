@@ -57,13 +57,13 @@ class State():
         self.perceive_history = kwargs.get('perceive_history', self.perceive_history)
         return self
     
-    def to_dict(self):
+    def to_dict(self, change:bool =True):
         return {
             'personal_setting':self.personal_setting,
             'current_memory': str(self.current_memory_list),
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
-            'perceive': self.perceives.get_perceive() + get_time(),
+            'perceive': self.perceives.get_perceive(change) + get_time(),
             'note': "\n".join([f"<NOTE_UNIT>{dict2xml(i)}</NOTE_UNIT>" for i in self.note])
         }
 
