@@ -47,10 +47,6 @@ class State():
                                         store_memory=self.current_memory_list.add,metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
 
-    def write_perceive(self):
-        self.perceive = str(self.perceives) + get_time()
-        return self
-
     def replace(self, **kwargs):
         self.personal_setting = kwargs.get('personal_setting', self.personal_setting)
         self.knowledge = kwargs.get('knowledge', self.knowledge)
@@ -67,7 +63,7 @@ class State():
             'current_memory': str(self.current_memory_list),
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
-            'perceive': self.perceives.get_perceive(),
+            'perceive': self.perceives.get_perceive() + get_time(),
             'note': "\n".join([f"<NOTE_UNIT>{dict2xml(i)}</NOTE_UNIT>" for i in self.note])
         }
 
@@ -110,8 +106,7 @@ class percive_agent:
         print(f'Add tools{ " ".join([i.name for i in tools]) }.')
 
     async def invoke(self,looptimes):
-        self.state.write_perceive()
-        print("Perceive: "+self.state.perceive)
+        print("Perceive: "+str(self.state.perceives))
         all_dict = self.state.to_dict()
         all_dict['looptimes'] = str(looptimes)
         all_dict['augmented_prompt'] = dict2xml(self.augmented_prompts)

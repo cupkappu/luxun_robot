@@ -8,6 +8,7 @@ from .base_models import have_dict
 from model.adapter import *
 from utils import get_time
 from dict2xml import dict2xml
+from .memorys import perceive_unit
 
 class sum_format(BaseModel):
     summary: str = Field(description="The summary of your current memory.")
@@ -39,8 +40,8 @@ class doc(have_dict):
             else:
                 result += str(i) + '\n'
         return result
-    def get_summary(self) -> str:
-        return {'DOC':{'UUID':self.uuid,'SUMMARY':self.summary,'time':self.time}}
+    def get_summary(self) -> perceive_unit:
+        return perceive_unit({'DOC':{'UUID':self.uuid,'SUMMARY':self.summary,'time':self.time}})
     def to_dict(self):
         return {
             'doc':self.doc,

@@ -59,13 +59,13 @@ class perceive_group():
                 metadata = self.metadata)
     
     def get_perceive(self) -> str:
-        result = "\n".join([str(i) for i in self.perceives])
-        return result
-
-    def __str__(self) -> str:
         self.store_memory(self.perceives)
         result = "\n".join([str(i) for i in self.perceives])
         self.perceives = []
+        return result
+
+    def __str__(self) -> str:
+        result = "\n".join([str(i) for i in self.perceives])
         return result
 
     def append(self, content: Union[str, dict]):
