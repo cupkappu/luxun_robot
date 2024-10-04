@@ -17,6 +17,7 @@ class State():
     perceive\n
     llm\n
     """
+    
     personal_setting: str
     current_memory_list: memory_list
     knowledge: str
