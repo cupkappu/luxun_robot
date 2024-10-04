@@ -2,7 +2,7 @@ from prompts import percive_module
 from langchain_core.language_models import BaseChatModel
 from dict2xml import dict2xml
 import asyncio
-from model.doc import doc, docs
+from model.doc import docs
 from langchain_core.prompts.chat import ChatPromptTemplate
 from utils import get_time
 from model.memorys import perceive_group, memory_list
