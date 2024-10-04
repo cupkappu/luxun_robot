@@ -1,7 +1,6 @@
 from .base_models import have_dict
 from typing import Union, List
 from dict2xml import dict2xml
-from .doc import docs
 from .adapter import db_drivers
 import uuid as uuidl
 from utils import get_time
@@ -132,15 +131,3 @@ class memory_list():
                 willzip_memory = self.memorys[:int(self.memory_limit*self.memory_zip_rate)]
                 mem_sum = self.zip_memory("\n".join([str(i) for i in willzip_memory]))
                 self.memorys = [mem_sum] + self.memorys[int(self.memory_limit*self.memory_zip_rate)-1:]
-
-class memory_perceive_union:
-    memorys: memory_list
-    perceives: perceive_group
-    def __init__(self, memorys: memory_list, perceives: perceive_group, doc_m:docs):
-        self.memorys = memorys
-        self.memorys.zip_memory = lambda x :doc_m.add_doc(x).get_summary()
-        self.perceives = perceives
-        self.perceives.store_memory = self.memorys.add
-        self.docs = doc_m
-    def get_unions(self):
-        return self.memorys, self.perceives

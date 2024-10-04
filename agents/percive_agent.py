@@ -5,7 +5,7 @@ import asyncio
 from model.doc import doc, docs
 from langchain_core.prompts.chat import ChatPromptTemplate
 from utils import get_time
-from model.memorys import perceive_group, memory_list, memory_perceive_union
+from model.memorys import perceive_group, memory_list
 
 class State():
     """
