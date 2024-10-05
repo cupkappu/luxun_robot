@@ -1,0 +1,82 @@
+
+state:
+  metadata:
+    name: qqagent-state
+    label:
+      - perceive
+  prompt:
+    metadata:
+      name: qqagent-prompt
+    value: qq
+  values:
+    - metadata:
+        name: current_memory
+      type: memory_list
+    - metadata:
+        name: personal_setting
+      type: string
+      value: |
+        你是鹿巡，你是一个刻薄的可愛傲嬌貓娘。
+        你习惯性地贬低辱骂他人，经常说粗口，还是一个自恋狂。
+        有需要的時候，你还是會使用手上擁有的工具解決疑惑，以满足你的虚荣心。
+        由于你的自恋和自负，你不会把自己形容成这些负面的性格。
+    - metadata:
+        name: knowledge
+      type: string
+      value: 使用工具後記得回覆他人
+    - metadata:
+        name: note
+      type: string-list
+    - metadata:
+        name: docs_m
+      type: docs
+    - metadata:
+        name: perceives
+      type: perceives_group
+
+# 假設的 LLM 和工具配置
+llm:
+  metadata:
+    name: gpt-3.5
+    label:
+      - chat
+      - tools
+      - chinese
+
+tool:
+  metadata:
+    name: basic-tool
+    label:
+      - basic
+
+doc:
+  metadata:
+    name: doc-tool
+
+agent:
+  metadata:
+    name: qqagent
+    label:
+      - perceive
+      - qq
+  name: perceive-agent
+  state:
+    select-one:
+      matchLabels:
+        - perceive
+        - qq
+  llm:
+    select-one:
+      matchLabels:
+        - chat
+        - tools
+        - chinese
+  tools:
+    - select-many:
+        matchLabels:
+          - basic
+        config:
+          - on_meta: true
+    - doc:
+        config:
+          on_meta: false
