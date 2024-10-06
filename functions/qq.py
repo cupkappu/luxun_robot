@@ -100,7 +100,7 @@ async def on_message(msg:dict):
         if msg['post_type'] == 'message':
             if msg['message_type'] == 'group':
                 if str(msg['group_id']) in id_list:
-                    perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':re.sub(r'\[CQ:.*?\]', '', msg['message'])}}
+                    perceive = {f"QQ群組|群號{msg['group_id']}":{"Sender": msg['sender'], 'Content':re.sub(r'\[CQ:.*?\]', '', msg['message'])},'speacial':{'CQ':re.findall(r'\[CQ:.*?\]',msg['message'])}}
                     print(perceive)
                     # g_agent.perceives.append(perceive)
                     qq_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id'])).agent
