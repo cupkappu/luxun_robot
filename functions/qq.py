@@ -6,7 +6,7 @@ from typing import Annotated, List,Dict
 import json
 from prompts.qq import qq_prompt,init_query
 import re
-from func_lib.qq_utils import process_cq
+from .func_lib.qq_utils import process_cq
 
 g_agent:percive_agent = None
 
