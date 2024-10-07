@@ -5,8 +5,9 @@ from io import BytesIO
 import os
 from llm import vlm
 from langchain_core.messages import HumanMessage
+from langchain_core.language_models.chat_models import BaseChatModel
 
-def process_cq(cq_messages,img_llm: bool = True):
+def process_cq(cq_messages,img_llm: bool = True) -> dict:
     # 用于使用llm解析图片
     cqs = []
     for item in cq_messages:
@@ -19,25 +20,29 @@ def process_cq(cq_messages,img_llm: bool = True):
             cq_dict["cq"][key] = value
         if (cq_dict['cq']['cqType']=='image'):
             if img_llm:
-                result = download_convert_base64(cq_dict['cq']['file'])
+                url = get_imgurl(cq_dict['cq']['file'])
+                result = base64_from_url(url)
                 result = vlm_desc(img_b64=result)
+                cqs.append(
+                    {'image':result,'img_url':url}
+                )
             else:
-                result = download_convert_base64(cq_dict['cq']['file'])
-            cqs.append(
-                {'image':result}
-            )
+                url = get_imgurl(cq_dict['cq']['file'])
+                cqs.append({"img_url":url})
         if cq_dict['cq']['cqType']=='at':
             cqs.append({'at':cq_dict['cq']['qq']})
     return cqs
 
-def download_convert_base64(imgfilename):
+def get_imgurl(imgfilename):
     getimginfoUrl = os.getenv('QQ_ONEBOT_HTTP_URL')+"/get_image"
     info=requests.get(getimginfoUrl,params={"file":imgfilename})
     file = info.json()['data']['file']
     filename=file.replace("/root/.config/QQ/", "")
     url=os.getenv('QQ_IMAGE_SERVER')+filename
-    response = requests.get(url)
-    # print(response)
+    return url
+
+def base64_from_url(imgurl:str)->str: 
+    response = requests.get(imgurl)
     try:
         img = Image.open(BytesIO(response.content))
         jpg = BytesIO()
@@ -48,7 +53,8 @@ def download_convert_base64(imgfilename):
         text = "Undecodable image."
     return text
 
-def vlm_desc(img_b64: str) -> str:
+def vlm_desc(img_b64: str, 
+             vlm:BaseChatModel = vlm,) -> str:
     message = HumanMessage(
         content=[
             {"type": "text", "text": """
