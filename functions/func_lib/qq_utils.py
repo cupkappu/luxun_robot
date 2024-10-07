@@ -22,7 +22,8 @@ def process_cq(cq_messages,img_llm: bool = True) -> dict:
             if img_llm:
                 url = get_imgurl(cq_dict['cq']['file'])
                 result = base64_from_url(url)
-                result = vlm_desc(img_b64=result)
+                if result != 'Undecodable image.':
+                    result = vlm_desc(img_b64=result)
                 cqs.append(
                     {'image':result,'img_url':url}
                 )
