@@ -59,9 +59,9 @@ async def vlm_desc(img_b64: str,
     message = HumanMessage(
         content=[
             {"type": "text", "text": """
-             As a professional visually impaired assistant, 
-             you need to describe the content on the image 
-             and return it to the user in a professional and organized way.
+             As a professional visual obstacle assistant,
+            You need to accurately and simply capture the focus of the image, 
+             describe to users
              """.replace('\n','')},
             {
                 "type": "image_url",

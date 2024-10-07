@@ -7,7 +7,6 @@ from langchain_core.output_parsers import JsonOutputParser
 from .base_models import have_dict
 from model.adapter import *
 from utils import get_time
-from dict2xml import dict2xml
 from .memorys import perceive_unit
 
 class sum_format(BaseModel):
