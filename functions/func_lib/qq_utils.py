@@ -7,7 +7,7 @@ from llm import vlm
 from langchain_core.messages import HumanMessage
 from langchain_core.language_models.chat_models import BaseChatModel
 
-def process_cq(cq_messages,img_llm: bool = True) -> dict:
+async def process_cq(cq_messages,img_llm: bool = True) -> dict:
     # 用于使用llm解析图片
     cqs = []
     for item in cq_messages:
@@ -23,7 +23,7 @@ def process_cq(cq_messages,img_llm: bool = True) -> dict:
                 url = get_imgurl(cq_dict['cq']['file'])
                 result = base64_from_url(url)
                 if result != 'Undecodable image.':
-                    result = vlm_desc(img_b64=result)
+                    result = await vlm_desc(img_b64=result)
                 cqs.append(
                     {'image':result,'img_url':url}
                 )
@@ -54,7 +54,7 @@ def base64_from_url(imgurl:str)->str:
         text = "Undecodable image."
     return text
 
-def vlm_desc(img_b64: str, 
+async def vlm_desc(img_b64: str, 
              vlm:BaseChatModel = vlm,) -> str:
     message = HumanMessage(
         content=[
@@ -69,5 +69,5 @@ def vlm_desc(img_b64: str,
             },
         ]
     )
-    ai_msg = vlm.invoke([message])
+    ai_msg = await vlm.ainvoke([message])
     return ai_msg.content

@@ -107,7 +107,7 @@ async def on_message(msg:dict):
                             'Content':re.sub(r'\[CQ:.*?\]', '', msg['message'])
                         },
                         'speacial':{
-                            'CQ':process_cq(re.findall(r'\[CQ:.*?\]',msg['message']))
+                            'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']))
                         }
                     }
                     print(perceive)

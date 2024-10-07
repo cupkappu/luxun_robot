@@ -18,12 +18,12 @@ class doc(have_dict):
     uuid: str
     summary: str
     time: str
-    def __init__(self,doc: List, uuid: str = str(uuidl.uuid4()), llm: BaseChatModel=None, summary: str = '',time:str = get_time(),**kwargs):
+    async def __init__(self,doc: List, uuid: str = str(uuidl.uuid4()), llm: BaseChatModel=None, summary: str = '',time:str = get_time(),**kwargs):
         self.doc = doc
         self.uuid = uuid
         if summary == '':
             sumer = percive_module.sum_prompt | llm.bind(response_format={"type": "json_object"}) | JsonOutputParser(pydantic_object=sum_format)
-            self.summary = sumer.invoke({'content':self.__str__()})['summary']
+            self.summary = await sumer.ainvoke({'content':self.__str__()})['summary']
             print("Doc add:" + self.summary)
         else:
             self.summary = summary
