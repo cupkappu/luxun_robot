@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ Agents Links</title>
+</head>
+<body> 
+    <h1>QQ Agents Links</h1>
+    <ul>
+        {% for no, link in agent_links.items() %}
+            <li><a href="{{ link }}">{{ no }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
