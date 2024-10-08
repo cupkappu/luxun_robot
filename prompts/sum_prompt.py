@@ -5,11 +5,11 @@ prompt=ChatPromptTemplate.from_messages(
 [
     ("system", """You are a helpful assistant."""),
     ('user',dedent(""" 
-    <CURRENT_MEMORY>
-    {content}
-    </CURRENT_MEMORY>
+    <MEMORY>
+    {context}
+    </MEMORY>
     <INSTRUCTION>
-    You need give the content surrounded by <CURRENT_MEMORY> a concise summary.
+    You need give the content surrounded by <MEMORY> a concise summary.
     </INSTRUCTION>
     """)),
     ]
