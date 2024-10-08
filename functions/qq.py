@@ -51,6 +51,7 @@ def qq_perceiver_init(no: str, msg_type: str,):
                 enable = False,
                 looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)),
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))
+    agent.augmented_prompts['qq'] = augmented_prompt
     return QQAgent(no= no,type=msg_type,agent=agent)
 
 # @tool
@@ -127,4 +128,7 @@ async def on_message(msg:dict):
 tools = []
 loop_funcs = []
 
-augmented_prompt = """"""
+augmented_prompt = """There are a few points to pay attention to messages sent in QQ:
+1. <CQ> The content in the label belongs to special information
+2. If you want to be someone, please include [CQ: AT, QQ = (QQ Number)] in the reply, that is, you can AT.
+3. The content contained in <user_id> is the QQ number of the message content sender"""
