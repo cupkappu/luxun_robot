@@ -8,8 +8,8 @@
 <body> 
     <h1>QQ Agents Links</h1>
     <ul>
-        {% for no, link in agent_links.items() %}
-            <li><a href="{{ link }}">{{ no }}</a></li>
+        {% for i in agent_links %}
+            <li>{{i}}</li>
         {% endfor %}
     </ul>
 </body>
