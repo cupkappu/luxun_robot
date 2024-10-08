@@ -106,7 +106,7 @@ class percive_agent:
         self.agent = self.prompt | self.llm.bind_tools(self.tools.values())
         print(f'Add tools{ " ".join([i.name for i in tools]) }.')
 
-    async def ainvoke(self,looptimes):
+    async def ainvoke(self,looptimes) -> list:
         self.last_perceives = str(self.state.perceives)
         print("In invoke Perceive(before): "+str(self.last_perceives))
         all_dict = self.state.to_dict()
@@ -150,7 +150,7 @@ class percive_agent:
                 self.perceives.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = await self.ainvoke(looptimes)
             print("after invoke pmt vailuble(loop): ",pmt)
-            self.perceives.append(pmt)
+            [self.perceives.append(i) for i in pmt]
             print('after run invoke(loop): ',str(self.perceives))
             if self.tool_called:
                 self.enable = True
