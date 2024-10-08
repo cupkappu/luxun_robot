@@ -23,7 +23,7 @@ class perceive_unit(have_dict):
             content = self.content.copy()
             if 'speacial' in content:
                 del content['speacial']
-            return dict2xml(content)
+            return dict2xml(content,newlines=False)
         return ""
     
     def to_dict(self) -> dict:
