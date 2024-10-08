@@ -45,7 +45,7 @@ def tool_factory(agent: percive_agent):
                     ) -> str:
         """Search Engine to search information from web."""
         results = search.run(query=query)
-        result = agent.state.docs_m.add_doc([f'Original Perceive:\n{str(agent.state.perceives)}\n\nQuery:{query}\n'+results]).get_summary().to_dict()
+        result = agent.state.docs_m.add_doc([f'Original Perceive:\n{str(agent.last_perceives)}\n\nQuery:{query}\n'+results]).get_summary().to_dict()
         return result
     return [searx_search]
 
@@ -54,7 +54,7 @@ def searx_search(query: Annotated[str, 'Keywords to search']
                 ) -> str:
     """Search Engine to search information from web."""
     results = search.run(query=query)
-    result = g_agent.state.docs_m.add_doc(results).get_summary()
+    result = g_agent.state.docs_m.add_doc(results,'search result').get_summary()
     return result
 
 tools = [searx_search]
