@@ -26,7 +26,7 @@ def tool_factory(agent:percive_agent):
         """Summarizes messages between start_time and end_time."""
         messages = agent.state.current_memory_list.get_time_memorys(start_time,end_time)  # Replace with actual data source
         messages_text = "\n".join([str(message) for message in messages])
-        chunk_size = 100000
+        chunk_size = 5000
         chunks = [Document(messages_text[i:i + chunk_size]) for i in range(0, len(messages_text), chunk_size)]
         chain = create_stuff_documents_chain(llm=agent.llm,prompt=prompt)
         summary = chain.invoke({'context':chunks})
