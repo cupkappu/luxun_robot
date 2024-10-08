@@ -113,6 +113,7 @@ class percive_agent:
         all_dict['looptimes'] = str(looptimes)
         all_dict['augmented_prompt'] = dict2xml(self.augmented_prompts)
         msg = await self.agent.ainvoke(all_dict)
+        print(msg)
         self.last_msg = msg
         tool_exec_result = self.tool_exec(msg)
         result = [tool_exec_result]
