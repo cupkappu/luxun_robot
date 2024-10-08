@@ -113,8 +113,8 @@ class memory_list():
         if storage != 'memory':
             self.storage_driver = db_drivers[storage](
                 db_uri=db_uri,
-                db_name=db_name+'_perceive',
-                table=table,
+                db_name=db_name,
+                table=table+'_perceive',
                 constructor=perceive_unit, 
                 metadata = self.metadata)
             self.memorys = self.storage_driver.find_nums(nums = int(round(memory_limit*0.3)))
