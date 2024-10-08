@@ -11,3 +11,5 @@ pymongo
 
 fuzzywuzzy
 # networkx 
+
+pillow

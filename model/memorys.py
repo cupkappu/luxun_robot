@@ -54,7 +54,7 @@ class perceive_group():
                 db_uri=db_uri,
                 db_name=db_name,
                 table=table+'_perceive',
-                constructor=perceive_unit, 
+                constructor=perceive_unit,
                 metadata = self.metadata)
     
     def get_perceive(self, change:bool = True) -> str:
