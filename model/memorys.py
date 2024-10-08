@@ -68,6 +68,9 @@ class perceive_group():
             self.store_memory(self.perceives)
             self.perceives = []
         return result
+    
+    def isnull(self) -> bool:
+        return self.perceives == []
 
     def __str__(self) -> str:
         result = "\n".join([str(i) for i in self.perceives])

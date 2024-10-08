@@ -117,13 +117,11 @@ class percive_agent:
         self.last_msg = msg
         tool_exec_result = self.tool_exec(msg)
         result = [tool_exec_result]
-        print(result)
         if 'tool_calls' not in msg.additional_kwargs:
             if self.enable_llm_stop_marker == False:
                 result.append({'you':{'content':msg.content}})
                 return {"result": result}
             result.append({'raw_assistant_message':{'content':msg.content ,'NOTICE':'You need call tools to make reaction instead direct speaking!'}})
-        print(result)
         return result
 
     def tool_exec(self, msg):
@@ -142,20 +140,19 @@ class percive_agent:
     async def workflow(self,):
         self.stop_mark = False
         looptimes = 1
-        while True:
-            if self.stop_mark == True:
-                break
+        print('out workflow loop: ',str(self.perceives))
+        while (not self.stop_mark) and (self.enable):
+            print('before run invoke(loop): ',str(self.perceives))
             if looptimes >= self.looptimes*0.9:
                 self.perceives.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = await self.ainvoke(looptimes)
-            print(pmt)
             self.perceives.append(pmt)
+            print('after run invoke(loop): ',str(self.perceives))
             if self.tool_called:
                 self.enable = True
                 self.tool_called = False
             elif (self.last_msg.content != "") and (not self.enable_llm_stop_marker):
                 self.enable = False
-                break
             looptimes += 1
         return self
 
@@ -164,8 +161,9 @@ class percive_agent:
         while True:
             await asyncio.sleep(self.looptime)
             # print('check perceives.')
-            if (self.perceives.perceives != []) and (self.enable):
+            if (not self.perceives.isnull()) and (self.enable):
                 print('start workflow.')
+                print('in the loop watchdog: ',str(self.perceives))
                 await self.workflow()
                 if not self.enable_llm_stop_marker:
                     self.callback_invoker(self.last_msg.content)
