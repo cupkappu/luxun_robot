@@ -21,7 +21,8 @@ class perceive_unit(have_dict):
             return str(self.content)
         elif isinstance(self.content, dict):
             content = self.content.copy()
-            del content['special']
+            if 'speacial' in content:
+                del content['speacial']
             return dict2xml(content)
         return ""
     
