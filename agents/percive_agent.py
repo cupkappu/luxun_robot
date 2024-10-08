@@ -121,10 +121,10 @@ class percive_agent:
         if 'tool_calls' not in msg.additional_kwargs:
             if self.enable_llm_stop_marker == False:
                 result.append({'you':{'content':msg.content}})
-                print('invoke result: ', result)
+                print('invoke result(not tool_calls): ', result)
                 return {"result": result}
             result.append({'raw_assistant_message':{'content':msg.content ,'NOTICE':'You need call tools to make reaction instead direct speaking!'}})
-        print('invoke result: ', result)
+        print('invoke result(not not tool_calls): ', result)
         return result
 
     def tool_exec(self, msg):
@@ -137,7 +137,7 @@ class percive_agent:
                 'input_args':tool_call["args"],
                 'output':tool_output}
             self.tool_called = True
-        print("Tool Output: " + str(result))
+        print("Tool Output(tool_exec): " + str(result))
         return result
 
     async def workflow(self,):
@@ -149,6 +149,7 @@ class percive_agent:
             if looptimes >= self.looptimes*0.9:
                 self.perceives.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = await self.ainvoke(looptimes)
+            print("after invoke pmt vailuble(loop): ",pmt)
             self.perceives.append(pmt)
             print('after run invoke(loop): ',str(self.perceives))
             if self.tool_called:
@@ -170,4 +171,4 @@ class percive_agent:
                 await self.workflow()
                 if not self.enable_llm_stop_marker:
                     self.callback_invoker(self.last_msg.content)
-                print(self.perceives.get_perceive())
+                print("end loop:",self.perceives.get_perceive())
