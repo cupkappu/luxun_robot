@@ -33,7 +33,7 @@ async def get_qq_prompt(group_no):
 
 @app.route('/get_qq_group_list')
 async def get_qq_group_list():
-    agent_links = [f'<a href="/get_qq_prompt/{agent.no}">{agent.no}</a>' for agent in qq_agents]
+    agent_links = [agent.no for agent in qq_agents]
     return await render_template('list_qqagents.html', links=agent_links)
 
 
