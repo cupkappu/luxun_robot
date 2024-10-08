@@ -66,8 +66,9 @@ class docs:
                     return i
             return None
         return self.storage_driver.find_one(uuid, meta_on, llm=self.llm)
-    def add_doc(self, content_list:list):
+    def add_doc(self, content_list:list, doc_type:str = 'default'):
         c_doc = doc(doc=content_list,llm=self.llm)
+        c_doc['type'] = doc_type
         if self.storage == 'memory': self.docs.append(c_doc)
         else: self.storage_driver.save_one(c_doc)
         return c_doc

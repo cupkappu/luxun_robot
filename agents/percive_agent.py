@@ -43,7 +43,7 @@ class State():
         self.current_memory_list = memory_list(
             kwargs['current_memory_list'],
             kwargs.get('current_memory_length',self.current_memory_length),
-            lambda x: self.docs_m.add_doc(x).get_summary(),metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
+            lambda x: self.docs_m.add_doc(x, doc_type = 'memory document').get_summary(),metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
         self.perceives = perceive_group(kwargs.get('perceives',[]), kwargs.get('perceive_limit', 10),
                                         store_memory=self.current_memory_list.add,metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
@@ -107,7 +107,8 @@ class percive_agent:
         print(f'Add tools{ " ".join([i.name for i in tools]) }.')
 
     async def ainvoke(self,looptimes):
-        print("Perceive: "+str(self.state.perceives))
+        self.last_perceives = str(self.state.perceives)
+        print("Perceive: "+str(self.last_perceives))
         all_dict = self.state.to_dict()
         all_dict['looptimes'] = str(looptimes)
         all_dict['augmented_prompt'] = dict2xml(self.augmented_prompts)
