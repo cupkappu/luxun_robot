@@ -146,6 +146,7 @@ class percive_agent:
             if looptimes >= self.looptimes*0.9:
                 self.perceives.append({'WARNING':'The looptime has reached the upper limit. Please process the task immediately and stop the loop as soon as possible.'})
             pmt = await self.ainvoke(looptimes)
+            print(pmt)
             self.perceives.append(pmt)
             if self.tool_called:
                 self.enable = True
