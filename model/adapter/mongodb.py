@@ -46,4 +46,4 @@ class MongoAdapter(Adapter):
             query = {'metadata':self.metadata,'timestamp': {'$exists': True}}
         else:
             query = {'timestamp': {'$exists': True}}
-        return [self.source_class_constructor(i) for i in list(self.table.find(query).sort('timestamp', -1).limit(nums))]
+        return [self.source_class_constructor(**i) for i in list(self.table.find(query).sort('timestamp', -1).limit(nums))]
