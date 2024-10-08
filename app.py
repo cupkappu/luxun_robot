@@ -17,7 +17,8 @@ from functions import (
                     find_memory_tool,
                     task_manager,
                     alarm,
-                    hkbus_tools
+                    hkbus_tools,
+                    daily_summary
                     )
 
 tools = {}
@@ -32,7 +33,8 @@ async def run_all_functions():
         task_manager,
         find_memory_tool,
         alarm,
-        hkbus_tools
+        hkbus_tools,
+        daily_summary
     ]
 
     for i in func_modules:
