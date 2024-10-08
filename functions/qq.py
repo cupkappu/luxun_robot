@@ -108,7 +108,7 @@ async def on_message(msg:dict):
                             'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']))
                         },
                         'speacial':{
-                            'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']),image_llm = False)
+                            'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']),img_llm = False)
                         }
                     }
                     print(perceive[f"QQ群組|群號{msg['group_id']}"])
