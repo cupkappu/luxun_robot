@@ -20,10 +20,13 @@ class perceive_unit(have_dict):
         if isinstance(self.content, str):
             return str(self.content)
         elif isinstance(self.content, dict):
-            return dict2xml(self.content)
+            content = self.content.copy()
+            del content['special']
+            return dict2xml(content)
         return ""
     
     def to_dict(self) -> dict:
+
         return {
             'content': self.content,
             'time': self.time

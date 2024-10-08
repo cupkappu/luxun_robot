@@ -29,8 +29,8 @@ async def process_cq(cq_messages,img_llm: bool = True) -> dict:
                     {'image':result,'img_url':url}
                 )
             else:
-                url = get_imgurl(cq_dict['cq']['file'])
-                cqs.append({"img_url":url})
+                file = file_from_url(get_imgurl(cq_dict['cq']['file']))
+                cqs.append({"image":file.getvalue()})
         if cq_dict['cq']['cqType']=='at':
             cqs.append({'at':cq_dict['cq']['qq']})
     return cqs
@@ -43,7 +43,7 @@ def get_imgurl(imgfilename):
     url=os.getenv('QQ_IMAGE_SERVER')+filename
     return url
 
-def file_from_url(url:str)->str:
+def file_from_url(url:str)->BytesIO:
     response = requests.get(url)
     return BytesIO(response.content)
 
