@@ -113,9 +113,7 @@ class percive_agent:
         all_dict['augmented_prompt'] = dict2xml(self.augmented_prompts)
         msg = await self.agent.ainvoke(all_dict)
         self.last_msg = msg
-        
         tool_exec_result = self.tool_exec(msg)
-
         result = [tool_exec_result]
         if msg.content != '':
             if self.enable_llm_stop_marker == False:
@@ -138,7 +136,7 @@ class percive_agent:
         return result
 
     async def workflow(self,):
-        self.stop_mark = False
+        self.stop_mark = False77
         looptimes = 1
         while True:
             if self.stop_mark == True:
@@ -166,4 +164,4 @@ class percive_agent:
                 await self.workflow()
                 if not self.enable_llm_stop_marker:
                     self.callback_invoker(self.last_msg.content)
-                self.perceives.perceives = []
+                print(self.perceives.get_perceive())
