@@ -4,6 +4,7 @@ from dict2xml import dict2xml
 from .adapter import db_drivers
 import uuid as uuidl
 from utils import get_time
+from datetime import datetime, timezone
 
 class perceive_unit(have_dict):
 
@@ -136,3 +137,10 @@ class memory_list():
                 willzip_memory = self.memorys[:int(self.memory_limit*self.memory_zip_rate)]
                 mem_sum = self.zip_memory("\n".join([str(i) for i in willzip_memory]))
                 self.memorys = [mem_sum] + self.memorys[int(self.memory_limit*self.memory_zip_rate)-1:]
+
+    def get_time_memorys(self, start_time:datetime, end_time:datetime):
+        if isinstance(start_time, str):
+            start_time = datetime.fromisoformat(start_time).astimezone(timezone.utc)
+        if isinstance(end_time, str):
+            end_time = datetime.fromisoformat(end_time).astimezone(timezone.utc)
+        return self.storage_driver.find_by_time(start_time, end_time)

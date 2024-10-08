@@ -1,5 +1,5 @@
 from agents.percive_agent import percive_agent, get_time
-from typing import Annotated,List,Optional
+from typing import Annotated,List,Union
 from langchain.tools import tool
 import asyncio
 from datetime import datetime, timedelta
@@ -16,10 +16,10 @@ class AsyncAlarm:
         self.countdowns = []
         self.callback = callback
 
-    def set_alarm(self, hour, minute, message,):
-        print(f'Add alarm {hour}:{minute}')
+    def set_alarm(self, hour, minute, message, repeat_type=None, repeat_value=None):
+        print(f'Add alarm {hour}:{minute} with repeat_type {repeat_type} and repeat_value {repeat_value}')
         alarm_id = str(uuid.uuid4())
-        self.alarms[alarm_id] = (hour, minute, message,)
+        self.alarms[alarm_id] = (hour, minute, message, repeat_type, repeat_value)
         return alarm_id
 
     def set_countdown(self, seconds, message):
@@ -27,24 +27,33 @@ class AsyncAlarm:
         self.countdowns.append((seconds, message))
 
     async def check_alarm(self):
-        print(f'Alarm watchdog for {self.user} will active now.')
+        print(f'Alarm watchdog for {self.user} will activate now.')
         while True:
             current_time = datetime.now()
-            for alarm_id, (hour, minute, message,) in list(self.alarms.items()):
+            for alarm_id, (hour, minute, message, repeat_type, repeat_value) in list(self.alarms.items()):
+                # 检查当前时间是否与鬧鐘时间匹配
                 if current_time.hour == hour and current_time.minute == minute:
                     try:
-                        self.callback(message)
-                        del self.alarms[alarm_id]
+                        if repeat_type == 'daily':
+                            self.callback(message)  # 每日鬧鐘触发
+                        elif repeat_type == 'weekly':
+                            if current_time.weekday() == repeat_value:
+                                self.callback(message)  # 每周鬧鐘触发
+                        elif repeat_type == 'monthly':
+                            if current_time.day == repeat_value:
+                                self.callback(message)  # 每月鬧鐘触发
+                        # 对于非重复鬧鐘，直接删除
+                        if repeat_type not in ['daily', 'weekly', 'monthly']:
+                            del self.alarms[alarm_id]
                     except Exception as e:
                         print(f"Error in alarm callback: {e}")
             await asyncio.sleep(1)
 
     async def check_countdown(self):
-        print(f'Countdown watchdog for {self.user} will active now.')
+        print(f'Countdown watchdog for {self.user} will activate now.')
         while True:
             countdowns_to_update = []
-            for countdown in self.countdowns:
-                remaining_time, message = countdown
+            for remaining_time, message in self.countdowns:
                 if remaining_time <= 0:
                     try:
                         if self.callback:
@@ -65,7 +74,7 @@ class AsyncAlarm:
     def get_alarms(self):
         results = []
         for k, i in self.alarms.items():
-            results.append({'id':k,'Time':f"{i[0]}:{i[1]}","message":i[2],"repeat_type":i[3],"repeat_value":i[4]})
+            results.append({'id': k, 'Time': f"{i[0]}:{i[1]}", "message": i[2], "repeat_type": i[3], "repeat_value": i[4]})
         return results
     
     def remove_alarm(self, alarm_id):
@@ -83,33 +92,41 @@ def callback_factory(agent:percive_agent):
     return warpper
 
 
-
 def tool_factory(alarms: AsyncAlarm):
     @tool
-    def add_alarm(hour: Annotated[int, 'The hour of the alarm you want to set.'],
-                   minute: Annotated[int, 'The minute of the alarm you want to set.'],
-                   message: Annotated[str, 'The message to display when the alarm is triggered.'],):
+    def add_alarm(
+        hour: Annotated[int, 'The hour of the alarm you want to set.'],
+        minute: Annotated[int, 'The minute of the alarm you want to set.'],
+        message: Annotated[str, 'The message to display when the alarm is triggered.'],
+        repeat_type: Annotated[Union[str, None], 'The type of repetition: daily, weekly, or monthly.'] = None,
+        repeat_value: Annotated[Union[int, None], 'The specific value for repetition (e.g., weekday for weekly, day for monthly).'] = None,
+    ):
         """
         Use add_alarm to add an alarm with a determined time and optional repetition.
         """
         print(f"Setting {str(alarms.user)}'s alarm.")
-        alarm_id = alarms.set_alarm(hour, minute, message,)
+        alarm_id = alarms.set_alarm(hour, minute, message, repeat_type, repeat_value)
         return f"Alarm {alarm_id} set."
+
     @tool
-    def add_countdown(seconds: Annotated[int, 'The seconds of the countdown you want to set.'],
-                       message: Annotated[str, 'The message to display when the countdown finishes.']):
+    def add_countdown(
+        seconds: Annotated[int, 'The seconds of the countdown you want to set.'],
+        message: Annotated[str, 'The message to display when the countdown finishes.']
+    ):
         """
         Use add_countdown to add a countdown.
         """
         print(f"Setting {str(alarms.user)}'s countdown.")
         alarms.set_countdown(seconds, message)
         return "Countdown set."
+
     @tool
     def get_alarms() -> Annotated[List[dict], 'List of alarms']:
         """
         Use get_alarms to retrieve all set alarms.
         """
         return alarms.get_alarms()
+
     @tool
     def remove_alarm(alarm_id: Annotated[str, 'The unique identifier for the alarm to remove.']):
         """
@@ -118,7 +135,8 @@ def tool_factory(alarms: AsyncAlarm):
         print(f"Removing alarm with ID {str(alarm_id)} for {str(alarms.user)}.")
         alarms.remove_alarm(alarm_id)
         return f"Alarm {alarm_id} removed."
-    return [add_alarm, add_countdown,get_alarms,remove_alarm]
+
+    return [add_alarm, add_countdown, get_alarms, remove_alarm]
 
 alarms: List[AsyncAlarm] = []
 
