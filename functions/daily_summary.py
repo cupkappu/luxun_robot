@@ -25,9 +25,7 @@ def tool_factory(agent:percive_agent):
     def summary_time_to_time_message(start_time: Annotated[str, 'Start time in format yyyy-MM-dd HH:mm:ss'], 
                                      end_time: Annotated[str, 'End time in format yyyy-MM-dd HH:mm:ss']):
         """Summarizes messages between start_time and end_time."""
-        start_time_datetime = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
-        end_time_datetime = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
-        messages = agent.state.current_memory_list.get_time_memorys(start_time_datetime,end_time_datetime)  # Replace with actual data source
+        messages = agent.state.current_memory_list.get_time_memorys(start_time,end_time)  # Replace with actual data source
         messages_text = "\n".join(str(messages))
         chunk_size = 100000
         chunks = [Document(messages_text[i:i + chunk_size]) for i in range(0, len(messages_text), chunk_size)]
