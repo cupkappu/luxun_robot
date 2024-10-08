@@ -128,6 +128,7 @@ class memory_list():
                 willzip_memory = self.memorys[:int(self.memory_limit*self.memory_zip_rate)]
                 mem_sum = self.zip_memory("\n".join([str(i) for i in willzip_memory]))
                 self.memorys = [mem_sum] + self.memorys[int(self.memory_limit*self.memory_zip_rate)-1:]
+
     def add(self,content:List[perceive_unit]):
         self.memorys += content
         if self.zip_memory != None:

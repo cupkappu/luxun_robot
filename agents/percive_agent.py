@@ -136,7 +136,7 @@ class percive_agent:
         return result
 
     async def workflow(self,):
-        self.stop_mark = False77
+        self.stop_mark = False
         looptimes = 1
         while True:
             if self.stop_mark == True:

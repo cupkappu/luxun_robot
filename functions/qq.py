@@ -130,5 +130,5 @@ loop_funcs = []
 
 augmented_prompt = """There are a few points to pay attention to messages sent in QQ:
 1. <CQ> The content in the label belongs to special information
-2. If you want to be someone, please include [CQ: AT, QQ = (QQ Number)] in the reply, that is, you can AT.
+2. If you want to be someone, please include [CQ:at,qq=(QQ Number)], like[CQ:at,qq=1234567](without spaces) in the reply, that is, you can AT.
 3. The content contained in <user_id> is the QQ number of the message content sender"""
