@@ -31,8 +31,8 @@ async def get_qq_prompt(group_no):
     result = qagent.agent.prompt.invoke(prompt_state).to_string()
     return await render_template('render_xml.html', xml_code=result, title=group_no+' Prompt')
 
-@app.route('/get_qq_grou_list')
-async def get_qq_prompt():
+@app.route('/get_qq_group_list')
+async def get_qq_group_list():
     agent_links = {agent.no: f"/get_qq_prompt/{agent.no}" for agent in qq_agents}
     return await render_template('list_qqagents.html', links=agent_links)
 
