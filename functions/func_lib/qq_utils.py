@@ -21,7 +21,8 @@ async def process_cq(cq_messages,img_llm: bool = True) -> dict:
         if (cq_dict['cq']['cqType']=='image'):
             if img_llm:
                 url = get_imgurl(cq_dict['cq']['file'])
-                result = base64_from_url(url)
+                result = file_from_url(url)
+                result = base64_from_file(result)
                 if result != 'Undecodable image.':
                     result = await vlm_desc(img_b64=result)
                 cqs.append(
@@ -42,10 +43,13 @@ def get_imgurl(imgfilename):
     url=os.getenv('QQ_IMAGE_SERVER')+filename
     return url
 
-def base64_from_url(imgurl:str)->str: 
-    response = requests.get(imgurl)
+def file_from_url(url:str)->str:
+    response = requests.get(url)
+    return BytesIO(response.content)
+
+def base64_from_file(file:BytesIO)->str:
     try:
-        img = Image.open(BytesIO(response.content))
+        img = Image.open(file)
         jpg = BytesIO()
         img.convert('RGB').save(jpg, format='JPEG')
         jpg.seek(0)

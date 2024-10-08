@@ -104,7 +104,8 @@ async def on_message(msg:dict):
                     perceive = {
                         f"QQ群組|群號{msg['group_id']}":{
                             "Sender": msg['sender'], 
-                            'Content':re.sub(r'\[CQ:.*?\]', '', msg['message'])
+                            'Content':re.sub(r'\[CQ:.*?\]', '', msg['message']),
+                            'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']))
                         },
                         'speacial':{
                             'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']))
