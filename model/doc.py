@@ -17,9 +17,10 @@ class doc(have_dict):
     uuid: str
     summary: str
     time: str
-    def __init__(self,doc: List, uuid: str = str(uuidl.uuid4()), llm: BaseChatModel=None, summary: str = '',time:str = get_time(),**kwargs):
+    def __init__(self,doc: List, uuid: str = str(uuidl.uuid4()), llm: BaseChatModel=None, summary: str = '',time:str = get_time(),doc_type:str ='default',**kwargs):
         self.doc = doc
         self.uuid = uuid
+        self.type = doc_type
         if summary == '':
             sumer = percive_module.sum_prompt | llm.bind(response_format={"type": "json_object"}) | JsonOutputParser(pydantic_object=sum_format)
             self.summary = sumer.invoke({'content':self.__str__()})['summary']
@@ -46,7 +47,8 @@ class doc(have_dict):
             'doc':self.doc,
             'uuid': self.uuid,
             'summary': self.summary,
-            'time': self.time
+            'time': self.time,
+            'type': self.type
         }
 
 class docs:
@@ -67,8 +69,7 @@ class docs:
             return None
         return self.storage_driver.find_one(uuid, meta_on, llm=self.llm)
     def add_doc(self, content_list:list, doc_type:str = 'default'):
-        c_doc = doc(doc=content_list,llm=self.llm)
-        c_doc['type'] = doc_type
+        c_doc = doc(doc=content_list,llm=self.llm,doc_type=doc_type)
         if self.storage == 'memory': self.docs.append(c_doc)
         else: self.storage_driver.save_one(c_doc)
         return c_doc
