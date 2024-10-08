@@ -1,6 +1,6 @@
 import uuid as uuidl
 from langchain_core.language_models import BaseChatModel
-from typing import List, Union
+from typing import List
 from pydantic import BaseModel, Field
 from prompts import percive_module
 from langchain_core.output_parsers import JsonOutputParser
