@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-from sqlalchemy import Null
 from .base import Adapter
 from ..base_models import *
 from typing import List
