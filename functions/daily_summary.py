@@ -15,6 +15,7 @@ def give_callback(agent: percive_agent, **kwargs):
     qq_agents = kwargs.get('functions.qq',[])
     for i in qq_agents:
         i.agent.add_tools(tool_factory(i.agent))
+        i.agent.augmented_prompts['summary_time_to_time_message'] = augmented_prompt
 
 async def start_callback():
     pass
@@ -36,4 +37,4 @@ def tool_factory(agent:percive_agent):
 tools = []
 loop_funcs = []
 
-augmented_prompt = """"""
+augmented_prompt = """You need use summary_time_to_time_message to summarize the messages between the start time and end time when user's chat message summarization query have the time information."""
