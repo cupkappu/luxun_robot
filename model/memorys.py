@@ -63,6 +63,7 @@ class perceive_group():
                 metadata = self.metadata)
     
     def get_perceive(self, change:bool = True) -> str:
+        self.check_len()
         result = "\n".join([str(i) for i in self.perceives])
         if change:
             self.store_memory(self.perceives)
@@ -80,15 +81,16 @@ class perceive_group():
         new_perceive = perceive_unit(content=content)
         self.perceives.append(new_perceive)
         self.storage_driver.save_one(new_perceive)
-#        if self.store_memory is not None:
-#            if len(self.perceives) > self.perceive_limit:
-#                chunks = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives) - self.perceive_limit, self.perceive_limit)]
-#                for chunk in chunks:
-#                    try:
-#                        self.store_memory(chunk)
-#                    except Exception as e:
-#                        print(f"?????????????????????: {e}")
-#                self.perceives = self.perceives[-self.perceive_limit:]
+    
+    def check_len(self):
+        if len(self.perceives) > self.perceive_limit:
+            chunks = [self.perceives[i:i + self.perceive_limit] for i in range(0, len(self.perceives) - self.perceive_limit, self.perceive_limit)]
+            for chunk in chunks:
+                try:
+                    self.store_memory(chunk)
+                except Exception as e:
+                    print(f"Error when check_len: {e}")
+            self.perceives = self.perceives[-self.perceive_limit:]
 
 class memory_list():
 
