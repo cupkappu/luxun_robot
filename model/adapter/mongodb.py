@@ -46,7 +46,7 @@ class MongoAdapter(Adapter):
             query = {'metadata':self.metadata,'timestamp': {'$exists': True}}
         else:
             query = {'timestamp': {'$exists': True}}
-        return [self.source_class_constructor(**i) for i in list(self.table.find(query).sort('timestamp').limit(nums))]
+        return [self.source_class_constructor(**i) for i in list(self.table.find(query).sort({'timestamp':-1}).limit(nums))][::-1]
     
     def find_by_time(self, start_time: datetime, end_time: datetime, meta_on: bool = True) -> list:
         if meta_on and self.metadata != {}:
