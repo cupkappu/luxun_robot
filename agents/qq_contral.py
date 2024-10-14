@@ -36,7 +36,10 @@ class cmd_processer:
             
     def process(self,cmd:str):
         cmd = cmd.split(" ")
-        return self.run(cmd[0],*cmd[1:])
+        if cmd[0].split("!")[0] == "help":
+            return self.help(cmd[1])
+        else:
+            return self.run(cmd[0].split("!")[1],*cmd[1:])
 
     def help(self,cmd:str = None):
         if len(self.cmds) == 0:
