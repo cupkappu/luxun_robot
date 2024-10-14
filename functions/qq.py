@@ -54,8 +54,8 @@ def qq_perceiver_init(no: str, msg_type: str,cmds:Dict[str,cmd] = {}) -> QQAgent
                 looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)),
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))
     agent.augmented_prompts['qq'] = augmented_prompt
-    cmd_controler = cmd_processer(cmds,agent=agent)
-    return QQAgent(no= no,type=msg_type,agent=agent,cmd_controler=cmd_controler)
+    cmd_controller = cmd_processer(cmds,agent=agent)
+    return QQAgent(no= no,type=msg_type,agent=agent,cmd_controller=cmd_controller)
 
 # @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
