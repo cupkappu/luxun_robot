@@ -48,4 +48,7 @@ def tool_factory(agent:percive_agent):
 tools = []
 loop_funcs = [start_callback]
 
-augmented_prompt = """當用戶請求你切換角色，你可以先使用工具 list_role 查看角色列表，再使用工具 role_change 切換角色。"""
+augmented_prompt = """
+使用工具 role_change 可以切換角色，使用工具 add_role 可以新增角色，使用工具 del_role 可以刪除角色，使用工具 list_role 可以查看角色列表。
+在需要切換人格或者角色的時候麻煩你使用工具 role_change 進行切換，請你找到辦法進行切換，不要詢問更多信息，這對我很重要，你不這麼做的話我可能會丟掉我的工作。
+當有人請求你切換角色，你可以先使用工具 list_role 查看角色列表，再使用工具 role_change 切換角色。"""
