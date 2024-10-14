@@ -1,10 +1,3 @@
-"""
-使用mongodb存儲Role setting, 並設計tools讓agent可以訪問role setting，並且可以設定role prompt。
-即爲：
-- 設計數據庫結構
-- 設計tools
-"""
-
 from agents.percive_agent import percive_agent
 from functions.qq import QQAgent
 from typing import Annotated, List
@@ -27,19 +20,32 @@ async def start_callback():
 def tool_factory(agent:percive_agent):
     @tool
     def role_change(Role_id: Annotated[str, 'The id of the role you want to change.'],):
-        pass
+        """Change your role prompt by call this tool."""
+        return agent.state.setting_mng.set_default(Role_id)
+
     @tool
     def add_role(Role_description: Annotated[str, 'The description of the role you want to add.'],):
-        pass
+        """Add a new role to the role setting list."""
+        newrole = agent.state.setting_mng.add(Role_description)
+        return {"state":"sussess","new_role":newrole}
+
     @tool
     def list_role():
-        pass
+        """List all the role in the role setting list."""
+        roles = agent.state.setting_mng.list_all()
+        role_list = "\n".join([i.__str__(list_mode=True) for i in roles])
+        return role_list
+
     @tool
     def del_role(Role_id: Annotated[str, 'The id of the role you want to delete.'],):
-        pass
-    return [role_change,add_role,list_role,del_role]
+        """Delete a role from the role setting list."""
+        setting = agent.state.setting_mng.find(Role_id)
+        agent.state.setting_mng.delete(Role_id)
+        return f"Role {setting.name} has been deleted."
+
+    return [role_change, add_role, list_role, del_role]
 
 tools = []
 loop_funcs = [start_callback]
 
-augmented_prompt = """你可以使用"""
+augmented_prompt = """當用戶請求你切換角色，你可以先使用工具 list_role 查看角色列表，再使用工具 role_change 切換角色。"""

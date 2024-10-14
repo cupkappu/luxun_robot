@@ -17,3 +17,9 @@ class Adapter(ABC):
         pass
     def list_nums(self):
         pass
+    @abstractmethod
+    def list_all_obj(self):
+        pass
+    @abstractmethod
+    def find_by_time(self):
+        pass
