@@ -36,6 +36,8 @@ class cmd_processer:
             
     def process(self,cmd:str):
         cmd = cmd.split(" ")
+        if cmd[0].split("!")[1] not in self.cmds:
+            return f"Command {cmd[0].split('!')[1]} not found."
         if cmd[0].split("!")[1] == "help":
             if len(cmd) == 1:
                 return self.help()
@@ -47,10 +49,7 @@ class cmd_processer:
         if len(self.cmds) == 0:
             return "No command registered."
         if cmd == None:
-            return dedent(
-f"""        Command List:
-            {", ".join(self.cmds.keys())}
-            """)
+            return dedent(f"""Command List:{", ".join(self.cmds.keys())}""")
         else:
             if cmd in self.cmds:
                 arg_desc = self.cmds[cmd].arg_desc
