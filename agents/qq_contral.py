@@ -17,7 +17,7 @@ class cmd_processer:
     kwargs:Dict[str,any] = {}
     agent: percive_agent
 
-    def __init__(self, cmds:Dict[str,cmd], agent: percive_agent, **kwargs):
+    def __init__(self, cmds:Dict[str,cmd], agent: percive_agent):
         self.cmds = cmds
         self.agent = agent
         self.kwargs = kwargs
@@ -25,10 +25,10 @@ class cmd_processer:
     def register(self,tools:List[StructuredTool]):
         self.cmds.update({i.name: cmd(i.name,i.description,i.args,i.func) for i in tools})
 
-    def run(self,cmd:str,*args:List[str]):
+    def run(self,cmd:str,*args:List[str],**kwargs):
         try:
             if cmd in self.cmds:
-                return self.cmds[cmd].run(*args,agent = self.agent,**self.kwargs)
+                return self.cmds[cmd].run(*args,**self.kwargs)
             else:
                 return f"Command {cmd} not found."
         except Exception as e:
