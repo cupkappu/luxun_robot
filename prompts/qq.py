@@ -15,9 +15,10 @@ qq_prompt=ChatPromptTemplate.from_messages(
     You need to play a character follow the <ROLE> description.
     You have the ability to perceive, and you you need to decide whether to use tools to help you. Do not use variables.
     1. Role is your personality and role setting.
-    2. Current memory is what happen in the past by time queue, help you to reference but not the main theme.
+    2. Current memory is what happen in the past by time queue, help you to reference.
     3. Knowledge is what you learn from the past. You always follow your knowledge and role.
     4. <Real_Perceive> is what you need focus to.
+    5. You need to choose important parts to answer, and you should give priority to answering your observations. There may be correlations between different observations.
     <MORE>
     {augmented_prompt}
     </MORE>
