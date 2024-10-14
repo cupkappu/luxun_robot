@@ -27,13 +27,13 @@ def tool_factory(agent:percive_agent):
     def add_role(Role_description: Annotated[str, 'The description of the role you want to add.'],):
         """Add a new role to the role setting list."""
         newrole = agent.state.setting_mng.gen(Role_description)
-        return {"state":"sussess","new_role":newrole}
+        return {"state":"sussess","new_role":newrole.name,'description':newrole.title}
 
     @tool
     def list_role():
         """List all the role in the role setting list."""
         roles = agent.state.setting_mng.list_all()
-        role_list = "\n".join([i.__str__(list_mode=True) for i in roles])
+        role_list = "\n".join([i.to_dict(base=True) for i in roles])
         return role_list
 
     @tool
