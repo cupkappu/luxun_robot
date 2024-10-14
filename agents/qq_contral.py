@@ -47,8 +47,8 @@ class cmd_processer:
         if len(self.cmds) == 0:
             return "No command registered."
         if cmd == None:
-            return dedent(f"""
-            Command List:
+            return dedent(
+f"""        Command List:
             {", ".join(self.cmds.keys())}
             """)
         else:
