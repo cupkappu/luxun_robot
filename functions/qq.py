@@ -103,7 +103,7 @@ async def on_message(msg:dict):
             if msg['message_type'] == 'group':
                 if str(msg['group_id']) in id_list:
                     perceive = {
-                        f'QQ_group no=\"{msg['group_id']}\"':{
+                        f"QQ群組|群號{msg['group_id']}":{
                             "Sender": msg['sender'], 
                             'Content':re.sub(r'\[CQ:.*?\]', '', msg['message']),
                             'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']))
@@ -112,14 +112,14 @@ async def on_message(msg:dict):
                             'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']),img_llm = False)
                         }
                     }
-                    print(perceive[f'QQ_group no=\"{msg['group_id']}\"'])
+                    print(perceive[f"QQ群組|群號{msg['group_id']}"])
                     # g_agent.perceives.append(perceive)
                     qq_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id'])).agent
                     qq_agent.perceives.append(perceive)
                     if str(msg['self_id']) in msg['message']:
                         qq_agent.enable = True
             if msg['message_type'] == 'private':
-                perceive = {f"QQ_private no=\"{msg['group_id']}\"":{"Sender": msg['sender']['nickname'], 'Content':msg['message']}}
+                perceive = {f"QQ私聊|QQ號{msg['sender']['user_id']}":{"Sender": msg['sender']['nickname'], 'Content':msg['message']}}
                 print(perceive)
                 # g_agent.perceives.append(perceive)
 
