@@ -14,6 +14,7 @@ class setting_bolck(have_dict):
     name: str = ''
     storys: List[str] = []
     prompt: str
+    uuid: str = None
     def __init__(self,personal_setting:str, 
                  title:str, 
                  name:str, 
