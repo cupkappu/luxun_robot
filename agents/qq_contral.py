@@ -14,13 +14,11 @@ class cmd:
 
 class cmd_processer:
     cmds:Dict[str,cmd] = {}
-    kwargs:Dict[str,any] = {}
     agent: percive_agent
 
     def __init__(self, cmds:Dict[str,cmd], agent: percive_agent):
         self.cmds = cmds
         self.agent = agent
-        self.kwargs = kwargs
     
     def register(self,tools:List[StructuredTool]):
         self.cmds.update({i.name: cmd(i.name,i.description,i.args,i.func) for i in tools})
