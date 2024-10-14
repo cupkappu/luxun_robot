@@ -78,7 +78,7 @@ class setting_group():
             )
         self.storage = storage
         def set_default():
-            new = setting_bolck(init_query['personal_setting'],'default','default',prompt='')
+            new = setting_bolck(init_query['personal_setting'],'default','鹿巡',prompt='')
             self.add(new)
             self.default = new
         if default == '':
