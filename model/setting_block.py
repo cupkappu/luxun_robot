@@ -19,11 +19,11 @@ class setting_bolck(have_dict):
                  name:str, 
                  storys:List[str] = [], 
                  prompt:str = '',
-                 uuid: str = str(uuidl.uuid4()), *args, **kwargs):
+                 uuid: str = None, *args, **kwargs):
         self.personal_setting = personal_setting
         self.title = title
         self.name = name
-        self.uuid = uuid
+        uuid = str(uuidl.uuid4()) if uuid == None else uuid
         self.storys = storys
         if prompt == '':
             self.prompt = self.personal_setting
