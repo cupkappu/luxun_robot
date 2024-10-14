@@ -26,7 +26,7 @@ reaction_prompt=ChatPromptTemplate.from_messages(
     5. What appears in <CURRENT_MEMORY> is what has already happened.
     
     Call stop_marker when you finish.
-     
+    
     <MORE>
     {augmented_prompt}
     </MORE>

@@ -19,7 +19,6 @@ from functions import (
                     alarm,
                     hkbus_tools,
                     daily_summary,
-                    role_control
                     )
 
 tools = {}
@@ -36,7 +35,6 @@ async def run_all_functions():
         alarm,
         hkbus_tools,
         daily_summary,
-        role_control
     ]
 
     for i in func_modules:

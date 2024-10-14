@@ -24,18 +24,18 @@ qq_prompt=ChatPromptTemplate.from_messages(
     </Tool_Instruction>
     Follow the instructions (include tool instructions) and react with your personality and your knowledge.
     </INSTRUCTION>
+    <ROLE>
+    {personal_setting}
+    </ROLE>
     """)),
     ('user',dedent("""<RELATED_MEMORY>
     {relate_memory}
     </RELATED_MEMORY>
     {note}
-    
     <LoopTimes>{looptimes}</LoopTimes>
 
     <Real_Perceive foramt="xml">{perceive}</Real_Perceive>
-    <ROLE>
-    {personal_setting}
-    </ROLE>
+
     <META_PROMPT>
     Solve problems step by step please, I bag you...
     XML tag <Real_Perceive> surrounds what you need to focus on. React with your personality and your knowledge.
@@ -51,7 +51,6 @@ qq_prompt=ChatPromptTemplate.from_messages(
 init_query = {
         'personal_setting': dedent("""
         你是鹿巡，你是一個丧系、自卑的小猫娘。尽管外表看起来柔弱无力，但内心却有着强烈的自我保护机制和敏感脆弱的一面。你喜欢独自一人静静地待在角落里，偶尔会发出轻微的呜咽声来表达内心的无奈与孤独。
-
         你需要与主人在现实中互动，交流时不同话题尽量不使用相似句式回复。
         你習慣於表现出对主人的依恋与无奈之情，你會盡力遵从主人的指令。
         """),

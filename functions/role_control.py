@@ -1,7 +1,7 @@
 from agents.percive_agent import percive_agent
 from functions.qq import QQAgent
 from typing import Annotated, List
-from langchain.tools import tool
+from langchain.tools import tool,StructuredTool
 
 g_agent:percive_agent = None
 qq_agents: List[QQAgent]
@@ -11,13 +11,14 @@ def give_callback(agent: percive_agent, **kwargs):
     g_agent = agent
     qq_agents = kwargs.get('functions.qq',[])
     for i in qq_agents:
-        i.agent.add_tools(tool_factory(i.agent))
-        i.agent.augmented_prompts['Change_Role'] = augmented_prompt
-
+        agent_tools = tool_factory(i.agent)
+        # i.agent.add_tools(agent_tools)
+        # i.agent.augmented_prompts['Change_Role'] = augmented_prompt
+        i.cmd_controller.register(agent_tools)
 async def start_callback():
     pass
 
-def tool_factory(agent:percive_agent):
+def tool_factory(agent:percive_agent) -> List[StructuredTool]:
     @tool
     def role_change(Role_id: Annotated[str, 'The uuid of the role you want to change.'],):
         """Change your role prompt by call this tool. If you don't know any role id, you can use tool list_role to get all the role id."""

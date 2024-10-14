@@ -7,6 +7,7 @@ import json
 from prompts.qq import qq_prompt,init_query
 import re
 from .func_lib.qq_utils import process_cq
+from agents.qq_contral import cmd_processer,cmd
 
 g_agent:percive_agent = None
 
@@ -14,10 +15,11 @@ class QQAgent:
     no: str
     type: str
     agent: percive_agent
-    def __init__(self, no:str, type:str, agent:percive_agent):
+    def __init__(self, no:str, type:str, agent:percive_agent, cmd_controller: cmd_processer):
         self.no = no
         self.type = type
         self.agent = agent
+        self.cmd_controller = cmd_controller
 
 qq_agents: List[QQAgent]
 qq_states: Dict[str,State]
@@ -32,7 +34,7 @@ def give_callback(agent: percive_agent, **kwargs):
 
 id_list = os.environ['QQ_GROUP_ID_LIST'].split(',')
 
-def qq_perceiver_init(no: str, msg_type: str,):
+def qq_perceiver_init(no: str, msg_type: str,cmds:Dict[str,cmd] = {}) -> QQAgent:
     metadata = {msg_type:no,'category':'chat','platform':'qq'}
     n_state = State(**init_query,llm=g_agent.llm,metadata=metadata,
                     db_info = {
@@ -52,7 +54,8 @@ def qq_perceiver_init(no: str, msg_type: str,):
                 looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)),
                 callback_invoker=lambda reply:send_qq_msg(msg=reply, no=no, to_type=msg_type))
     agent.augmented_prompts['qq'] = augmented_prompt
-    return QQAgent(no= no,type=msg_type,agent=agent)
+    cmd_controler = cmd_processer(cmds,agent=agent)
+    return QQAgent(no= no,type=msg_type,agent=agent,cmd_controler=cmd_controler)
 
 # @tool
 def send_qq_msg(msg: Annotated[str, 'Message you want to send'],
@@ -96,12 +99,19 @@ async def start_callback():
             except KeyError as e:
                 print(f"Key {e} not found in message")
 
+
 async def on_message(msg:dict):
     print(msg)
     if isinstance(msg,dict):
         if msg['post_type'] == 'message':
             if msg['message_type'] == 'group':
                 if str(msg['group_id']) in id_list:
+                    QQ_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id']))
+                    qq_agent = QQ_agent.agent
+                    if msg['message'].split(' ')[0].split('!')[1] in QQ_agent.cmd_controller.cmds.keys():
+                        cmd_ctrl = QQ_agent.cmd_controller
+                        result = cmd_ctrl.process(msg['message'])
+                        await send_qq_msg(msg=result, no=msg['group_id'], to_type='group')
                     perceive = {
                         f"QQ群組|群號{msg['group_id']}":{
                             "Sender": msg['sender'], 
@@ -114,7 +124,6 @@ async def on_message(msg:dict):
                     }
                     print(perceive[f"QQ群組|群號{msg['group_id']}"])
                     # g_agent.perceives.append(perceive)
-                    qq_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id'])).agent
                     qq_agent.perceives.append(perceive)
                     if str(msg['self_id']) in msg['message']:
                         qq_agent.enable = True
