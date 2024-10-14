@@ -33,11 +33,11 @@ class State():
 
     def __init__(self, *args, **kwargs):
         self.metadata = kwargs.get('metadata',{})
-        self.setting_mng = setting_group(**kwargs.get('db_info',{}),metadata=self.metadata)
         self.knowledge = kwargs['knowledge']
         self.relate_memory = kwargs['relate_memory']
         self.perceive = kwargs['perceive']
         self.llm = kwargs.get('llm',None)
+        self.setting_mng = setting_group(**kwargs.get('db_info',{}),metadata=self.metadata,llm=self.llm)
         self.zip_memory_prompt = kwargs.get('prompt',percive_module.zip_memory_prompt)
         self.note = kwargs.get('note',[])
         self.docs_m = docs(llm=self.llm,metadata=kwargs.get('metadata',{}),**kwargs.get('db_info',{}))
