@@ -26,7 +26,9 @@ class cmd_processer:
     def run(self,cmd:str,*args:List[str],**kwargs):
         try:
             if cmd in self.cmds:
-                return self.cmds[cmd].run(*args,**kwargs)
+                result = self.cmds[cmd].run(*args,**kwargs)
+                print(result)
+                return result
             else:
                 return f"Command {cmd} not found."
         except Exception as e:
