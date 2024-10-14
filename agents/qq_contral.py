@@ -36,7 +36,7 @@ class cmd_processer:
             
     def process(self,cmd:str):
         cmd = cmd.split(" ")
-        if cmd[0].split("!")[1] not in self.cmds:
+        if cmd[0].split("!")[1] not in list(self.cmds.keys()) + ["help"]:
             return f"Command {cmd[0].split('!')[1]} not found."
         if cmd[0].split("!")[1] == "help":
             if len(cmd) == 1:
