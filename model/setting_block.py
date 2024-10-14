@@ -36,7 +36,9 @@ class setting_bolck(have_dict):
         else:
             return self.prompt
 
-    def to_dict(self) -> dict:
+    def to_dict(self, base:bool = False) -> dict:
+        if base:
+            return{'name':self.name,'uuid':self.uuid,'title':self.title}
         return {
             'personal_setting': self.personal_setting,
             'uuid': self.uuid,
@@ -104,7 +106,7 @@ class setting_group():
                                 result['storys'],
                                 prompt=prompt['prompt'])
         self.add(setting)
-        return setting.to_dict()
+        return setting
 
     def add(self, setting: setting_bolck):
         if self.storage == 'memory': self.settings.append(setting)

@@ -116,7 +116,7 @@ class percive_agent:
         
         print('invoke message: ',msg)
         self.last_msg = msg
-        tool_exec_result = self.tool_exec(msg)
+        tool_exec_result = await self.tool_exec(msg)
         result = [tool_exec_result]
         if 'tool_calls' not in msg.additional_kwargs:
             if self.enable_llm_stop_marker == False:
@@ -127,7 +127,7 @@ class percive_agent:
         print('invoke result(not not tool_calls): ', result)
         return result
 
-    def tool_exec(self, msg):
+    async def tool_exec(self, msg):
         result = {'Content':{}}
         for tool_call in msg.tool_calls:
             selected_tool = self.tools[tool_call["name"].lower()]
