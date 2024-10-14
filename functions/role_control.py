@@ -27,7 +27,7 @@ def tool_factory(agent:percive_agent):
     def add_role(Role_description: Annotated[str, 'The description of the role you want to add.'],):
         """Add a new role to the role setting list."""
         newrole = agent.state.setting_mng.gen(Role_description)
-        return {"state":"sussess","new_role":newrole.name,'description':newrole.title}
+        return {"state":"sussess","new_role":newrole.to_dict(base=True)}
 
     @tool
     def list_role():
