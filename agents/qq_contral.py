@@ -23,7 +23,7 @@ class cmd_processer:
         self.kwargs = kwargs
     
     def register(self,tools:List[StructuredTool]):
-        self.cmds.update({i.name: cmd(i.name,i.description,i.func,i.args) for i in tools})
+        self.cmds.update({i.name: cmd(i.name,i.description,i.args,i.func) for i in tools})
 
     def run(self,cmd:str,*args:List[str]):
         try:
