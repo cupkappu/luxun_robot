@@ -33,7 +33,7 @@ def tool_factory(agent:percive_agent):
     def list_role():
         """List all the role in the role setting list."""
         roles = agent.state.setting_mng.list_all()
-        role_list = "\n".join([i.to_dict(base=True) for i in roles])
+        role_list = [i.to_dict(base=True) for i in roles]
         return role_list
 
     @tool
