@@ -108,7 +108,6 @@ async def on_message(msg:dict):
                 if str(msg['group_id']) in id_list:
                     QQ_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id']))
                     qq_agent = QQ_agent.agent
-                    print(msg['message'].split(' ')[0].split('!')[1])
                     if msg['message'].split(' ')[0].split('!')[1] in list(QQ_agent.cmd_controller.cmds.keys()) + ['help']:
                         cmd_ctrl = QQ_agent.cmd_controller
                         result = cmd_ctrl.process(msg['message'])
