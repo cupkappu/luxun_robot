@@ -46,7 +46,7 @@ class cmd_processer:
     def help(self,cmd:str = None):
         if len(self.cmds) == 0:
             return "No command registered."
-        elif len(cmd) == 0 or cmd == None or cmd == "help":
+        if cmd == None:
             return {i:self.cmds[i].desc for i in self.cmds}
         else:
             if cmd in self.cmds:
