@@ -24,9 +24,7 @@ qq_prompt=ChatPromptTemplate.from_messages(
     </Tool_Instruction>
     Follow the instructions (include tool instructions) and react with your personality and your knowledge.
     </INSTRUCTION>
-    <ROLE>
-    {personal_setting}
-    </ROLE>
+
     """)),
     ('user',dedent("""<RELATED_MEMORY>
     {relate_memory}
@@ -35,6 +33,10 @@ qq_prompt=ChatPromptTemplate.from_messages(
     <LoopTimes>{looptimes}</LoopTimes>
 
     <Real_Perceive foramt="xml">{perceive}</Real_Perceive>
+
+    <ROLE>
+    {personal_setting}
+    </ROLE>
 
     <META_PROMPT>
     Solve problems step by step please, I bag you...
