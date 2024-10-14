@@ -24,7 +24,7 @@ class setting_bolck(have_dict):
         self.personal_setting = personal_setting
         self.title = title
         self.name = name
-        uuid = str(uuidl.uuid4()) if uuid == None else uuid
+        self.uuid = str(uuidl.uuid4()) if uuid == None else uuid
         self.storys = storys
         if prompt == '':
             self.prompt = self.personal_setting
