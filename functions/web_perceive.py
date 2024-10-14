@@ -2,6 +2,7 @@ from quart import Quart, jsonify, request, render_template
 from agents.percive_agent import percive_agent
 from functions.qq import find_qq_agent_by_no, QQAgent
 from typing import List
+from dict2xml import dict2xml
 
 g_agent:percive_agent = None
 qq_agents: List[QQAgent]
@@ -27,7 +28,7 @@ async def add_perceive():
 async def get_qq_prompt(group_no):
     qagent = find_qq_agent_by_no(qq_agents,group_no)
     prompt_state = qagent.agent.state.to_dict(change=False)
-    prompt_state.update({'looptimes':0, 'augmented_prompt':''})
+    prompt_state.update({'looptimes':0, 'augmented_prompt':dict2xml(qagent.agent.augmented_prompts)})
     result = qagent.agent.prompt.invoke(prompt_state).to_string()
     return await render_template('render_xml.html', xml_code=result, title=group_no+' Prompt')
 
