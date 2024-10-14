@@ -40,6 +40,14 @@ class MongoAdapter(Adapter):
             return list(self.table.find(query))
         return list(self.table.find(query,dict(zip(['_id',] + [i for i in fields],[0] + [1 for _ in fields]))))
     
+    def list_all_obj(self, meta_on:bool = True):
+        query = {}
+        if meta_on:
+            query = {'metadata':self.metadata}
+        else:
+            query = {}
+        return [self.source_class_constructor(**i) for i in list(self.table.find(query).sort({'timestamp':-1}))][::-1]
+    
     def find_nums(self, meta_on:bool = True,nums:int = 1):
         query = {}
         if meta_on:
@@ -58,3 +66,10 @@ class MongoAdapter(Adapter):
         result = [self.source_class_constructor(**i) for i in list(self.table.find(query))]
         print("Found items:", result)  # 打印找到的项
         return result
+    
+    def change_content(self, old_obj: have_dict, change_dict: dict):
+        old = old_obj.to_dict()
+        new = change_dict.copy()
+        new.update({'metadata': self.metadata, 'timestamp': datetime.now(timezone.utc)})
+        result = self.table.update_one({'uuid': old['uuid'], 'metadata': self.metadata}, {'$set': new})
+        return result.modified_count > 0

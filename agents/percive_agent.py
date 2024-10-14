@@ -6,6 +6,8 @@ from model.doc import docs
 from langchain_core.prompts.chat import ChatPromptTemplate
 from utils import get_time
 from model.memorys import perceive_group, memory_list
+from model.setting_block import setting_group
+from model.base_models import have_dict
 
 class State():
     """
@@ -17,8 +19,8 @@ class State():
     perceive\n
     llm\n
     """
-    
-    personal_setting: str
+    setting: dict
+    setting_mng: setting_group
     current_memory_list: memory_list
     knowledge: str
     relate_memory: str
@@ -31,8 +33,7 @@ class State():
 
     def __init__(self, *args, **kwargs):
         self.metadata = kwargs.get('metadata',{})
-        self.personal_setting = kwargs['personal_setting']
-            
+        self.setting_mng = setting_group(**kwargs.get('db_info',{}),metadata=self.metadata)
         self.knowledge = kwargs['knowledge']
         self.relate_memory = kwargs['relate_memory']
         self.perceive = kwargs['perceive']
@@ -49,7 +50,6 @@ class State():
         self.augmented_prompt = kwargs.get('augmented_prompt',[])
 
     def replace(self, **kwargs):
-        self.personal_setting = kwargs.get('personal_setting', self.personal_setting)
         self.knowledge = kwargs.get('knowledge', self.knowledge)
         self.relate_memory = kwargs.get('relate_memory', self.relate_memory)
         self.perceive = kwargs.get('perceive', self.perceive)
@@ -60,7 +60,7 @@ class State():
     
     def to_dict(self, change:bool =True):
         return {
-            'personal_setting':self.personal_setting,
+            'personal_setting':str(self.setting_mng.default),
             'current_memory': str(self.current_memory_list),
             'knowledge':self.knowledge,
             'relate_memory':self.relate_memory,
@@ -120,7 +120,7 @@ class percive_agent:
         result = [tool_exec_result]
         if 'tool_calls' not in msg.additional_kwargs:
             if self.enable_llm_stop_marker == False:
-                result.append({'you':{'content':msg.content}})
+                result.append({'you':{'content':msg.content.replace('</Real_Output>','')}})
                 print('invoke result(not tool_calls): ', result)
                 return {"result": result}
             result.append({'raw_assistant_message':{'content':msg.content ,'NOTICE':'You need call tools to make reaction instead direct speaking!'}})
