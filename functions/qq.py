@@ -112,7 +112,7 @@ async def on_message(msg:dict):
                     if msg['message'].split(' ')[0].split('!')[1] in list(QQ_agent.cmd_controller.cmds.keys()) + ['help']:
                         cmd_ctrl = QQ_agent.cmd_controller
                         result = cmd_ctrl.process(msg['message'])
-                        await send_qq_msg(msg=result, no=msg['group_id'], to_type='group')
+                        send_qq_msg(msg=result, no=msg['group_id'], to_type='group')
                     perceive = {
                         f"QQ群組|群號{msg['group_id']}":{
                             "Sender": msg['sender'], 
