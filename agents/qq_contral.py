@@ -36,7 +36,7 @@ class cmd_processer:
             
     def process(self,cmd:str):
         cmd = cmd.split(" ")
-        if cmd[0].split("!")[0] == "help":
+        if cmd[0].split("!")[1] == "help":
             return self.help(cmd[1])
         else:
             return self.run(cmd[0].split("!")[1],*cmd[1:])
@@ -44,7 +44,7 @@ class cmd_processer:
     def help(self,cmd:str = None):
         if len(self.cmds) == 0:
             return "No command registered."
-        elif len(cmd) == 0 or cmd == None:
+        elif len(cmd) == 0 or cmd == None or cmd == "help":
             return {i:self.cmds[i].desc for i in self.cmds}
         else:
             if cmd in self.cmds:
