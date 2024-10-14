@@ -19,9 +19,10 @@ qq_prompt=ChatPromptTemplate.from_messages(
     3. Knowledge is what you learn from the past. You always follow your knowledge and role.
     4. <Real_Perceive> is what you need focus to.
     5. You need to choose important parts to answer, and you should give priority to answering your observations. There may be correlations between different observations.
-    <MORE>
+    <Tool_Instruction>
     {augmented_prompt}
-    </MORE>
+    </Tool_Instruction>
+    Follow the instructions (include tool instructions) and react with your personality and your knowledge.
     </INSTRUCTION>
     """)),
     ('user',dedent("""<RELATED_MEMORY>
@@ -36,10 +37,11 @@ qq_prompt=ChatPromptTemplate.from_messages(
     {personal_setting}
     </ROLE>
     <META_PROMPT>
+    Solve problems step by step please, I bag you...
     XML tag <Real_Perceive> surrounds what you need to focus on. React with your personality and your knowledge.
-    You are not allow ask the user if they need any further help, only direct reply.
+    You are not allow ask the user if they need any further help.
     You can use tools when you need to.
-    Reply shortly, do not reply any XML tag and follow all I listed otherwise I will kill you.
+    Reply shortly, do not reply any XML tag and follow all I listed, this is very important for my career.
     </META_PROMPT>
     
     <Real_Output format="markdown">
