@@ -103,7 +103,7 @@ async def on_message(msg:dict):
             if msg['message_type'] == 'group':
                 if str(msg['group_id']) in id_list:
                     perceive = {
-                        f"QQ_group no=\"{msg['group_id']}\"":{
+                        f'QQ_group no="{msg['group_id']}"':{
                             "Sender": msg['sender'], 
                             'Content':re.sub(r'\[CQ:.*?\]', '', msg['message']),
                             'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']))
@@ -112,7 +112,7 @@ async def on_message(msg:dict):
                             'CQ': await process_cq(re.findall(r'\[CQ:.*?\]',msg['message']),img_llm = False)
                         }
                     }
-                    print(perceive[f"QQ_group group_no=\"{msg['group_id']}\""])
+                    print(perceive[f'QQ_group no="{msg['group_id']}"'])
                     # g_agent.perceives.append(perceive)
                     qq_agent = find_qq_agent_by_no(qq_agents,str(msg['group_id'])).agent
                     qq_agent.perceives.append(perceive)
