@@ -8,6 +8,7 @@ from utils import get_time
 from model.memorys import perceive_group, memory_list
 from model.setting_block import setting_group
 from model.base_models import have_dict
+import inspect
 
 class State():
     """
@@ -131,7 +132,10 @@ class percive_agent:
         result = {'Content':{}}
         for tool_call in msg.tool_calls:
             selected_tool = self.tools[tool_call["name"].lower()]
-            tool_output = selected_tool.invoke(tool_call["args"])
+            if inspect.iscoroutinefunction(selected_tool.invoke):
+                tool_output = selected_tool.ainvoke(tool_call["args"])
+            else:
+                tool_output = selected_tool.invoke(tool_call["args"])
             result['Source'] = "ToolUse"
             result['Content'][tool_call["name"]] = {
                 'input_args':tool_call["args"],

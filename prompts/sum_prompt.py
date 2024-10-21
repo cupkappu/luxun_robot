@@ -3,13 +3,13 @@ from textwrap import dedent
 
 map_prompt=ChatPromptTemplate.from_messages(
 [
-    ("system", """You are a helpful assistant."""),
+    ("system", """You are an objective, calm and rational researcher."""),
     ('user',dedent(""" 
     <MEMORY>
     {context}
     </MEMORY>
     <INSTRUCTION>
-    You need give the content surrounded by <MEMORY> a concise summary.
+    Briefly describe the topics in <MEMORY> in bulleted form.
     </INSTRUCTION>
     """)),
     ]
@@ -17,14 +17,13 @@ map_prompt=ChatPromptTemplate.from_messages(
 
 reduce_prompt=ChatPromptTemplate.from_messages(
 [
-    ("system", """You are a helpful assistant."""),
+    ("system", """You are an objective, calm and rational researcher."""),
     ('user',dedent(""" 
     <set_of_summaries>
     {context}
     </set_of_summaries>
     <INSTRUCTION>
-    Take these set of summaries and distill it into a final, consolidated summary
-    of the main themes.
+    Summarize the above bullet points, extract the key points using bullet points, and give a rational and objective overall summary.
     </INSTRUCTION>
     """)),
     ]

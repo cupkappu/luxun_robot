@@ -23,7 +23,7 @@ async def start_callback():
 
 def tool_factory(agent:percive_agent):
     @tool
-    def summary_time_to_time_message(start_time: Annotated[str, 'Start time in format yyyy-MM-dd HH:mm:ss'], 
+    async def summary_time_to_time_message(start_time: Annotated[str, 'Start time in format yyyy-MM-dd HH:mm:ss'], 
                                      end_time: Annotated[str, 'End time in format yyyy-MM-dd HH:mm:ss']):
         """Summarizes messages between start_time and end_time."""
         map_chain = map_prompt | agent.llm | StrOutputParser()
@@ -32,8 +32,11 @@ def tool_factory(agent:percive_agent):
         messages_text = "\n".join([str(message) for message in messages])
         chunk_size = 5000
         chunks = [Document(messages_text[i:i + chunk_size]) for i in range(0, len(messages_text), chunk_size)]
-        map_results = [map_chain.invoke({'context':chunk}) for chunk in chunks]
-        summary = reduce_chain.invoke({'context':map_results})
+        map_results = []
+        for i in chunks:
+            result = await map_chain.ainvoke({'context':i})
+            map_results.append(result)
+        summary = await reduce_chain.ainvoke({'context':map_results})
         return summary
     return [summary_time_to_time_message]
 
