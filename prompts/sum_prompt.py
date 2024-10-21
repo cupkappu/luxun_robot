@@ -9,7 +9,7 @@ map_prompt=ChatPromptTemplate.from_messages(
     {context}
     </MEMORY>
     <INSTRUCTION>
-    Briefly describe the topics in <MEMORY> in bulleted form.
+    Briefly describe the topics in <MEMORY> in bulleted form. If there is anyone in the Topic, please mention it.
     </INSTRUCTION>
     """)),
     ]

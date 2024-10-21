@@ -25,9 +25,9 @@ def tool_factory(agent:percive_agent) -> List[StructuredTool]:
         return agent.state.setting_mng.set_default(Role_id)
 
     @tool
-    def add_role(Role_description: Annotated[str, 'The description of the role you want to add.'],):
+    async def add_role(Role_description: Annotated[str, 'The description of the role you want to add.'],):
         """Add a new role to the role setting list. """
-        newrole = agent.state.setting_mng.gen(Role_description)
+        newrole = await agent.state.setting_mng.gen(Role_description)
         return {"state":"sussess","new_role":newrole.to_dict(base=True)}
 
     @tool

@@ -90,15 +90,15 @@ class setting_group():
             if self.default == None:
                 set_default()
     
-    def gen(self,desc:str):
+    async def gen(self,desc:str):
         chain = (gen_role |  
             self.llm.bind(response_format={"type": "json_object"}) | 
             JsonOutputParser(pydantic_object=setting_format))
         gen_prompt_chain = (gen_prompt|
                       self.llm.bind(response_format={"type": "json_object"}) | 
                       JsonOutputParser())
-        result = chain.invoke({'desc':desc})
-        prompt = gen_prompt_chain.invoke({'role':str(result)})
+        result = chain.ainvoke({'desc':desc})
+        prompt = gen_prompt_chain.ainvoke({'role':str(result)})
         
         print(prompt)
         setting = setting_bolck(result['setting'],
