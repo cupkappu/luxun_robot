@@ -1,0 +1,170 @@
+{
+    "deploy": [
+        {
+            "name": "baseAgent",
+            "type": "agent",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "state": "baseState",
+                "llm": "baseLLM",
+                "tools": [
+                    "baseTool"
+                ]
+            }
+        },
+        {
+            "name": "baseState",
+            "type": "state",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "prompt": "basePrompt",
+                "prompt_parts": {
+                    "setting": "setting",
+                    "current_memory": "current_memory",
+                    "perceive": "perceive",
+                    "knowledge": "knowledge",
+                    "relate_memory": "relate_memory"
+                }
+            }
+        },
+        {
+            "name": "basePrompt",
+            "type": "prompt",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config":{
+                "prompt_parts":[
+                    "setting",
+                    "current_memory",
+                    "perceive",
+                    "knowledge",
+                    "relate_memory"
+                ],
+                "prompt_text": {
+                    "system": "<CURRENT_MEMORY>\n{current_memory}\n</CURRENT_MEMORY>\n<KNOWLEDGE>{knowledge}</KNOWLEDGE>\n<INSTRUCTION>\nYou need to play a character follow the <ROLE> description.\nYou have the ability to perceive, and you you need to decide whether to use tools to help you. Do not use variables.\n1. Role is your personality and role setting.\n2. Current memory is what happen in the past by time queue, help you to referencen3. Knowledge is what you learn from the past. You always follow your knowledge and role.\n4. <Real_Perceive> is what you need focus to.\n5. You need to choose important parts to answer, and you should give priority to answering your observations. There may be correlations between different observations.\n<Tool_Instruction>\n{augmented_prompt}\n</Tool_Instruction>\nFollow the instructions (include tool instructions) and react with your personality and your knowledge.\n</INSTRUCTION>",
+                    "user": "<RELATED_MEMORY>{relate_memory}</RELATED_MEMORY>\n<LoopTimes>{looptimes}</LoopTimes>\n<Real_Perceive foramt=\"xml\">{perceive}</Real_Perceive>\n<ROLE>\n{personal_setting}\n</ROLE>\n<META_PROMPT>\nSolve problems step by step please, I bag you...\nXML tag <Real_Perceive> surrounds what you need to focus on. React with your personality and your knowledge.\nYou are not allow ask the user if they need any further help.\nYou can use tools when you need to.\nReply shortly, do not reply any XML tag and follow all I listed, this is very important for my career.\n</META_PROMPT>\n<Real_Output format=\"markdown\">"
+                }
+            }
+        },
+        {
+            "name": "baseLLM",
+            "type": "llm",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "type": "openai",
+                "base_url": "https://xxxxx/v1",
+                "api_key": "xxxxx",
+                "model": "xxxxx"
+            }
+        },
+        {
+            "name": "baseTool",
+            "type": "tool",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                
+            }
+        },
+        {
+            "name": "setting",
+            "type": "prompt_part",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "method": "string",
+                "method_setting": {
+                    "string": "You are xxx, you need ...."
+                }
+            }
+        },
+        {
+            "name": "current_memory",
+            "type": "prompt_part",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "method": "plugin",
+                "method_setting": {
+                    "plugin": "current_memory_plugin"
+                }
+            }
+        },
+        {
+            "name": "perceive",
+            "type": "prompt_part",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "method": "url_get",
+                "method_setting": {
+                    "url": "https://xxxxx/v1",
+                    "variables": {
+                        "message": {
+                            "extract_method": "json_path", 
+                            "extract_setting": {"path": "$.message"}
+                        },
+                        "message_type": {
+                            "extract_method": "json_path", 
+                            "extract_setting": {"path": "$.message_type"}
+                        },
+                        "id": {
+                            "extract_method": "json_path", 
+                            "extract_setting": {"path": "$.message.id"}
+                        }
+                    },
+                    "output": {
+                        "type": "constraint",
+                        "type_setting": {
+                            "message": {
+                                "$eq": {
+                                    "group":"<GroupID_{id}>{message}</GroupID_{id}>", 
+                                    "private":"<PrivateID_{id}>{message}</PrivateID_{id}>", 
+                                    "public":"<PublicID_{id}>{message}</PublicID_{id}>"
+                                }
+                            }
+                        }
+                    },
+                    "interval": 15
+                }
+            }
+        },
+        {
+            "name": "knowledge",
+            "type": "prompt_part",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "method": "plugin",
+                "method_setting": {
+                    "plugin": "knowledge_plugin"
+                }
+            }
+        },
+        {
+            "name": "relate_memory",
+            "type": "prompt_part",
+            "metadata": {
+                "name": "core_plugins"
+            },
+            "config": {
+                "method": "plugin",
+                "method_setting": {
+                    "plugin": "relate_memory_plugin"
+                }
+            }
+        }
+    ]
+}

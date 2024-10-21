@@ -43,7 +43,7 @@ async def run_all_functions():
         for j in i.tools:
             tools.update({j.name:j})
 
-    agent = percive_agent(State(**test_query, llm=llm), tools=tools, llm=llm, looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)))
+    agent = percive_agent(State(**test_query,current_memory_length=os.getenv('MEMORY_LIMIT',30), llm=llm), tools=tools, llm=llm, looptime = int(os.getenv('WORKFLOW_LOOPTIME',60)))
 
     giver_tunnel = {}
 
