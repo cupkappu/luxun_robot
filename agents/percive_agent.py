@@ -132,9 +132,9 @@ class percive_agent:
         result = {'Content':{}}
         for tool_call in msg.tool_calls:
             selected_tool = self.tools[tool_call["name"].lower()]
-            if inspect.iscoroutinefunction(selected_tool.invoke):
-                tool_output = selected_tool.ainvoke(tool_call["args"])
-            else:
+            try:
+                tool_output = await selected_tool.ainvoke(tool_call["args"])
+            except NotImplementedError:
                 tool_output = selected_tool.invoke(tool_call["args"])
             result['Source'] = "ToolUse"
             result['Content'][tool_call["name"]] = {
