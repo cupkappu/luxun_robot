@@ -42,7 +42,7 @@ qq_prompt=ChatPromptTemplate.from_messages(
     Solve problems step by step please, I bag you...
     XML tag <Real_Perceive> surrounds what you need to focus on. React with your personality and your knowledge.
     You are not allow ask the user if they need any further help.
-    You can use tools when you need to.
+    You should use tools when you need to or the tool is fits user's request.
     Reply shortly, do not reply any XML tag and follow all I listed, this is very important for my career.
     </META_PROMPT>
     
