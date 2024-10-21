@@ -34,6 +34,7 @@ def tool_factory(agent:percive_agent):
         chunks = [Document(messages_text[i:i + chunk_size]) for i in range(0, len(messages_text), chunk_size)]
         map_results = []
         for i in chunks:
+            print(i.__doc__)
             result = await map_chain.ainvoke({'context':i})
             map_results.append(result)
         summary = await reduce_chain.ainvoke({'context':map_results})
